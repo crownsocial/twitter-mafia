@@ -1,6 +1,9 @@
 var TwitterAnalytics = angular.module('TwitterAnalytics', ['ngRoute','ngResource', 'ngMaterial', 'ngMessages', 'ui.router', 'ngAnimate']);
 
-HardwareAscender.config(['$routeProvider', '$locationProvider', '$stateProvider', '$urlRouterProvider', 'cloudinaryProvider', 'cfpLoadingBarProvider', function($routeProvider, $locationProvider, $stateProvider, $urlRouterProvider, cloudinaryProvider, cfpLoadingBarProvider){
+TwitterAnalytics.config(['$routeProvider', '$locationProvider', '$stateProvider', '$urlRouterProvider', function($routeProvider, $locationProvider, $stateProvider, $urlRouterProvider){
+  $locationProvider.html5Mode(true);
+
+  $routeProvider
   .when('/', {
     templateUrl: '/views/home.html',
     controller: 'HomeCtrl'
