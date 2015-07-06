@@ -2,6 +2,8 @@ var bcrypt = require('bcrypt');
 
 module.exports = {
 
+  schema: true,
+
   attributes: {
     email: {
       type: 'email',
@@ -15,6 +17,17 @@ module.exports = {
     },
     socketId: {
       type: 'string'
+    },
+    telephone: {
+      type: 'string',
+    },
+    twitter_accounts: {
+      collection: 'Twitter_Account',
+      via: 'user'
+    },
+    passports: {
+      collection: 'Passport',
+      via: 'user'
     }
   },
   beforeCreate: function(values, callback) {
