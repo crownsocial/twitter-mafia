@@ -1,0 +1,14 @@
+<nav ng-controller="NavCtrl">
+  <div class="nav-wrapper">
+    <a href="/" class="brand-logo waves-effect waves-light">Twitter Analytics</a>
+    <ul class="right hide-on-med-and-down">
+      <li><a class="waves-effect waves-light" ng-click="showLoginModal($event)">signup</a></li>
+      <li><a class="waves-effect waves-light" href="#signin">sign in</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+<div class="container">
+  <ng-view ng-cloak></ng-view>
+</div>

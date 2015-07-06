@@ -11,4 +11,5 @@ TwitterAnalytics.config(['$routeProvider', '$locationProvider', '$stateProvider'
   .otherwise({
   templateUrl:'/views/404.html'
   });
+
 }]);
