@@ -45,8 +45,8 @@ module.exports.routes = {
   'get /auth/:provider/callback': 'AuthController.callback',
   'get /auth/:provider/:action': 'AuthController.callback',
 
-  'get /api/user/:id': 'UserController.retrieve',
-  'post /api/user': 'UserController.create'
+  'get /api/user/:id': 'UserController.retrieve'
+  // 'post /api/user': 'UserController.create'
 
   /***************************************************************************
   *                                                                          *
