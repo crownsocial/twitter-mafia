@@ -1,0 +1,23 @@
+<md-dialog aria-label="login form">
+  <form name="loginForm" class="col s12">
+  <md-dialog-content class="sticky-container" layout-padding>
+    <md-subheader class="md-sticky-no-effect">signup</md-subheader>
+    <div class="row">
+      <div class="input-field col s12">
+        <input ng-model="email" id="email" type="email" class="validate">
+        <label for="email">email</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s12">
+        <input ng-model="password" id="password" type="password" class="validate">
+        <label for="password">password</label>
+      </div>
+    </div>
+  </md-dialog-content>
+  <div class="md-actions" layout="row">
+    <button class="btn waves-effect waves-light btn-flat login-form-submit" type="submit" name="action" ng-click="signup()">signup</button>
+    <button class="btn waves-effect waves-light btn-flat login-form-submit" ng-click="cancel()">cancel</button>
+  </div>
+  </form>
+</md-dialog>
