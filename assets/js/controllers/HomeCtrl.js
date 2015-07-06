@@ -24,4 +24,13 @@ TwitterAnalytics.controller('HomeCtrl', ['$scope', '$rootScope', '$mdToast',  fu
     );
   };
 
+  $rootScope.showLoginToast = function() {
+    $mdToast.show(
+      $mdToast.simple()
+        .content('User successfully logged in!')
+        .position($scope.getToastPosition())
+        .hideDelay(3000)
+    );
+  };
+
 }]);
