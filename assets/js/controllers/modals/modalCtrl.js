@@ -17,18 +17,19 @@ TwitterAnalytics.controller('modalCtrl', ['$scope', '$rootScope', '$mdDialog', '
   };
 
   $scope.login = function() {
-    SignupService.login($scope.email, $scope.password, function(err, data) {
-      if (err){
-        console.log(err);
-      } else if (data && data.password && data.email) {
-        console.log('you want to login with ' + $scope.email + ' and ' + $scope.password);
-        console.log(data);
-        $mdDialog.hide();
-        $rootScope.showLoginToast();
-      }else{
-        console.log("user couldn't be logged in.");
-      }
-    })
+
+    // SignupService.login($scope.email, $scope.password, function(err, data) {
+    //   if (err){
+    //     console.log(err);
+    //   } else if (data && data.password && data.email) {
+    //     console.log('you want to login with ' + $scope.email + ' and ' + $scope.password);
+    //     console.log(data);
+    //     $mdDialog.hide();
+    //     $rootScope.showLoginToast();
+    //   }else{
+    //     console.log("user couldn't be logged in.");
+    //   }
+    // })
   }
 
   $scope.cancel = function(){
