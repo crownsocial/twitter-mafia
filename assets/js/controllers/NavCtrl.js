@@ -2,11 +2,20 @@ TwitterAnalytics.controller('NavCtrl', ['$scope', '$mdDialog', function($scope, 
 
   console.log('nav controller loaded (frontend)')
 
-  $scope.showLoginModal = function(event){
-    console.log('signup modal fired off')
+  $scope.showSignupModal = function(event) {
+    console.log('signup modal fired off');
     $mdDialog.show({
       controller: 'modalCtrl',
       templateUrl: 'templates/modals/signupModal.html',
+      targetEvent: event
+    })
+  }
+
+  $scope.showLoginModal = function(event) {
+    console.log('login modal fired off');
+    $mdDialog.show({
+      controller: 'modalCtrl',
+      templateUrl: 'templates/modals/loginModal.html',
       targetEvent: event
     })
   }
