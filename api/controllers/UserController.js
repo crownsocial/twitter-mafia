@@ -14,5 +14,9 @@ module.exports = {
 
   }
 
+  // create: function(req, res){
+  //   User.create({email: req.params.email ...})
+  // }
+
 };
 
