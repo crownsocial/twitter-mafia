@@ -32,7 +32,11 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
+<<<<<<< HEAD
   "/": "PageController.index",
+=======
+  'get /': 'ViewController.index',
+>>>>>>> fdf7334974fef8e35d203fef8c2df9c01cff50ed
 
   'get /login': 'AuthController.login',
   'get /logout': 'AuthController.logout',
