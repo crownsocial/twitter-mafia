@@ -4,5 +4,9 @@ module.exports = {
     res.view('index');
   }
 
+  // create: function(req, res){
+  //   User.create({email: req.params.email ...})
+  // }
+
 };
 
