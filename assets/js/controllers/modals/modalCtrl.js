@@ -1,4 +1,4 @@
-TwitterAnalytics.controller('modalCtrl', ['$scope', '$mdDialog', 'SignupService', function($scope, $mdDialog, SignupService) {
+TwitterAnalytics.controller('modalCtrl', ['$scope', '$rootScope', '$mdDialog', 'SignupService', function($scope, $rootScope, $mdDialog, SignupService) {
   console.log('login modal loaded')
 
   $scope.signup = function(){
@@ -9,12 +9,12 @@ TwitterAnalytics.controller('modalCtrl', ['$scope', '$mdDialog', 'SignupService'
         console.log('you want to sign up with ' + $scope.email + ' and ' + $scope.password)
         console.log(data)
         $mdDialog.hide();
+        $rootScope.showSignupToast();
       }else{
         console.log("user couldn't be created")
       }
     })
   };
-
   $scope.cancel = function(){
     $mdDialog.cancel();
   };
