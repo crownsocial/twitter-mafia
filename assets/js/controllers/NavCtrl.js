@@ -1,4 +1,4 @@
-TwitterAnalytics.controller('NavCtrl', ['$scope', '$mdDialog', function($scope, $mdDialog){
+TwitterAnalytics.controller('NavCtrl', ['$scope', '$mdDialog', 'UserService', function($scope, $mdDialog, UserService){
 
   console.log('nav controller loaded (frontend)')
 
@@ -18,6 +18,12 @@ TwitterAnalytics.controller('NavCtrl', ['$scope', '$mdDialog', function($scope, 
       templateUrl: 'templates/modals/loginModal.html',
       targetEvent: event
     })
+  }
+
+  $scope.logout = function(){
+    UserService.logout(function(err, data){
+      console.log('user logged out', err, data)
+    });
   }
 
 }]);

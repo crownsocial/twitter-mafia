@@ -1,4 +1,4 @@
-TwitterAnalytics.controller('HomeCtrl', ['$scope', '$rootScope', '$mdToast',  function($scope, $rootScope, $mdToast){
+TwitterAnalytics.controller('HomeCtrl', ['$scope', '$rootScope', '$mdToast', '$http', 'UserService', function($scope, $rootScope, $mdToast, $http, UserService){
 
   console.log('home controller loaded (frontend)')
 
@@ -32,5 +32,16 @@ TwitterAnalytics.controller('HomeCtrl', ['$scope', '$rootScope', '$mdToast',  fu
         .hideDelay(3000)
     );
   };
+
+  $scope.getUser = function() {
+    console.log('get user ran')
+    $http.get('/api/user/' + $rootScope.currentUser.id).success(function(user){
+      console.log('get user success')
+      $scope.user = user
+      console.log('user object:', $scope.user)
+    })
+  }
+
+  $scope.getUser();
 
 }]);

@@ -13,3 +13,16 @@ TwitterAnalytics.config(['$routeProvider', '$locationProvider', '$stateProvider'
   });
 
 }]);
+
+TwitterAnalytics.run(['$rootScope', 'UserService', function($rootScope, UserService) {
+
+  UserService.check(function(err, data){
+    console.log('Current User',UserService.currentUser)
+    $rootScope.UserService = UserService;
+
+    $rootScope.$watchCollection('UserService', function(){
+      $rootScope.currentUser = UserService.currentUser;
+    })
+  });
+
+}]);

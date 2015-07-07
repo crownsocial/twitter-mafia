@@ -1,9 +1,13 @@
 <nav ng-controller="NavCtrl">
   <div class="nav-wrapper">
     <a href="/" class="brand-logo waves-effect waves-light">Twitter Analytics</a>
-    <ul class="right hide-on-med-and-down">
+    <ul ng-if="!$root.currentUser" class="right hide-on-med-and-down">
       <li><a class="waves-effect waves-light" ng-click="showSignupModal($event)">signup</a></li>
       <li><a class="waves-effect waves-light" ng-click="showLoginModal($event)">login</a></li>
+    </ul>
+    <ul ng-if="$root.currentUser" class="right hide-on-med-and-down">
+      <li><a class="waves-effect waves-light">hello {{$root.currentUser.email}} </a></li>
+      <li><a class="waves-effect waves-light" ng-click="logout()">logout</a></li>
     </ul>
   </div>
 </nav>

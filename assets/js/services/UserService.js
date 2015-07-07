@@ -2,9 +2,11 @@ TwitterAnalytics.factory('UserService', ['$http', function($http){
   return {
     login: function(email, password, callback){
       var self = this;
-      $http.post('/auth/local', {email: email, password: password})
+      $http.post('/auth', {email: email, password: password})
         .success(function(data){
+          console.log(data)
           if(data && data.result && data.user){
+            console.log('user sign in')
             self.currentUser = data.user;
           }else{
             self.currentUser = false;
@@ -20,7 +22,7 @@ TwitterAnalytics.factory('UserService', ['$http', function($http){
     },
     check: function(callback){
       var self = this;
-      io.socket.get('/auth', function(data){
+      $http.get('/auth').success(function(data){
           if(data && data.user){
             self.currentUser = data.user;
           }else{

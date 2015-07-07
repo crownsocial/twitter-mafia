@@ -34,20 +34,24 @@ module.exports.routes = {
 
   'get /': 'ViewController.index',
 
-  'get /login': 'AuthController.login',
-  'get /logout': 'AuthController.logout',
-  'get /register': 'AuthController.register',
+  // 'get /login': 'AuthController.login',
+  // 'get /logout': 'AuthController.logout',
+  // 'get /register': 'AuthController.register',
 
-  'post /auth/local': 'AuthController.callback',
-  'post /auth/local/:action': 'AuthController.callback',
+  // local auth
+  'get /auth': 'AuthController.check',
+  'post /auth': 'AuthController.login',
+  'delete /auth': 'AuthController.logout',
 
-  'get /auth/:provider': 'AuthController.provider',
-  'get /auth/:provider/callback': 'AuthController.callback',
-  'get /auth/:provider/:action': 'AuthController.callback',
+  // twitter oauth
+  'get /auth/:provider': 'PassportController.provider',
+  'get /auth/:provider/callback': 'PassportController.callback',
+  'get /auth/:provider/:action': 'PassportController.callback',
 
-  'get /api/user': 'UserController.index',
-  'get /api/user/:id': 'UserController.retrieve',
-  'post /api/user': 'UserController.create'
+  // user requests
+  'get /user': 'UserController.index',
+  'get /user/:id': 'UserController.retrieve',
+  'post /user': 'UserController.create'
 
   /***************************************************************************
   *                                                                          *
