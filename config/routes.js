@@ -34,24 +34,31 @@ module.exports.routes = {
 
   'get /': 'ViewController.index',
 
+  // local auth
+
   // 'get /login': 'AuthController.login',
-  // 'get /logout': 'AuthController.logout',
+  'get /logout': 'AuthController.logout',
   // 'get /register': 'AuthController.register',
 
-  // local auth
-  'get /auth': 'AuthController.check',
-  'post /auth': 'AuthController.login',
-  'delete /auth': 'AuthController.logout',
+  'post /auth/local': 'AuthController.callback',
+  'post /auth/local/:action': 'AuthController.callback',
 
-  // twitter oauth
-  'get /auth/:provider': 'PassportController.provider',
-  'get /auth/:provider/callback': 'PassportController.callback',
-  'get /auth/:provider/:action': 'PassportController.callback',
+  // // twitter oauth
+  'get /auth/:provider': 'AuthController.provider',
+  'get /auth/:provider/callback': 'AuthController.callback',
+  'get /auth/:provider/:action': 'AuthController.callback',
 
   // user requests
   'get /user': 'UserController.index',
   'get /user/:id': 'UserController.retrieve',
-  'post /user': 'UserController.create'
+  'post /user': 'UserController.create',
+
+  "get *":{
+    controller:"ViewController",
+    action:"index",
+    skipAssets: true,
+    skipRegex: /^\/api\/.*$/
+  }
 
   /***************************************************************************
   *                                                                          *

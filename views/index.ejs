@@ -1,15 +1,34 @@
-<nav ng-controller="NavCtrl">
-  <div class="nav-wrapper">
-    <a href="/" class="brand-logo waves-effect waves-light">Twitter Analytics</a>
-    <ul ng-if="!$root.currentUser" class="right hide-on-med-and-down">
-      <li><a class="waves-effect waves-light" ng-click="showSignupModal($event)">signup</a></li>
-      <li><a class="waves-effect waves-light" ng-click="showLoginModal($event)">login</a></li>
-    </ul>
-    <ul ng-if="$root.currentUser" class="right hide-on-med-and-down">
-      <li><a class="waves-effect waves-light">hello {{$root.currentUser.email}} </a></li>
-      <li><a class="waves-effect waves-light" ng-click="logout()">logout</a></li>
-    </ul>
+<nav class="navbar navbar-default" role="navigation" ng-controller="NavCtrl">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="/">Twitter Mafia</a>
   </div>
+
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse navbar-ex1-collapse">
+    <ul ng-if="!$root.currentUser" class="nav navbar-nav navbar-right">
+      <li>
+        <a ng-click="showSignupModal($event)">signup</a>
+      </li>
+      <li>
+        <a ng-click="showLoginModal($event)">login</a>
+      </li>
+    </ul>
+    <ul ng-if="$root.currentUser" class="nav navbar-nav navbar-right">
+      <li>
+        <a class="waves-effect waves-light">hello {{$root.currentUser.email}} </a>
+      </li>
+      <li>
+        <a class="waves-effect waves-light" ng-click="logout()">logout</a>
+      </li>
+    </ul>
+  </div><!-- /.navbar-collapse -->
 </nav>
 
 

@@ -1,23 +1,28 @@
-<md-dialog aria-label="login form">
-  <form name="loginForm" class="col s12">
-  <md-dialog-content class="sticky-container" layout-padding>
-    <md-subheader class="md-sticky-no-effect">login</md-subheader>
-    <div class="row">
-      <div class="input-field col s12">
-        <input ng-model="email" id="email" type="email" class="validate">
-        <label for="email">email</label>
+<div class="modal-body">
+      <a href="/">
+        <img class="close-icon" src="/images/close-icon.png">
+      </a>
+      <p class="text header">Welcome back!</p>
+      <p class="text subheader">Log into your account in here</p>
+
+    <form ng-submit="login(null, email, password)">
+      <div class="email-container clearfix">
+        <img class="email-icon" src="/images/email-icon.png">
+        <input type="email" class="email" placeholder="Email address" type="text" ng-model="email">
       </div>
-    </div>
-    <div class="row">
-      <div class="input-field col s12">
-        <input ng-model="password" id="password" type="password" class="validate">
-        <label for="password">password</label>
+
+      <div class="password-container clearfix">
+        <img class="password-icon" src="/images/password-icon.png">
+        <input type="password" name="password" placeholder="Password" type="text" ng-model="password">
       </div>
-    </div>
-  </md-dialog-content>
-  <div class="md-actions" layout="row">
-    <button class="btn waves-effect waves-light btn-flat login-form-submit" type="submit" name="action" ng-click="login()"></button>
-    <button class="btn waves-effect waves-light btn-flat login-form-submit" ng-click="cancel()">cancel</button>
-  </div>
-  </form>
-</md-dialog>
+
+      <input type="submit" class="login-btn" value="Log in">
+      <div class="clearfix"></div>
+    </form>
+
+    <hr>
+
+    <p class="text usersocial">Or</p>
+
+    <a class="sociallogin-btn sociallogin-twitter" ng-click="login('twitter')">Sign in with Twitter</a>
+</div>

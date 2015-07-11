@@ -14,6 +14,8 @@
  * http://passportjs.org/guide/providers/
  */
 
+var host = process.env.NODE_ENV == 'production' ? 'siprmunch.herokuapp.com' : 'localhost:1337';
+
 module.exports.passport = {
   local: {
     strategy: require('passport-local').Strategy
@@ -29,7 +31,8 @@ module.exports.passport = {
     strategy: require('passport-twitter').Strategy,
     options: {
       consumerKey: process.env.TWITTER_CONSUMER_KEY,
-      consumerSecret: process.env.TWITTER_CONSUMER_SECRET
+      consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+      callbackURL: "http://" + host + "/auth/twitter/callback"
     }
   }
 

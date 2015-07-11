@@ -1,29 +1,29 @@
-TwitterAnalytics.controller('NavCtrl', ['$scope', '$mdDialog', 'UserService', function($scope, $mdDialog, UserService){
+TwitterMafia.controller('NavCtrl', ['$scope', '$modal', function($scope, $modal){
 
   console.log('nav controller loaded (frontend)')
 
-  $scope.showSignupModal = function(event) {
+  $scope.showSignupModal = function() {
     console.log('signup modal fired off');
-    $mdDialog.show({
+    $modal.open({
       controller: 'modalCtrl',
       templateUrl: 'templates/modals/signupModal.html',
-      targetEvent: event
+      size: 'lg'
     })
   }
 
   $scope.showLoginModal = function(event) {
     console.log('login modal fired off');
-    $mdDialog.show({
+    $modal.open({
       controller: 'modalCtrl',
       templateUrl: 'templates/modals/loginModal.html',
-      targetEvent: event
+      size: 'lg'
     })
   }
 
-  $scope.logout = function(){
-    UserService.logout(function(err, data){
-      console.log('user logged out', err, data)
-    });
-  }
+  // $scope.logout = function(){
+  //   UserService.logout(function(err, data){
+  //     console.log('user logged out', err, data)
+  //   });
+  // }
 
 }]);

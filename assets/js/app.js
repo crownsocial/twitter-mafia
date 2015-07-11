@@ -1,28 +1,45 @@
-var TwitterAnalytics = angular.module('TwitterAnalytics', ['ngRoute','ngResource', 'ngMaterial', 'ngMessages', 'ui.router', 'ngAnimate']);
+var TwitterMafia = angular.module('TwitterMafia', ['ngRoute','ngResource', 'ngMessages', 'ui.router', 'ngAnimate', 'ui.bootstrap', 'ngCookies']);
 
-TwitterAnalytics.config(['$routeProvider', '$locationProvider', '$stateProvider', '$urlRouterProvider', function($routeProvider, $locationProvider, $stateProvider, $urlRouterProvider){
-  $locationProvider.html5Mode(true);
+TwitterMafia.config(['$routeProvider', '$locationProvider', '$stateProvider', '$urlRouterProvider', '$httpProvider', function($routeProvider, $locationProvider, $stateProvider, $urlRouterProvider, $httpProvider){
+  // $locationProvider.html5Mode(true);
 
   $routeProvider
   .when('/', {
-    templateUrl: '/views/home.html',
+    templateUrl: 'views/home.html',
     controller: 'HomeCtrl'
+  })
+  .when('/login', {
+    templateUrl: 'templates/modals/loginModal.html',
+    controller: 'modalCtrl'
+  })
+  .when('/register', {
+    templateUrl: 'templates/modals/signupModal.html',
+    controller: 'modalCtrl'
+  })
+  .when('/auth/twitter', {
+
   })
   .otherwise({
   templateUrl:'/views/404.html'
   });
 
+  // $httpProvider.defaults.useXDomain = true;
+  // $httpProvider.defaults.withCredentials = true;
 }]);
 
-TwitterAnalytics.run(['$rootScope', 'UserService', function($rootScope, UserService) {
+TwitterMafia.run(['$rootScope', '$cookies', '$http', function($rootScope, $cookies, $http){
+  // $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken
+}])
 
-  UserService.check(function(err, data){
-    console.log('Current User',UserService.currentUser)
-    $rootScope.UserService = UserService;
+// TwitterMafia.run(['$rootScope', 'UserService', function($rootScope, UserService) {
 
-    $rootScope.$watchCollection('UserService', function(){
-      $rootScope.currentUser = UserService.currentUser;
-    })
-  });
+//   UserService.check(function(err, data){
+//     console.log('Current User',UserService.currentUser)
+//     $rootScope.UserService = UserService;
 
-}]);
+//     $rootScope.$watchCollection('UserService', function(){
+//       $rootScope.currentUser = UserService.currentUser;
+//     })
+//   });
+
+// }]);

@@ -1,4 +1,4 @@
-TwitterAnalytics.controller('HomeCtrl', ['$scope', '$rootScope', '$mdToast', '$http', 'UserService', function($scope, $rootScope, $mdToast, $http, UserService){
+TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http){
 
   console.log('home controller loaded (frontend)')
 
@@ -42,6 +42,8 @@ TwitterAnalytics.controller('HomeCtrl', ['$scope', '$rootScope', '$mdToast', '$h
     })
   }
 
-  $scope.getUser();
+  if($rootScope.currentUser){
+    $scope.getUser();
+  }
 
 }]);
