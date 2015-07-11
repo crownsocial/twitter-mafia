@@ -14,7 +14,7 @@
  * http://passportjs.org/guide/providers/
  */
 
-var host = process.env.NODE_ENV == 'production' ? 'siprmunch.herokuapp.com' : 'localhost:1337';
+var host = process.env.NODE_ENV == 'production' ? 'twitter-mafia.herokuapp.com' : 'localhost:1337';
 
 module.exports.passport = {
   local: {
