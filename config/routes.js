@@ -32,7 +32,8 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  'get /': 'ViewController.index',
+  '/': 'ViewController.index',
+  '/authenticate': 'ViewController.get',
 
   // local auth
 
@@ -47,6 +48,11 @@ module.exports.routes = {
   'get /auth/:provider': 'AuthController.provider',
   'get /auth/:provider/callback': 'AuthController.callback',
   'get /auth/:provider/:action': 'AuthController.callback',
+
+  // connect twitter
+
+  'get /connect/twitter': 'AuthController.authorize',
+  'get /connect/twitter/callback': 'AuthController.authorizecb',
 
   // user requests
   'get /user': 'UserController.index',

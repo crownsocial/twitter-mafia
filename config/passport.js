@@ -32,9 +32,21 @@ module.exports.passport = {
     options: {
       consumerKey: process.env.TWITTER_CONSUMER_KEY,
       consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
-      callbackURL: "http://" + host + "/auth/twitter/callback"
+      callbackURL: "http://" + host + "/connect/twitter/callback"
     }
   }
+
+  // twitter-authz: {
+  //   name: 'twitter-authz',
+  //   protocol: 'oauth',
+  //   strategy: new TwitterStrategy({
+      // consumerKey: process.env.TWITTER_CONSUMER_KEY,
+      // consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+      // callbackURL: "http://" + host + "/connect/twitter/callback"
+  //   },
+  //   function()
+  //   )
+  // }
 
   // github: {
   //   name: 'GitHub',

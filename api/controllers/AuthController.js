@@ -172,7 +172,7 @@ var AuthController = {
         // Upon successful login, send the user to the homepage were req.user
         // will be available.
          if(req.user.email === null){
-            console.log('send user to hompage')
+          console.log('send user to hompage')
           Passport.findOne({user: req.user.id})
           .then(function(data){
             console.log(data)
@@ -194,6 +194,26 @@ var AuthController = {
    */
   disconnect: function (req, res) {
     passport.disconnect(req, res);
+  },
+
+  authorize: function(req, res){
+    passport.authorize('twitter', {scope: 'email'})
+  },
+
+  authorizecb: function(req, res){
+    passport.authorize('twitter', {
+      failureRedirect: '/',
+      successRedirect: '/'
+    })
+    // function(req, res) {
+    //   var user = req.user;
+    //   var profile = req.profile;
+    //   profile.userId = user.id;
+    //   profile.save(function(err){
+    //     if (err) { return console.log(err)}
+    //     res.redirect('/')
+    //   })
+    // }
   }
 };
 

@@ -1,4 +1,4 @@
-TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http){
+TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast', function($scope, $rootScope, $http, $mdToast){
 
   console.log('home controller loaded (frontend)')
 
@@ -33,17 +33,42 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', function($
     );
   };
 
+  $rootScope.showGenericToast = function(msg) {
+    $mdToast.show(
+      $mdToast.simple()
+        .content(msg)
+        .position($scope.getToastPosition())
+        .hideDelay(3000)
+    );
+  }
+
   $scope.getUser = function() {
+    $scope.twitterPassports = [];
     console.log('get user ran')
     $http.get('/api/user/' + $rootScope.currentUser.id).success(function(user){
       console.log('get user success')
       $scope.user = user
       console.log('user object:', $scope.user)
+      console.log($scope.twitterPassports, $scope.user.passports)
+      $scope.getTwitterAccounts = function() {
+        $scope.user.passports.map(function(passport){
+          if (passport.protocol == 'twitter') {
+            $scope.twitterPassports.push(passport)
+          }
+        })
+      }
     })
   }
 
   if($rootScope.currentUser){
     $scope.getUser();
+  }
+
+  $scope.login = function(provider, email, password){
+    console.log('trying twitter auth')
+    if (provider === 'twitter'){
+      location.href = '/auth/' + provider;
+    }
   }
 
 }]);

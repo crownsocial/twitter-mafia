@@ -1,5 +1,7 @@
-TwitterMafia.controller('modalCtrl', ['$scope', '$rootScope', '$http', '$modalInstance', '$location', function($scope, $rootScope, $http, $modalInstance, $location) {
+TwitterMafia.controller('modalCtrl', ['$scope', '$rootScope', '$http', '$modalInstance', '$location', '$mdToast', function($scope, $rootScope, $http, $modalInstance, $location, $mdToast) {
   console.log('login modal loaded')
+
+  // var passport = require('passport-twitter')
 
   $scope.login = function(provider, email, password){
     console.log(provider)
@@ -7,9 +9,13 @@ TwitterMafia.controller('modalCtrl', ['$scope', '$rootScope', '$http', '$modalIn
       console.log(email, password)
       $http.post('/auth/local/', {identifier: email, password:password}).success(function(data){
         console.log('user successfully logged in:', data)
+        $rootScope.currentUser = data;
+        $modalInstance.close({user: $rootScope.currentUser})
+        $rootScope.showLoginToast();
         $location.path('/')
       })
-    }else if (provider === 'twitter'){
+    }
+    else if (provider === 'twitter'){
       console.log('trying to log in with twitter')
       // $http.jsonp('/auth/twitter').success(function(tweeter){
       //   console.log(tweeter)
@@ -23,6 +29,7 @@ TwitterMafia.controller('modalCtrl', ['$scope', '$rootScope', '$http', '$modalIn
     console.log($scope.email, $scope.password)
     $http.post('/auth/local/register', {email: $scope.email, password:$scope.password}).success(function(user){
       console.log('user created', user)
+      $rootScope.showSignupToast();
     })
   }
 

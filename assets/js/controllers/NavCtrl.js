@@ -7,7 +7,12 @@ TwitterMafia.controller('NavCtrl', ['$scope', '$modal', function($scope, $modal)
     $modal.open({
       controller: 'modalCtrl',
       templateUrl: 'templates/modals/signupModal.html',
-      size: 'lg'
+      size: 'lg',
+      resolve: {
+        user: function(){
+          return $scope.user
+        }
+      }
     })
   }
 
@@ -16,7 +21,12 @@ TwitterMafia.controller('NavCtrl', ['$scope', '$modal', function($scope, $modal)
     $modal.open({
       controller: 'modalCtrl',
       templateUrl: 'templates/modals/loginModal.html',
-      size: 'lg'
+      size: 'lg',
+      resolve: {
+        user: function(){
+          return $scope.user
+        }
+      }
     })
   }
 

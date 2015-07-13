@@ -1,4 +1,4 @@
-var TwitterMafia = angular.module('TwitterMafia', ['ngRoute','ngResource', 'ngMessages', 'ui.router', 'ngAnimate', 'ui.bootstrap', 'ngCookies']);
+var TwitterMafia = angular.module('TwitterMafia', ['ngRoute','ngResource', 'ngMessages', 'ui.router', 'ngAnimate', 'ui.bootstrap', 'ngCookies', 'ngMaterial']);
 
 TwitterMafia.config(['$routeProvider', '$locationProvider', '$stateProvider', '$urlRouterProvider', '$httpProvider', function($routeProvider, $locationProvider, $stateProvider, $urlRouterProvider, $httpProvider){
   // $locationProvider.html5Mode(true);
@@ -17,7 +17,6 @@ TwitterMafia.config(['$routeProvider', '$locationProvider', '$stateProvider', '$
     controller: 'modalCtrl'
   })
   .when('/auth/twitter', {
-
   })
   .otherwise({
   templateUrl:'/views/404.html'
@@ -28,7 +27,21 @@ TwitterMafia.config(['$routeProvider', '$locationProvider', '$stateProvider', '$
 }]);
 
 TwitterMafia.run(['$rootScope', '$cookies', '$http', function($rootScope, $cookies, $http){
-  // $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken
+
+  $rootScope.isLoggedIn = function(){
+    $http.get('/authenticate')
+    .success(function(data){
+      console.log('userdata:', data)
+      if(data.authenticated === true){
+        $rootScope.loggedIn = true;
+        $rootScope.currentUser = data.user;
+      }else{
+        $rootScope.loggedIn = false
+      }
+    })
+  }
+  $rootScope.isLoggedIn();
+
 }])
 
 // TwitterMafia.run(['$rootScope', 'UserService', function($rootScope, UserService) {
