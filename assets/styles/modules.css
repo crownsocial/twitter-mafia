@@ -1,0 +1,122 @@
+.section-container ul {
+  padding-left: 0;
+  list-style-type: none;
+}
+
+.section-container ul li {
+  display: inline-block;
+  font-size: 1.2em;
+  margin: 0 5px;
+}
+
+.section-header-container > ul li {
+  padding: 5px 10px;
+  background-color: #eee;
+  border-radius: 2px;
+  box-shadow: inset 1px 1px 2px 1px #999;
+}
+
+.module h5 {
+  margin-bottom: 0;
+}
+
+.module ul {
+  margin-bottom: 10px;
+}
+
+.module ul li, h5 + p {
+  font-size: 0.8em;
+  margin: 0 2px;
+}
+
+.colour-violet {
+  color: rgba(220,20,220,1);
+}
+
+.colour-gray {
+  color: rgba(110,110,110,1);
+}
+
+.colour-green {
+color: rgba(80,200,80,1);
+}
+
+.colour-red {
+  color: #F7464A;
+}
+
+.colour-orange {
+  color: #FDB45C;
+}
+
+.colour-turquoise {
+  color: #46BFBD;
+}
+
+.module {
+  min-height: 360px;
+  border-radius: 2px;
+  padding-top: 5px;
+  margin-bottom: 10px;
+  box-shadow: 1px 1px 5px 2px #999;
+}
+
+.module-row {
+  margin: 5px;
+}
+
+.module h5 {
+  margin-top: 5px;
+}
+
+.submodule-wrapper {
+  padding: 5px;
+  text-align: left;
+}
+
+div[class*="submodule"] {
+  margin: 5px;
+  font-size: 1.1em;
+}
+
+#word-cloud {
+  cursor: default;
+}
+
+td {
+  font-size: 0.8em;
+}
+
+#map {
+  min-height: 280px;
+}
+
+.trend-module {
+  position: relative;
+  text-align: left;
+  vertical-align: top;
+  min-height: 96px;
+  border-radius: 2px;
+  margin: 2px 10px;
+  box-shadow: inset 1px 1px 2px 1px #999;
+  background-color: #eee;
+}
+
+.trend-module img {
+  float: left;
+  margin: 6px;
+  max-width: 84px;
+  max-height: 84px;
+  border-radius: 2px;
+  box-shadow: 1px 1px 2px 1px #999;
+}
+
+.trend-submodule-left {
+  float: left;
+  width: 150px;
+}
+
+.trend-submodule-right {
+  float: right;
+  width: 240px;
+}
