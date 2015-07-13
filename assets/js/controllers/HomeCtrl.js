@@ -67,7 +67,7 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
   $scope.login = function(provider, email, password){
     console.log('trying twitter auth')
     if (provider === 'twitter'){
-      location.href = '/auth/' + provider;
+      location.href = '/connect/' + provider;
     }
   }
 

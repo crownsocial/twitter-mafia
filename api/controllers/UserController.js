@@ -1,17 +1,5 @@
 // api/controllers/UserController.js
-
-var _ = require('lodash');
-var _super = require('sails-auth/api/controllers/UserController');
-
-_.merge(exports, _super);
-_.merge(exports, {
-
-/**
- * UserController
- *
- * @description :: Server-side logic for managing users
- * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
- */
+module.exports = {
 
   index: function(req, res){
     User.find().then(function(users) {
@@ -34,7 +22,4 @@ _.merge(exports, {
   //   User.create({email: req.params.email ...})
   // }
 
-
-
-
-});
+};
