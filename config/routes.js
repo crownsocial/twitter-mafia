@@ -49,11 +49,6 @@ module.exports.routes = {
   'get /auth/:provider/callback': 'AuthController.callback',
   'get /auth/:provider/:action': 'AuthController.callback',
 
-  // connect twitter
-
-  'get /connect/twitter': 'AuthController.authorize',
-  'get /connect/twitter/callback': 'AuthController.authorizecb',
-
   // user requests
   'get /user': 'UserController.index',
   'get /user/:id': 'UserController.retrieve',

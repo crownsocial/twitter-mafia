@@ -1,9 +1,6 @@
 var path     = require('path')
   , url      = require('url')
   , passport = require('passport');
-var host = process.env.NODE_ENV == 'production' ? 'twitter-mafia.herokuapp.com' : 'localhost:1337';
-var TwitterStrategy = require('passport-twitter').Strategy;
-
 
 /**
  * Passport Service
@@ -199,7 +196,8 @@ passport.endpoint = function (req, res) {
   // If a provider doesn't exist for this endpoint, send the user back to the
   // login page
   if (!strategies.hasOwnProperty(provider)) {
-    return res.redirect('/');
+    console.log('provider does not exist', provider)
+    return res.redirect('/login');
   }
 
   // Attach scope if it has been set in the config
@@ -374,31 +372,7 @@ passport.serializeUser(function (user, next) {
 });
 
 passport.deserializeUser(function (id, next) {
-  User.findUnique({id: new ObjectID(id)}, next);
+  User.findOne(id, next);
 });
-
-passport.use(new TwitterStrategy({
-    consumerKey: process.env.TWITTER_CONSUMER_KEY,
-    consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
-    callbackURL: "http://" + host + "/connect/twitter/callback",
-    passReqToCallback: true
-  },
-  function(req, token, tokenSecret, profile, done) {
-    console.log(token, tokenSecret, profile)
-    var user = req.user;
-    Passport.findOrCreate({ provider: 'twitter', tokens: token, accessToken: tokenSecret, user: req.user.id}, function(err, user) {
-      console.log(user)
-      if (err) { return done(err); }
-      if (user) { return done(null, user); }
-
-      // var user = new user();
-      // account.domain = 'twitter.com';
-      // account.uid = profile.id;
-      // var t = { kind: 'oauth', token: token, attributes: { tokenSecret: tokenSecret } };
-      // account.tokens.push(t);
-      // return done(null, account);
-    });
-  }
-));
 
 module.exports = passport;

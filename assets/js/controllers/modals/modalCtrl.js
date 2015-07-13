@@ -12,15 +12,12 @@ TwitterMafia.controller('modalCtrl', ['$scope', '$rootScope', '$http', '$modalIn
         $rootScope.currentUser = data;
         $modalInstance.close({user: $rootScope.currentUser})
         $rootScope.showLoginToast();
-        $location.path('/')
+        $rootScope.isLoggedIn();
       })
     }
     else if (provider === 'twitter'){
       console.log('trying to log in with twitter')
-      // $http.jsonp('/auth/twitter').success(function(tweeter){
-      //   console.log(tweeter)
-      // })
-      location.href = '/auth/' + provider;
+      location.href = '/auth/twitter/';
     }
 
   }
@@ -29,6 +26,8 @@ TwitterMafia.controller('modalCtrl', ['$scope', '$rootScope', '$http', '$modalIn
     console.log($scope.email, $scope.password)
     $http.post('/auth/local/register', {email: $scope.email, password:$scope.password}).success(function(user){
       console.log('user created', user)
+      $modalInstance.close();
+      $rootScope.isLoggedIn();
       $rootScope.showSignupToast();
     })
   }
