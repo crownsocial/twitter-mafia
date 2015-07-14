@@ -180,7 +180,13 @@ var AuthController = {
           })
         }else{
           console.log('send success object')
-          res.send({success: true, user: req.user.id})
+          Passport.findOne({user: req.user.id}).then(function(user){
+            User.findOne({id: req.user.id}).then(function(current){
+              req.session.user = current;
+              req.session.passport = user;
+              res.redirect('/')
+            })
+          })
         }
       });
     });
