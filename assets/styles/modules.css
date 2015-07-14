@@ -123,3 +123,37 @@ td {
   float: right;
   width: 240px;
 }
+
+.modal-body {
+  color: #333;
+  text-align: center;
+}
+
+.modal-body .form-group {
+  text-align: center;
+}
+
+.modal-body label {
+  display: inline-block;
+  font-size: 1.3em;
+  width: 32px;
+}
+
+.modal-body .form-control {
+  display: inline-block;
+  width: 400px;
+}
+
+.modal-body ul {
+  list-style-type: none;
+  padding-left: 0px;
+}
+
+.modal-body li {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+.modal-body button {
+  border-radius: 4px;
+}

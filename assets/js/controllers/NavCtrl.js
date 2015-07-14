@@ -30,6 +30,10 @@ TwitterMafia.controller('NavCtrl', ['$scope', '$modal', function($scope, $modal)
     })
   }
 
+  $scope.cancel = function() {
+    $modal.close();
+  }
+
   // $scope.logout = function(){
   //   UserService.logout(function(err, data){
   //     console.log('user logged out', err, data)
