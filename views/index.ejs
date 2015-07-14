@@ -32,7 +32,7 @@
           <a class="page-scroll" href="#cta">CTA</a>
         </li>
       </ul>
-      <ul ng-if="!$root.currentUser" class="nav navbar-nav navbar-right">
+      <ul ng-cloak ng-if="!$root.currentUser" class="nav navbar-nav navbar-right">
         <li>
           <a ng-click="showSignupModal($event)" href="#">Signup</a>
         </li>
@@ -43,7 +43,7 @@
           <a href="#"><i class="fa fa-cog"></i></a>
         </li>
       </ul>
-      <ul ng-if="$root.currentUser" class="nav navbar-nav navbar-right">
+      <ul ng-cloak ng-if="$root.currentUser" class="nav navbar-nav navbar-right">
         <li>
           <a href="#">Hello, {{$root.currentUser.email || $root.currentUser.username}}</a>
         </li>
