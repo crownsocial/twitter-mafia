@@ -48,14 +48,14 @@ module.exports.connections = {
     database: 'YOUR_MYSQL_DB'
   },
 
-  /***************************************************************************
+  **************************************************************************
   *                                                                          *
   * MongoDB is the leading NoSQL database.                                   *
   * http://en.wikipedia.org/wiki/MongoDB                                     *
   *                                                                          *
   * Run: npm install sails-mongo                                             *
   *                                                                          *
-  ***************************************************************************/
+  **************************************************************************
   mongoDbServer: {
     adapter: 'sails-mongo',
     host: 'localhost',
