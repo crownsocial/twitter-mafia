@@ -51,7 +51,7 @@ module.exports.routes = {
 
   // user requests
   'get /user': 'UserController.index',
-  'get /user/:id': 'UserController.retrieve',
+  'get /api/user/:id': 'UserController.retrieve',
   'post /user': 'UserController.create',
 
   "get *":{
