@@ -59,7 +59,7 @@
 </nav>
 
 <!-- Header -->
-<section id="header">
+<section id="header" ng-controller="HomeCtrl">
 
   <!-- Tab Bars -->
   <div>
@@ -81,7 +81,7 @@
               <div class="col-lg-10 col-lg-offset-1 section-header-container">
                 <h2>Content</h2>
                 <ul>
-                  <li><i class="fa fa-user"></i> Current follower count: <strong>539</strong></li>
+                  <li><i class="fa fa-user"></i> Current follower count: {{$scope.followerscount}}</li>
                   <li><i class="fa fa-clock-o"></i> Average time to respond: <strong>10s</strong></li>
                   <li><i class="fa fa-reply-all"></i> Mentions replied to: <strong>45%</strong></li>
                 </ul>
@@ -314,13 +314,16 @@
   </div>
 </section>
 
+
+<div class="container">
+  <ng-view ng-cloak></ng-view>
+</div>
+
 <!-- Footer -->
+
+
 <section id="footer">
   <div class="container text-center">
     <p>Copyright &copy; Crown Social 2015</p>
   </div>
 </section>
-
-<div class="container">
-  <ng-view ng-cloak></ng-view>
-</div>

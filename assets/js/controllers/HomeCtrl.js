@@ -47,7 +47,9 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
     console.log('get user ran')
     $http.get('/api/user/' + $rootScope.currentUser.id).success(function(user){
       console.log('get user success')
-      $scope.user = user
+      $scope.user = user.twitter_account
+      $scope.followerscount = parseInt($scope.user.followers_count);
+      console.log($scope.followerscount)
       console.log('user object:', $scope.user)
       console.log($scope.twitterPassports, $scope.user.passports)
       $scope.getTwitterAccounts = function() {
