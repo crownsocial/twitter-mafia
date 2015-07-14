@@ -1,36 +1,296 @@
-<nav class="navbar navbar-default" role="navigation" ng-controller="NavCtrl">
-  <!-- Brand and toggle get grouped for better mobile display -->
-  <div class="navbar-header">
-    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-      <span class="sr-only">Toggle navigation</span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-    </button>
-    <a class="navbar-brand" href="/">Twitter Mafia</a>
-  </div>
 
-  <!-- Collect the nav links, forms, and other content for toggling -->
-  <div class="collapse navbar-collapse navbar-ex1-collapse">
-    <ul ng-if="!$root.currentUser" class="nav navbar-nav navbar-right">
-      <li>
-        <a ng-click="showSignupModal($event)">signup</a>
-      </li>
-      <li>
-        <a ng-click="showLoginModal($event)">login</a>
-      </li>
-    </ul>
-    <ul ng-if="$root.currentUser" class="nav navbar-nav navbar-right">
-      <li>
-        <a class="waves-effect waves-light">hello {{$root.currentUser.email}} </a>
-      </li>
-      <li>
-        <a class="waves-effect waves-light" href="/logout">logout</a>
-      </li>
-    </ul>
-  </div><!-- /.navbar-collapse -->
+
+<!-- Navigation -->
+<nav class="navbar navbar-custom navbar-fixed-top" role="navigation" ng-controller="NavCtrl">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
+        <i class="fa fa-bars"></i>
+      </button>
+      <a class="navbar-brand page-scroll" href="#page-top">
+        Twitter Mafia
+      </a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse navbar-main-collapse">
+      <ul class="nav navbar-nav">
+        <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+        <li class="hidden">
+          <a href="#page-top"></a>
+        </li>
+        <li>
+          <a class="page-scroll" href="#content">Content</a>
+        </li>
+        <li>
+          <a class="page-scroll" href="#audience">Audience</a>
+        </li>
+        <li>
+          <a class="page-scroll" href="#trends">Trends</a>
+        </li>
+        <li>
+          <a class="page-scroll" href="#cta">CTA</a>
+        </li>
+      </ul>
+      <ul ng-if="!$root.currentUser" class="nav navbar-nav navbar-right">
+        <li>
+          <a ng-click="showSignupModal($event)" href="#">Signup</a>
+        </li>
+        <li>
+          <a ng-click="showLoginModal($event)" href="#">Login</a>
+        </li>
+        <li>
+          <a href="#"><i class="fa fa-cog"></i></a>
+        </li>
+      </ul>
+      <ul ng-if="$root.currentUser" class="nav navbar-nav navbar-right">
+        <li>
+          <a href="#">Hello, {{$root.currentUser.email}}</a>
+        </li>
+        <li>
+          <a href="/logout">Logout</a>
+        </li>
+        <li>
+          <a href="#"><i class="fa fa-cog"></i></a>
+        </li>
+      </ul>
+    </div>
+    <!-- /.navbar-collapse -->
+  </div>
+  <!-- /.container -->
 </nav>
 
+<!-- Header -->
+<section id="header">
+
+  <!-- Tab Bars -->
+  <div>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active"><a href="#microsoftdesign" aria-controls="microsoftdesign" role="tab" data-toggle="tab">@microsoftdesign</a></li>
+      <li role="presentation"><a href="#EMCcorp" aria-controls="EMCcorp" role="tab" data-toggle="tab">@EMCcorp</a></li>
+      <li role="presentation"><a href="#add-account" aria-controls="add-account" role="tab" data-toggle="tab"><i class="fa fa-plus"></i></a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="microsoftdesign">
+
+        <!-- Content Section -->
+        <section id="content">
+          <div class="container section-container">
+            <div class="row">
+              <div class="col-lg-10 col-lg-offset-1 section-header-container">
+                <h2>Content</h2>
+                <ul>
+                  <li><i class="fa fa-user"></i> Current follower count: <strong>539</strong></li>
+                  <li><i class="fa fa-clock-o"></i> Average time to respond: <strong>10s</strong></li>
+                  <li><i class="fa fa-reply-all"></i> Mentions replied to: <strong>45%</strong></li>
+                </ul>
+              </div>
+            </div>
+            <div class="row module-row">
+              <div class="col-sm-4 module-wrapper">
+                <div class="module">
+                  <h5>Overlay Chart</h5>
+                  <ul>
+                    <li><i class="fa fa-square gray-4"></i> total followers</li>
+                    <li><i class="fa fa-square gray-6"></i> engagements per post</li>
+                  </ul>
+                  <canvas width="320" height="280" id="overlay-chart"></canvas>
+                </div>
+              </div>
+              <div class="col-sm-4 module-wrapper">
+                <div class="module">
+                  <h5>Bar Chart</h5>
+                  <ul>
+                    <li><i class="fa fa-square gray-5"></i> total tweets</li>
+                  </ul>
+                  <canvas width="320" height="280" id="bar-chart"></canvas>
+                </div>
+              </div>
+              <div class="col-sm-4 module-wrapper">
+                <div class="module">
+                  <h5>Doughnut Chart</h5>
+                  <ul>
+                    <li><i class="fa fa-square gray-3"></i> replies</li>
+                    <li><i class="fa fa-square gray-5"></i> retweets</li>
+                    <li><i class="fa fa-square gray-4"></i> links</li>
+                    <li><i class="fa fa-square gray-6"></i> hashtags</li>
+                  </ul>
+                  <canvas width="320" height="280" id="doughnut-chart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Audience Section -->
+        <section id="audience">
+          <div class="container section-container">
+            <div class="row">
+              <div class="col-lg-10 col-lg-offset-1 section-header-container">
+                <h2>Audience</h2>
+              </div>
+            </div>
+            <div class="row module-row">
+              <div class="col-sm-4 module-wrapper">
+                <div class="module">
+                  <h5>Word Cloud</h5>
+                  <p>top words in follower bios</p>
+                  <div id="word-cloud"></div>
+                </div>
+              </div>
+              <div class="col-sm-4 module-wrapper">
+                <div class="module">
+                  <h5>Table</h5>
+                  <p>most frequently followed by followers</p>
+                  <div class="submodule-wrapper">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>Followers</th>
+                          <th>Number</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>@crownsocial</td>
+                          <td>34</td>
+                        </tr>
+                        <tr>
+                          <td>@zapan</td>
+                          <td>47</td>
+                        </tr>
+                        <tr>
+                          <td>@nnjashan</td>
+                          <td>23</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4 module-wrapper">
+                <div class="module">
+                  <h5>Map</h5>
+                  <p>heat map of follower locations</p>
+                  <div class="submodule-wrapper">
+                    <div id='map'></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Trends Section -->
+        <section id="trends">
+          <div class="container section-container">
+            <div class="row">
+              <div class="col-lg-10 col-lg-offset-1 section-header-container">
+                <h2>Trends</h2>
+              </div>
+            </div>
+            <div class="row module-row">
+              <div class="col-sm-6 module-wrapper">
+                <div class="module">
+                  <h5>Influencers</h5>
+                  <p>top post by each influencer</p>
+                  <div class="trend-module">
+                    <img src="img/wooly.jpg" alt="">
+                    <div class="trend-submodule-left">
+                      <a href="#">@zapan</a>
+                    </div>
+                    <div class="trend-submodule-right">
+                      <a href="#">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</a>
+                    </div>
+                  </div>
+                  <div class="trend-module">
+                    <img src="img/wooly.jpg" alt="">
+                    <div class="trend-submodule-left">
+                      <a href="#">@crownsocial</a>
+                    </div>
+                    <div class="trend-submodule-right">
+                      <a href="#">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</a>
+                    </div>
+                  </div>
+                  <div class="trend-module">
+                    <img src="img/wooly.jpg" alt="">
+                    <div class="trend-submodule-left">
+                      <a href="#">@nnjashan</a>
+                    </div>
+                    <div class="trend-submodule-right">
+                      <a href="#">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6 module-wrapper">
+                <div class="module">
+                  <h5>Hashtags</h5>
+                  <p>top hashtag usages</p>
+                  <div class="trend-module">
+                    <div class="trend-submodule-left">
+                      <a href="#">#socialmedia</a>
+                    </div>
+                    <div class="trend-submodule-right">
+                      <a href="#">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</a>
+                    </div>
+                  </div>
+                  <div class="trend-module">
+                    <div class="trend-submodule-left">
+                      <a href="#">#seattle</a>
+                    </div>
+                    <div class="trend-submodule-right">
+                      <a href="#">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</a>
+                    </div>
+                  </div>
+                  <div class="trend-module">
+                    <div class="trend-submodule-left">
+                      <a href="#">#generalassembly</a>
+                    </div>
+                    <div class="trend-submodule-right">
+                      <a href="#">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section id="cta">
+          <div class="container section-container">
+            <div class="row">
+              <div class="col-lg-10 col-lg-offset-1 section-header-container">
+                <h2>CTA</h2>
+              </div>
+            </div>
+            <div class="row module-row">
+              <div class="col-sm-12 module-wrapper">
+                <div class="module">
+                  <h5>Email Alert Settings</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+      <div role="tabpanel" class="tab-pane" id="EMCcorp"></div>
+      <div role="tabpanel" class="tab-pane" id="add-account"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<section id="footer">
+  <div class="container text-center">
+    <p>Copyright &copy; Crown Social 2015</p>
+  </div>
+</section>
 
 <div class="container">
   <ng-view ng-cloak></ng-view>

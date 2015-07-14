@@ -5,15 +5,18 @@
 
 .section-container ul li {
   display: inline-block;
-  font-size: 1.2em;
+  font-size: 1.5em;
   margin: 0 5px;
 }
 
 .section-header-container > ul li {
   padding: 5px 10px;
-  background-color: #eee;
-  border-radius: 2px;
-  box-shadow: inset 1px 1px 2px 1px #999;
+  background-color: rgb(216, 216, 216);
+  border-radius: 4px;
+}
+
+.module-wrapper + .module-wrapper {
+  border-left: 4px dotted rgb(186, 186, 186);
 }
 
 .module h5 {
@@ -29,36 +32,38 @@
   margin: 0 2px;
 }
 
-.colour-violet {
-  color: rgba(220,20,220,1);
+.gray-1 {
+  color: rgb(32, 32, 32);
 }
 
-.colour-gray {
-  color: rgba(110,110,110,1);
+.gray-2 {
+  color: rgb(64, 64, 64);
 }
 
-.colour-green {
-color: rgba(80,200,80,1);
+.gray-3 {
+  color: rgb(96, 96, 96);
 }
 
-.colour-red {
-  color: #F7464A;
+.gray-4 {
+  color: rgb(128, 128, 128);
 }
 
-.colour-orange {
-  color: #FDB45C;
+.gray-5 {
+  color: rgb(160, 160, 160);
 }
 
-.colour-turquoise {
-  color: #46BFBD;
+.gray-6 {
+  color: rgb(192, 192, 192);
+}
+
+.gray-7 {
+  color: rgb(224, 224, 224);
 }
 
 .module {
   min-height: 360px;
-  border-radius: 2px;
   padding-top: 5px;
   margin-bottom: 10px;
-  box-shadow: 1px 1px 5px 2px #999;
 }
 
 .module-row {
@@ -96,10 +101,9 @@ td {
   text-align: left;
   vertical-align: top;
   min-height: 96px;
-  border-radius: 2px;
   margin: 2px 10px;
-  box-shadow: inset 1px 1px 2px 1px #999;
-  background-color: #eee;
+  background-color: rgb(216, 216, 216);
+  border-radius: 4px;
 }
 
 .trend-module img {
@@ -107,8 +111,7 @@ td {
   margin: 6px;
   max-width: 84px;
   max-height: 84px;
-  border-radius: 2px;
-  box-shadow: 1px 1px 2px 1px #999;
+  border-radius: 4px;
 }
 
 .trend-submodule-left {

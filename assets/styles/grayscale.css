@@ -7,9 +7,9 @@
 body {
   width: 100%;
   height: 100%;
-  font-family: Lora,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
   color: #fff;
-  background-color: #000;
+  background-color: rgb(246, 246, 246);
   text-align: center;
 }
 
@@ -51,7 +51,7 @@ p {
 }
 
 a {
-  color: rgb(255, 99, 71);
+  color: rgb(228, 135, 27);
   -webkit-transition: all .2s ease-in-out;
   -moz-transition: all .2s ease-in-out;
   transition: all .2s ease-in-out;
@@ -60,7 +60,7 @@ a {
 a:hover,
 a:focus {
   text-decoration: none;
-  color: rgb(255, 129, 101);
+  color: rgb(258, 165, 57);
 }
 
 .navbar-custom {
@@ -102,7 +102,7 @@ a:focus {
 
 .navbar-custom .nav li a:hover {
   outline: 0;
-  color: rgba(255,255,255,.8);
+  color: rgb(228, 135, 27);
   background-color: transparent;
 }
 
@@ -138,7 +138,7 @@ a:focus {
   .navbar-custom.top-nav-collapse {
     padding: 0;
     border-bottom: 1px solid rgba(255,255,255,.3);
-    background: #bb9;
+    background: rgb(186, 186, 186);
   }
 }
 
@@ -192,26 +192,6 @@ ul.banner-social-buttons {
   margin: 0;
 }
 
-::-moz-selection {
-  text-shadow: none;
-  background: #fcfcfc;
-  background: rgba(255,255,255,.2);
-}
-
-::selection {
-  text-shadow: none;
-  background: #fcfcfc;
-  background: rgba(255,255,255,.2);
-}
-
-img::selection {
-  background: 0 0;
-}
-
-img::-moz-selection {
-  background: 0 0;
-}
-
 body {
   webkit-tap-highlight-color: rgba(255,255,255,.2);
 }
@@ -223,7 +203,7 @@ body {
 }
 
 .nav-tabs > li > a {
-  background-color: #fff;
+  background-color: rgb(246, 246, 246);
 }
 
 .nav-tabs > li > a {
@@ -235,12 +215,13 @@ body {
 }
 
 .nav-tabs > li > a:hover {
-  color: rgb(255, 129, 101);
+  color: rgb(228, 135, 27);
 }
 
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
-  color: rgb(255, 99, 71);
+  font-weight: bold;
   cursor: default;
+  background-color: rgb(246, 246, 246);
   border-bottom-color: transparent;
 }
 
@@ -257,12 +238,12 @@ section#footer {
   padding-bottom: 20px;
 }
 
-section:nth-child(odd), section:nth-child(even) .module {
+section:nth-child(odd) {
   color: #000;
-  background-color: #fff;
+  background-color: rgb(246, 246, 246);
 }
 
-section:nth-child(even), section:nth-child(odd) .module {
+section:nth-child(even) {
   color: #000;
-  background-color: #eeb;
+  background-color: rgb(216, 216, 216);
 }
