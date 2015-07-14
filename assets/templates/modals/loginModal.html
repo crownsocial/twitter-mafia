@@ -1,28 +1,23 @@
 <div class="modal-body">
-      <a href="/">
-        <img class="close-icon" src="/images/close-icon.png">
-      </a>
-      <p class="text header">Welcome back!</p>
-      <p class="text subheader">Log into your account in here</p>
+  <a href="/" ng-click="cancel()"><img class="close-icon" src="/images/close-icon.png"></a>
 
-    <form ng-submit="login(null, email, password)">
-      <div class="email-container clearfix">
-        <img class="email-icon" src="/images/email-icon.png">
-        <input type="email" class="email" placeholder="Email address" type="text" ng-model="email">
-      </div>
+  <form method="post" role="form" ng-submit="login(null, email, password)">
+    <legend>Login</legend>
 
-      <div class="password-container clearfix">
-        <img class="password-icon" src="/images/password-icon.png">
-        <input type="password" name="password" placeholder="Password" type="text" ng-model="password">
-      </div>
-
-      <input type="submit" class="login-btn" value="Log in">
-      <div class="clearfix"></div>
-    </form>
-
-    <hr>
-
-    <p class="text usersocial">Or</p>
-
-    <a class="sociallogin-btn sociallogin-twitter" ng-click="login('twitter')">Sign in with Twitter</a>
+    <div class="form-group">
+      <label for="email-form"><i class="fa fa-envelope"></i></label>
+      <input type="email" class="form-control" id="email-form" name="email" placeholder="Email address" ng-model="email">
+    </div>
+    <div class="form-group">
+      <label for="password-form"><i class="fa fa-lock"></i></label>
+      <input type="password" class="form-control" id="password-form" name="password" placeholder="Password" ng-model="password">
+    </div>
+    <div class="form-group">
+      <ul>
+        <li><button type="submit" class="btn btn-primary">Submit</button></li>
+        <li>or</li>
+        <li><button class="btn btn-info" ng-click="login('twitter')"><i class="fa fa-twitter" ></i> Login with Twitter</button></li>
+      </ul>
+    </div>
+  </form>
 </div>
