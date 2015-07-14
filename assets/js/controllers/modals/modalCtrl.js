@@ -32,6 +32,10 @@ TwitterMafia.controller('modalCtrl', ['$scope', '$rootScope', '$http', '$modalIn
     })
   }
 
+  $scope.cancel = function(){
+    $modalInstance.dismiss();
+  }
+
   // $scope.signup = function(){
   //   SignupService.signup($scope.email, $scope.password, function(err, data){
   //     if (err){

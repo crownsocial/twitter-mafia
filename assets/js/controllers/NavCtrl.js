@@ -1,4 +1,4 @@
-TwitterMafia.controller('NavCtrl', ['$scope', '$modal', function($scope, $modal){
+TwitterMafia.controller('NavCtrl', ['$scope', '$modal', '$location', 'smoothScroll', function($scope, $modal, $location, smoothScroll){
 
   console.log('nav controller loaded (frontend)')
 
@@ -34,6 +34,22 @@ TwitterMafia.controller('NavCtrl', ['$scope', '$modal', function($scope, $modal)
     $modal.close();
   }
 
+  $scope.scrollTo = function(elem) {
+    var element = document.getElementById(elem)
+
+    var options = {
+      duration: 700,
+      easing: 'easeInQuad',
+      offset: 120,
+      callbackBefore: function(element) {
+          console.log('about to scroll to element', element);
+      },
+      callbackAfter: function(element) {
+          console.log('scrolled to element', element);
+      }
+    }
+    smoothScroll(element, options)
+  }
   // $scope.logout = function(){
   //   UserService.logout(function(err, data){
   //     console.log('user logged out', err, data)

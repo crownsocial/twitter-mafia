@@ -15,6 +15,7 @@
     "tests"
   ],
   "dependencies": {
+    "angular": "latest",
     "jquery": "~2.x",
     "jquery-ui": "~1.x",
     "bootstrap": "~3.1.x",
