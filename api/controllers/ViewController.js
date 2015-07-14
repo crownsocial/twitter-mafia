@@ -13,11 +13,8 @@ module.exports = {
 
   get: function(req,res){
     if(req.session.authenticated === true){
-      User.findOne({user: req.user})
-      .exec(function(err, data){
-        user = data
-        res.send({authenticated: true, user: user})
-      })
+      console.log(req.session.user, req.session.passport)
+      res.send({authenticated: true, user: req.session.user, passport: req.session.passport})
     }else{
       res.send(false)
     }

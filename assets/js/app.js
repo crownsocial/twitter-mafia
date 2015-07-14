@@ -18,6 +18,10 @@ TwitterMafia.config(['$routeProvider', '$locationProvider', '$stateProvider', '$
   })
   .when('/auth/twitter', {
   })
+  .when('/auth/twitter/:callback', {
+    templateUrl: 'views/home.html',
+    controller: 'HomeCtrl'
+  })
   .otherwise({
   templateUrl:'/views/404.html'
   });
