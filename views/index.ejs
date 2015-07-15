@@ -43,7 +43,7 @@
       </ul>
       <ul ng-cloak ng-if="$root.currentUser" class="nav navbar-nav navbar-right">
         <li>
-          <a href="#">Hello, {{$root.currentUser.email || $root.currentUser.username}}</a>
+          <a href="#">Hello, {{$root.currentUser.email || $root.currentUser.username}} {{user.myUser.statuses_count}}</a>
         </li>
         <li>
           <a href="/logout">Logout</a>
@@ -74,238 +74,208 @@
     <div class="tab-content">
       <div role="tabpanel" class="tab-pane active" id="microsoftdesign">
 
-        <!-- Content Section -->
-        <section id="content">
-          <div class="container section-container">
-            <div class="row">
-              <div class="col-lg-10 col-lg-offset-1 section-header-container">
-                <h2>Content</h2>
-                <ul>
-                  <li><i class="fa fa-user"></i> Current follower count: {{$scope.followerscount}}</li>
-                  <li><i class="fa fa-clock-o"></i> Average time to respond: <strong>10s</strong></li>
-                  <li><i class="fa fa-reply-all"></i> Mentions replied to: <strong>45%</strong></li>
-                </ul>
-              </div>
-            </div>
-            <div class="row module-row">
-              <div class="col-sm-4 module-wrapper">
-                <div class="module">
-                  <h5>Overlay Chart</h5>
-                  <ul>
-                    <li><i class="fa fa-square gray-4"></i> total followers</li>
-                    <li><i class="fa fa-square gray-6"></i> engagements per post</li>
-                  </ul>
-                  <canvas width="320" height="280" id="overlay-chart"></canvas>
-                </div>
-              </div>
-              <div class="col-sm-4 module-wrapper">
-                <div class="module">
-                  <h5>Bar Chart</h5>
-                  <ul>
-                    <li><i class="fa fa-square gray-5"></i> total tweets</li>
-                  </ul>
-                  <canvas width="320" height="280" id="bar-chart"></canvas>
-                </div>
-              </div>
-              <div class="col-sm-4 module-wrapper">
-                <div class="module">
-                  <h5>Doughnut Chart</h5>
-                  <ul>
-                    <li><i class="fa fa-square gray-3"></i> replies</li>
-                    <li><i class="fa fa-square gray-5"></i> retweets</li>
-                    <li><i class="fa fa-square gray-4"></i> links</li>
-                    <li><i class="fa fa-square gray-6"></i> hashtags</li>
-                  </ul>
-                  <canvas width="320" height="280" id="doughnut-chart"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+<!-- Content Section -->
+<section id="content">
+  <div class="container section-container">
+    <div class="row">
+      <div class="col-lg-10 col-lg-offset-1 section-header-container">
+        <h2>Content</h2>
+        <ul>
+          <li><i class="fa fa-user"></i> Current follower count: {{user.myUser.followers_count}}</li>
+          <li><i class="fa fa-clock-o"></i> Average time to respond: <strong>10s</strong></li>
+          <li><i class="fa fa-reply-all"></i> Mentions replied to: <strong>45%</strong></li>
+        </ul>
+      </div>
+    </div>
+    <div class="row module-row">
+      <div class="col-sm-4 module-wrapper">
+        <div class="module">
+          <h5>Overlay Chart</h5>
+          <ul>
+            <li><i class="fa fa-square gray-4"></i> total followers</li>
+            <li><i class="fa fa-square gray-6"></i> engagements per post</li>
+          </ul>
+          <canvas width="320" height="280" id="overlay-chart"></canvas>
+        </div>
+      </div>
+      <div class="col-sm-4 module-wrapper">
+        <div class="module">
+          <h5>Bar Chart</h5>
+          <ul>
+            <li><i class="fa fa-square gray-5"></i> total tweets</li>
+          </ul>
+          <canvas width="320" height="280" id="bar-chart"></canvas>
+        </div>
+      </div>
+      <div class="col-sm-4 module-wrapper">
+        <div class="module">
+          <h5>Doughnut Chart</h5>
+          <ul>
+            <li><i class="fa fa-square gray-3"></i> replies</li>
+            <li><i class="fa fa-square gray-5"></i> retweets</li>
+            <li><i class="fa fa-square gray-4"></i> links</li>
+            <li><i class="fa fa-square gray-6"></i> hashtags</li>
+          </ul>
+          <canvas width="320" height="280" id="doughnut-chart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <!-- Audience Section -->
-        <section id="audience">
-          <div class="container section-container">
-            <div class="row">
-              <div class="col-lg-10 col-lg-offset-1 section-header-container">
-                <h2>Audience</h2>
-              </div>
-            </div>
-            <div class="row module-row">
-              <div class="col-sm-4 module-wrapper">
-                <div class="module">
-                  <h5>Table</h5>
-                  <p>top words in follower bios</p>
-                  <div class="submodule-wrapper">
-                    <table class="table table-hover">
-                      <thead>
-                        <tr>
-                          <th>Words</th>
-                          <th>Number</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>social</td>
-                          <td>89</td>
-                        </tr>
-                        <tr>
-                          <td>media</td>
-                          <td>76</td>
-                        </tr>
-                        <tr>
-                          <td>microsoft</td>
-                          <td>55</td>
-                        </tr>
-                        <tr>
-                          <td>emc</td>
-                          <td>43</td>
-                        </tr>
-                        <tr>
-                          <td>tech</td>
-                          <td>27</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-4 module-wrapper">
-                <div class="module">
-                  <h5>Table</h5>
-                  <p>most frequently followed by followers</p>
-                  <div class="submodule-wrapper">
-                    <table class="table table-hover">
-                      <thead>
-                        <tr>
-                          <th>Followers</th>
-                          <th>Number</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>@crownsocial</td>
-                          <td>34</td>
-                        </tr>
-                        <tr>
-                          <td>@zapan</td>
-                          <td>47</td>
-                        </tr>
-                        <tr>
-                          <td>@nnjashan</td>
-                          <td>23</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-4 module-wrapper">
-                <div class="module">
-                  <h5>Map</h5>
-                  <p>heat map of follower locations</p>
-                  <div class="submodule-wrapper">
-                    <div id='map'></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+<!-- Audience Section -->
+<section id="audience">
+  <div class="container section-container">
+    <div class="row">
+      <div class="col-lg-10 col-lg-offset-1 section-header-container">
+        <h2>Audience</h2>
+      </div>
+    </div>
+    <div class="row module-row">
+      <div class="col-sm-4 module-wrapper">
+        <div class="module">
+          <h5>Table</h5>
+          <p>top words in follower bios</p>
+          <div class="submodule-wrapper">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Words</th>
+                  <th>Number</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>social</td>
+                  <td>89</td>
+                </tr>
+                <tr>
+                  <td>media</td>
+                  <td>76</td>
+                </tr>
+                <tr>
+                  <td>microsoft</td>
+                  <td>55</td>
+                </tr>
+                <tr>
+                  <td>emc</td>
+                  <td>43</td>
+                </tr>
+                <tr>
+                  <td>tech</td>
+                  <td>27</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-        </section>
+        </div>
+      </div>
+      <div class="col-sm-4 module-wrapper">
+        <div class="module">
+          <h5>Table</h5>
+          <p>most frequently followed by followers</p>
+          <div class="submodule-wrapper">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Followers</th>
+                  <th>Number</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>@crownsocial</td>
+                  <td>34</td>
+                </tr>
+                <tr>
+                  <td>@zapan</td>
+                  <td>47</td>
+                </tr>
+                <tr>
+                  <td>@nnjashan</td>
+                  <td>23</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4 module-wrapper">
+        <div class="module">
+          <h5>Map</h5>
+          <p>heat map of follower locations</p>
+          <div class="submodule-wrapper">
+            <div id='map'></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <!-- Trends Section -->
-        <section id="trends">
-          <div class="container section-container">
-            <div class="row">
-              <div class="col-lg-10 col-lg-offset-1 section-header-container">
-                <h2>Trends</h2>
+<!-- Trends Section -->
+<section id="trends">
+  <div class="container section-container">
+    <div class="row">
+      <div class="col-lg-10 col-lg-offset-1 section-header-container">
+        <h2>Trends</h2>
+      </div>
+    </div>
+    <div class="row module-row">
+      <div class="col-sm-6 module-wrapper">
+        <div class="module">
+          <h5>Influencers</h5>
+          <p>top post by each influencer</p>
+            <div class="trend-module" ng-repeat="influencer in user.influencers">
+              <img ng-src="influencer.profile_image_url.replace('_normal.', '.')" alt="">
+              <div class="trend-submodule-left">
+                <a href="#">{{influencer.screen_name}}</a>
+              </div>
+              <div class="trend-submodule-right">
+                  <a href="#" ng-if="influencer.status">{{influencer.status.text}}</a>
               </div>
             </div>
-            <div class="row module-row">
-              <div class="col-sm-6 module-wrapper">
-                <div class="module">
-                  <h5>Influencers</h5>
-                  <p>top post by each influencer</p>
-                  <div class="trend-module">
-                    <img src="img/wooly.jpg" alt="">
-                    <div class="trend-submodule-left">
-                      <a href="#">@zapan</a>
-                    </div>
-                    <div class="trend-submodule-right">
-                      <a href="#">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</a>
-                    </div>
-                  </div>
-                  <div class="trend-module">
-                    <img src="img/wooly.jpg" alt="">
-                    <div class="trend-submodule-left">
-                      <a href="#">@crownsocial</a>
-                    </div>
-                    <div class="trend-submodule-right">
-                      <a href="#">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</a>
-                    </div>
-                  </div>
-                  <div class="trend-module">
-                    <img src="img/wooly.jpg" alt="">
-                    <div class="trend-submodule-left">
-                      <a href="#">@nnjashan</a>
-                    </div>
-                    <div class="trend-submodule-right">
-                      <a href="#">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</a>
-                    </div>
-                  </div>
-                </div>
+        </div>
+      </div>
+      <div class="col-sm-6 module-wrapper">
+        <div class="module">
+          <h5>Hashtags</h5>
+          <p>top hashtag usages</p>
+          <% for (var i = 0; i < 3; i++) { %>
+            <div class="trend-module">
+              <img alt="">
+              <div class="trend-submodule-left">
+                <a href="#">#{{user.hashtags[i]}}</a>
               </div>
-              <div class="col-sm-6 module-wrapper">
-                <div class="module">
-                  <h5>Hashtags</h5>
-                  <p>top hashtag usages</p>
-                  <div class="trend-module">
-                    <div class="trend-submodule-left">
-                      <a href="#">#socialmedia</a>
-                    </div>
-                    <div class="trend-submodule-right">
-                      <a href="#">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</a>
-                    </div>
-                  </div>
-                  <div class="trend-module">
-                    <div class="trend-submodule-left">
-                      <a href="#">#seattle</a>
-                    </div>
-                    <div class="trend-submodule-right">
-                      <a href="#">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</a>
-                    </div>
-                  </div>
-                  <div class="trend-module">
-                    <div class="trend-submodule-left">
-                      <a href="#">#generalassembly</a>
-                    </div>
-                    <div class="trend-submodule-right">
-                      <a href="#">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</a>
-                    </div>
-                  </div>
-                </div>
+              <div class="trend-submodule-right">
+                <a href="#">{{user.hashtagPosts[i][0].text}}</a>
               </div>
             </div>
-          </div>
-        </section>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <!-- CTA Section -->
-        <section id="cta">
-          <div class="container section-container">
-            <div class="row">
-              <div class="col-lg-10 col-lg-offset-1 section-header-container">
-                <h2>CTA</h2>
-              </div>
-            </div>
-            <div class="row module-row">
-              <div class="col-sm-12 module-wrapper">
-                <div class="module">
-                  <h5>Email Alert Settings</h5>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+<!-- CTA Section -->
+<section id="cta">
+  <div class="container section-container">
+    <div class="row">
+      <div class="col-lg-10 col-lg-offset-1 section-header-container">
+        <h2>CTA</h2>
+      </div>
+    </div>
+    <div class="row module-row">
+      <div class="col-sm-12 module-wrapper">
+        <div class="module">
+          <h5>Email Alert Settings</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
       </div>
       <div role="tabpanel" class="tab-pane" id="EMCcorp"></div>
