@@ -1,6 +1,6 @@
 TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast', function($scope, $rootScope, $http, $mdToast){
 
-  console.log('home controller loaded (frontend)')
+  console.log('home controller loaded (frontend)', $rootScope.currentUser)
 
   $scope.loaded = false;
 

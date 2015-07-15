@@ -5,9 +5,8 @@ TwitterMafia.config(['$routeProvider', '$locationProvider', '$stateProvider', '$
 
   $routeProvider
   .when('/', {
-    templateUrl: 'views/home.html'
-    // controller: 'HomeCtrl',
-    // resolve: HomeCtrl.resolve
+    templateUrl: 'views/home.html',
+    controller: 'HomeCtrl'
   })
   .when('/login', {
     templateUrl: 'templates/modals/loginModal.html',

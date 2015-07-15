@@ -164,7 +164,6 @@ module.exports = {
     }
 
     User.findOne({id: req.params.id}).then(function(user){
-      // getMyUser({}, username, res)
       console.log('user retrieve function', user)
       Passport.find({user: user.id}).then(function(passport){
         getMyUser({}, user.username, res)
