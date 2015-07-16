@@ -1,6 +1,6 @@
-var TwitterMafia = angular.module('TwitterMafia', ['ngRoute','ngResource', 'ngMessages', 'ui.router', 'ngAnimate', 'ui.bootstrap', 'ngCookies', 'ngMaterial', 'smoothScroll']);
+var TwitterMafia = angular.module('TwitterMafia', ['ngRoute','ngResource', 'ngMessages', 'ui.router', 'ngAnimate', 'ui.bootstrap', 'ngCookies', 'ngMaterial', 'smoothScroll', 'chart.js']);
 
-TwitterMafia.config(['$routeProvider', '$locationProvider', '$stateProvider', '$urlRouterProvider', '$httpProvider', function($routeProvider, $locationProvider, $stateProvider, $urlRouterProvider, $httpProvider){
+TwitterMafia.config(['$routeProvider', '$locationProvider', '$stateProvider', '$urlRouterProvider', '$httpProvider', 'ChartJsProvider', function($routeProvider, $locationProvider, $stateProvider, $urlRouterProvider, $httpProvider, ChartJsProvider){
   // $locationProvider.html5Mode(true);
 
   $routeProvider
@@ -28,6 +28,16 @@ TwitterMafia.config(['$routeProvider', '$locationProvider', '$stateProvider', '$
 
   // $httpProvider.defaults.useXDomain = true;
   // $httpProvider.defaults.withCredentials = true;
+
+  ChartJsProvider.setOptions({
+    colours: ['#FF5252', '#FF8A80'],
+    responsive: false
+  });
+  // Configure all line charts
+  ChartJsProvider.setOptions('Line', {
+    datasetFill: false
+  });
+
 }]);
 
 TwitterMafia.run(['$rootScope', '$cookies', '$http', function($rootScope, $cookies, $http){

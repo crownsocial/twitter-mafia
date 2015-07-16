@@ -34,9 +34,21 @@ module.exports = {
       entities.forEach(function(entity) {
 
         // check http://momentjs.com/docs/#/displaying/
-        entity.created_at = moment(entity.created_at).format("ddd MMM Do YY, h:mma");
+        entity.created_at = moment(Date.parse(entity.created_at)).format("ddd MMM Do YY, h:mma");
       });
     }
+
+    /*******************************************************************************
+    * FIXME: This "callback hell" should be made completely asynchronous at some point.
+    * For now, we're just trying to get it to work.
+    *
+    * This gets, in sequence: myUser, myFollowers, myTweets, influencers, hashtagPosts.
+    * For now, we're just passing these objects to the HTML directly.
+    *
+    * The desired data will eventually be stored in the database,
+    * and then only the desired data from the database will be passed to the HTML.
+    *
+    *******************************************************************************/
 
     var getHashtagPosts = function(object, hashtags, res) {
       var hashtagPosts = [];
@@ -44,7 +56,8 @@ module.exports = {
         client.get("search/tweets", {q: "#" + hashtag}, function(error, data, response) {
           if (!error) {
             formatDates(data.statuses);
-            hashtagPosts.push(data.statuses);
+            var topTweet = markTopTweets(data.statuses);
+            hashtagPosts.push({hashtag: hashtag, tweets: data.statuses, topTweet: topTweet});
             callback();
           } else {
             callback(error);
@@ -52,8 +65,18 @@ module.exports = {
         })
       }, function(error) {
         if (!error) {
-          object.hashtags = hashtags;
+          console.log("get hashtag posts successful.");
+
           object.hashtagPosts = hashtagPosts;
+
+          console.log("my user top tweet", object.myTopTweet.id_str, object.myTopTweet.text);
+          console.log("influencer 1 top tweet", object.influencers[0].topTweet.user.screen_name, object.influencers[0].topTweet.text);
+          console.log("influencer 2 top tweet", object.influencers[1].topTweet.user.screen_name, object.influencers[1].topTweet.text);
+          console.log("influencer 3 top tweet", object.influencers[2].topTweet.user.screen_name, object.influencers[2].topTweet.text);
+          console.log(object.hashtagPosts[0].hashtag, "top tweet", object.hashtagPosts[0].topTweet.user.screen_name, object.hashtagPosts[0].topTweet.text);
+          console.log(object.hashtagPosts[1].hashtag, "top tweet", object.hashtagPosts[1].topTweet.user.screen_name, object.hashtagPosts[1].topTweet.text);
+          console.log(object.hashtagPosts[2].hashtag, "top tweet", object.hashtagPosts[2].topTweet.user.screen_name, object.hashtagPosts[2].topTweet.text);
+
           res.send(object);
         } else {
           res.send("Error:", error);
@@ -66,9 +89,29 @@ module.exports = {
       client.get("users/lookup", params, function(error, data, response) {
         if (!error) {
           formatDates(data);
+          var hashtags = ["socialmedia", 'microsoft', 'inclusivedesign']
           object.influencers = data;
-          var hashtags = ['socialmedia', 'inclusivedesign', 'technology'];
-          getHashtagPosts(object, hashtags, res);
+          async.each(data, function(influencer, callback) {
+            var params = {user_id: influencer.id_str, count: 200, include_rts: 1};
+            client.get("statuses/user_timeline", params, function(error, data, response) {
+              if (!error) {
+                formatDates(data);
+                influencer.tweets = data;
+                influencer.topTweet = markTopTweets(data);
+                callback();
+              } else {
+                callback(error);
+              }
+            })
+          }, function(error) {
+            if (!error) {
+              console.log("get influencers successful.");
+              getHashtagPosts(object, hashtags, res);
+            } else {
+              res.send("Error:", error);
+            }
+          });
+
         } else {
           res.send("Error:", error);
         }
@@ -76,12 +119,14 @@ module.exports = {
     }
 
     var getMyTweets = function(object, user_id, res) {
-      var params = {user_id: user_id, count: 200, include_rts: 1}
-      client.get("statuses/user_timeline", params, function (error, data, response) {
+      var params = {user_id: user_id, count: 200, include_rts: 1};
+      client.get("statuses/user_timeline", params, function(error, data, response) {
         if (!error) {
+          var influencers = ['MicrosoftDesign', 'EMC', 'Zapan']
+          console.log("get tweets successful.");
           formatDates(data);
           object.myTweets = data;
-          var influencers = ['MicrosoftDesign', 'EMCcorp', 'CrownSocial'];
+          object.myTopTweet = markTopTweets(data);
           getInfluencers(object, influencers, res);
         } else {
           res.send("Error:", error);
@@ -90,7 +135,7 @@ module.exports = {
     }
 
     var getMyFollowers = function(object, user_id, res) {
-      var params = {user_id: user_id}
+      var params = {user_id: user_id};
       client.get("followers/ids", params, function (error, data, response) {
         if (!error) {
 
@@ -125,6 +170,7 @@ module.exports = {
           }, function(error) {
 
             if (!error) {
+              console.log("get followers successful.");
 
               // add remaining ids
               var remainingIds = ids.map(function(id) {
@@ -155,12 +201,38 @@ module.exports = {
       client.get("users/show", params, function(error, data, response) {
 
         if (!error) {
+          console.log("get user successful.");
           object.myUser = data;
           getMyFollowers(object, data.id_str, res);
         } else {
           res.send("Error:", error);
         }
       });
+    }
+
+    /*******************************************************************************
+    * helper method for marking top tweet(s) with highest retweet + favourite count
+    * with a top_tweet: true property
+    *
+    * return first top tweet
+    *******************************************************************************/
+
+    var markTopTweets = function(tweets) {
+      var topCount = 0;
+      var topIndices = [];
+      tweets.forEach(function(tweet, index) {
+        var thisCount = tweet.retweet_count + tweet.favorite_count;
+        if (thisCount > topCount) {
+          topCount = thisCount;
+          topIndices = [index];
+        } else if (thisCount == topCount) {
+          topIndices.push(index);
+        }
+      });
+      topIndices.forEach(function(topIndex) {
+        tweets[topIndex].top_tweet = true;
+      })
+      return tweets[topIndices[0]];
     }
 
     User.findOne({id: req.params.id}).then(function(user){
