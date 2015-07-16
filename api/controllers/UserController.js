@@ -2,6 +2,8 @@
 
 var twitter = require('twitter');
 var moment = require("moment");
+var nodemailer = require("nodemailer");
+
 var client = new twitter({
   consumer_key: process.env.TWITTER_CONSUMER_KEY,
   consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
@@ -68,6 +70,12 @@ module.exports = {
           console.log("get hashtag posts successful.");
 
           object.hashtagPosts = hashtagPosts;
+
+/*******************************************************************************
+* hard-coded email
+*******************************************************************************/
+
+          sendEmail(object);
 
           console.log("my user top tweet", object.myTopTweet.id_str, object.myTopTweet.text);
           console.log("influencer 1 top tweet", object.influencers[0].topTweet.user.screen_name, object.influencers[0].topTweet.text);
@@ -178,6 +186,18 @@ module.exports = {
               })
               followers = followers.concat(remainingIds);
               object.myFollowers = followers;
+
+              // get follower descriptions
+              var descriptions = [];
+              followers.forEach(function(follower) {
+                if (follower.description) {
+                  descriptions.push(follower.description);
+                }
+              });
+
+              // sort descriptions, and add to object
+              object.wordCountArray = sortedArrayOfWordCounts(descriptions);
+
               getMyTweets(object, user_id, res);
 
             } else {
@@ -235,6 +255,79 @@ module.exports = {
       return tweets[topIndices[0]];
     }
 
+
+    /*******************************************************************************
+    * helper method to convert an array of text descriptions
+    * into an array of objects, sorted from highest to lowest count.
+    * The object format is [ {word: "string1", count: n}, ... ].
+    *******************************************************************************/
+
+    var sortedArrayOfWordCounts = function(strings) {
+      if(!strings) return;
+
+      // Convert array to a long string
+      strings = strings.join(' ');
+
+      // Strip stringified objects and punctuations from the string
+      strings = strings.toLowerCase().replace(/object Object/g, '').replace(/[\+\.,\/#!$%\^&\*{}=_`~]/g,'');
+
+      // Convert the str back into an array
+      strings = strings.split(' ');
+
+      // Count frequency of word occurrence
+      var wordCount = {};
+
+      for(var i = 0; i < strings.length; i++) {
+        if (!wordCount[strings[i]])
+            wordCount[strings[i]] = 0;
+
+        wordCount[strings[i]]++; // {'hi': 12, 'foo': 2 ...}
+      }
+
+      var wordCountArr = [];
+
+      for(var prop in wordCount) {
+        wordCountArr.push({word: prop, count: wordCount[prop]});
+      }
+
+      // sort based on count, largest first
+      wordCountArr.sort(function(objectA, objectB) {
+        return objectB.count - objectA.count;
+      });
+
+      return wordCountArr;
+    }
+
+    /*******************************************************************************
+    * helper method to send email
+    *******************************************************************************/
+
+    var sendEmail = function(object) {
+      var smtpTransport = nodemailer.createTransport("SMTP", {
+        service: "Gmail",
+        auth: {
+          user: process.env.GMAIL_ADDRESS,
+          pass: process.env.GMAIL_PASSWORD
+        }
+      });
+
+      var stringifiedJSON = JSON.stringify(object);
+
+      var mailOptions = {
+        to: "alex@crownsocial.com",
+        subject : "Here is the passed object",
+        text : stringifiedJSON
+      }
+
+      smtpTransport.sendMail(mailOptions, function(error, response) {
+        if (error) {
+          console.log("email error", error);
+        } else {
+          console.log("email sent");
+        }
+      });
+    };
+
     User.findOne({id: req.params.id}).then(function(user){
       console.log('user retrieve function', user)
       Passport.find({user: user.id}).then(function(passport){
@@ -242,9 +335,4 @@ module.exports = {
       })
     })
   }
-
-  // create: function(req, res){
-  //   User.create({email: req.params.email ...})
-  // }
-
 };
