@@ -21,7 +21,8 @@
     "bootstrap": "~3.1.x",
     "fontawesome": "~4.x",
     "underscore": "~1.x",
-    "moment": "~2.x"
+    "moment": "~2.x",
+    "angular-chart.js": "~0.7.2"
   },
   "resolutions": {
     "jquery": "~2.x",

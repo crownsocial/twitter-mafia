@@ -1,0 +1,216 @@
+<!-- Header -->
+<section id="header">
+
+  <!-- Tab Bars -->
+  <div>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active"><a href="#microsoftdesign" aria-controls="microsoftdesign" role="tab" data-toggle="tab">@microsoftdesign</a></li>
+      <li role="presentation"><a href="#EMCcorp" aria-controls="EMCcorp" role="tab" data-toggle="tab">@EMCcorp</a></li>
+      <li role="presentation"><a href="#add-account" aria-controls="add-account" role="tab" data-toggle="tab"><i class="fa fa-plus"></i></a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="microsoftdesign">
+
+<!-- Content Section -->
+<section id="content">
+  <div class="container section-container">
+    <div class="row">
+      <div class="col-lg-10 col-lg-offset-1 section-header-container">
+        <h2>Content</h2>
+        <ul>
+          <li><i class="fa fa-user"></i> Current follower count: {{user.myUser.followers_count}}</li>
+          <li><i class="fa fa-clock-o"></i> Average time to respond: <strong>10s</strong></li>
+          <li><i class="fa fa-reply-all"></i> Mentions replied to: <strong>45%</strong></li>
+        </ul>
+      </div>
+    </div>
+    <div class="row module-row">
+      <div class="col-sm-4 module-wrapper">
+        <div class="module">
+          <h5>Overlay Chart</h5>
+          <canvas id="line" class="chart chart-line" data="lineData"
+            labels="lineLabels" legend="true" series="lineSeries"
+            click="onClick" options="lineOptions">
+          </canvas>
+        </div>
+      </div>
+      <div class="col-sm-4 module-wrapper">
+        <div class="module">
+          <h5>Bar Chart</h5>
+          <canvas id="bar" class="chart chart-bar" data="barData"
+            labels="barLabels" series="barSeries"></canvas>
+        </div>
+      </div>
+      <div class="col-sm-4 module-wrapper">
+        <div class="module">
+          <h5>Doughnut Chart</h5>
+          <canvas id="doughnut" class="chart chart-doughnut" data="donutData"
+            labels="donutLabels"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Audience Section -->
+<section id="audience">
+  <div class="container section-container">
+    <div class="row">
+      <div class="col-lg-10 col-lg-offset-1 section-header-container">
+        <h2>Audience</h2>
+      </div>
+    </div>
+    <div class="row module-row">
+      <div class="col-sm-4 module-wrapper">
+        <div class="module">
+          <h5>Table</h5>
+          <p>top words in follower bios</p>
+          <div class="submodule-wrapper">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Words</th>
+                  <th>Number</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>social</td>
+                  <td>89</td>
+                </tr>
+                <tr>
+                  <td>media</td>
+                  <td>76</td>
+                </tr>
+                <tr>
+                  <td>microsoft</td>
+                  <td>55</td>
+                </tr>
+                <tr>
+                  <td>emc</td>
+                  <td>43</td>
+                </tr>
+                <tr>
+                  <td>tech</td>
+                  <td>27</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4 module-wrapper">
+        <div class="module">
+          <h5>Table</h5>
+          <p>most frequently followed by followers</p>
+          <div class="submodule-wrapper">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Followers</th>
+                  <th>Number</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>@crownsocial</td>
+                  <td>34</td>
+                </tr>
+                <tr>
+                  <td>@zapan</td>
+                  <td>47</td>
+                </tr>
+                <tr>
+                  <td>@nnjashan</td>
+                  <td>23</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4 module-wrapper">
+        <div class="module">
+          <h5>Map</h5>
+          <p>heat map of follower locations</p>
+          <div class="submodule-wrapper">
+            <div id='map'></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Trends Section -->
+<section id="trends">
+  <div class="container section-container">
+    <div class="row">
+      <div class="col-lg-10 col-lg-offset-1 section-header-container">
+        <h2>Trends</h2>
+      </div>
+    </div>
+    <div class="row module-row">
+      <div class="col-sm-6 module-wrapper">
+        <div class="module">
+          <h5>Influencers</h5>
+          <p>top post by each influencer</p>
+            <div class="trend-module" ng-repeat="influencer in user.influencers">
+              <img ng-src="{{influencer.profile_image_url.replace('_normal.', '.')}}" alt="">
+              <div class="trend-submodule-left">
+                <a href="#">@{{influencer.screen_name}}</a>
+              </div>
+              <div class="trend-submodule-right">
+                  <a href="#" ng-if="influencer.status">{{influencer.status.text}}</a>
+              </div>
+            </div>
+        </div>
+      </div>
+      <div class="col-sm-6 module-wrapper">
+        <div class="module">
+          <h5>Hashtags</h5>
+          <p>top hashtag usages</p>
+            <div class="trend-module" ng-repeat="hashtagPost in user.hashtagPosts">
+              <img alt="">
+              <div class="trend-submodule-left">
+                <a href="#">#{{hashtagPost.hashtag}}</a>
+                <a href="#">@{{ hashtagPost.topTweet.user.screen_name}}</a>
+              </div>
+              <div class="trend-submodule-right">
+                <a href="#">{{hashtagPost.topTweet.text}}</a>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section id="cta">
+  <div class="container section-container">
+    <div class="row">
+      <div class="col-lg-10 col-lg-offset-1 section-header-container">
+        <h2>CTA</h2>
+      </div>
+    </div>
+    <div class="row module-row">
+      <div class="col-sm-12 module-wrapper">
+        <div class="module">
+          <h5>Email Alert Settings</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+      </div>
+      <div role="tabpanel" class="tab-pane" id="EMCcorp"></div>
+      <div role="tabpanel" class="tab-pane" id="add-account"></div>
+    </div>
+  </div>
+</section>
