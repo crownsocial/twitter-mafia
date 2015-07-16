@@ -157,3 +157,12 @@ td {
 .modal-body button {
   border-radius: 4px;
 }
+
+.close-icon {
+    display: block;
+    float: right;
+    width: 32px;
+    height: auto;
+    margin: 5px 5px 0 0;
+    overflow: hidden;
+}
