@@ -5,7 +5,7 @@
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
         <i class="fa fa-bars"></i>
       </button>
-      <a class="navbar-brand page-scroll" href="#page-top">
+      <a class="navbar-brand page-scroll" ng-click="scrollTo('page-top')">
         Twitter Mafia
       </a>
     </div>
@@ -15,19 +15,19 @@
       <ul class="nav navbar-nav">
         <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
         <li class="hidden">
-          <a href="#page-top"></a>
+          <a id="page-top"></a>
         </li>
         <li>
-          <a href="#" ng-click="scrollTo('content')">Content</a>
+          <a ng-click="scrollTo('content')">Content</a>
         </li>
         <li>
-          <a href="#" ng-click="scrollTo('audience')">Audience</a>
+          <a ng-click="scrollTo('audience')">Audience</a>
         </li>
         <li>
-          <a href="#" ng-click="scrollTo('trends')">Trends</a>
+          <a ng-click="scrollTo('trends')">Trends</a>
         </li>
         <li>
-          <a href="#" ng-click="scrollTo('cta')">CTA</a>
+          <a ng-click="scrollTo('cta')">CTA</a>
         </li>
       </ul>
       <ul ng-cloak ng-if="!$root.currentUser" class="nav navbar-nav navbar-right">
