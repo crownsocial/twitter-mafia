@@ -36,7 +36,8 @@ module.exports = {
       entities.forEach(function(entity) {
 
         // check http://momentjs.com/docs/#/displaying/
-        entity.created_at = moment(Date.parse(entity.created_at)).format("ddd MMM Do YY, h:mma");
+        entity.created_at = moment(Date.parse(entity.created_at)).format("D, M, YY, HHH, ddd");
+        console.log(entity.created_at)
       });
     }
 
