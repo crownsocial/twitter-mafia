@@ -3,6 +3,7 @@
 var twitter = require('twitter');
 var moment = require("moment");
 var nodemailer = require("nodemailer");
+var CronJob = require('cron').CronJob;
 
 var client = new twitter({
   consumer_key: process.env.TWITTER_CONSUMER_KEY,
@@ -28,18 +29,6 @@ module.exports = {
 
   retrieve: function(req, res) {
 
-    var formatDates = function(entities) {
-      if (!Array.isArray(entities)) {
-        entities = [entities];
-      }
-
-      entities.forEach(function(entity) {
-
-        // check http://momentjs.com/docs/#/displaying/
-        entity.created_at = moment(Date.parse(entity.created_at)).format("ddd MMM Do YY, h:mma");
-      });
-    }
-
     /*******************************************************************************
     * FIXME: This "callback hell" should be made completely asynchronous at some point.
     * For now, we're just trying to get it to work.
@@ -49,7 +38,6 @@ module.exports = {
     *
     * The desired data will eventually be stored in the database,
     * and then only the desired data from the database will be passed to the HTML.
-    *
     *******************************************************************************/
 
     var getHashtagPosts = function(object, hashtags, res) {
@@ -71,11 +59,12 @@ module.exports = {
 
           object.hashtagPosts = hashtagPosts;
 
-/*******************************************************************************
-* hard-coded email
-*******************************************************************************/
+          /*******************************************************************************
+          * Hard-coded call to send email for testing purposes
+          * Delete at any time
+          *******************************************************************************/
 
-          sendEmail(object);
+          sendEmail("alex@crownsocial.com", "Passing the object", JSON.stringify(object));
 
           console.log("my user top tweet", object.myTopTweet.id_str, object.myTopTweet.text);
           console.log("influencer 1 top tweet", object.influencers[0].topTweet.user.screen_name, object.influencers[0].topTweet.text);
@@ -231,6 +220,22 @@ module.exports = {
     }
 
     /*******************************************************************************
+    * helper method for formatting dates
+    *******************************************************************************/
+
+    var formatDates = function(entities) {
+      if (!Array.isArray(entities)) {
+        entities = [entities];
+      }
+
+      entities.forEach(function(entity) {
+
+        // check http://momentjs.com/docs/#/displaying/
+        entity.created_at = moment(Date.parse(entity.created_at)).format("ddd MMM Do YY, h:mma");
+      });
+    }
+
+    /*******************************************************************************
     * helper method for marking top tweet(s) with highest retweet + favourite count
     * with a top_tweet: true property
     *
@@ -299,10 +304,10 @@ module.exports = {
     }
 
     /*******************************************************************************
-    * helper method to send email
+    * helper method for sending email through Gmail
     *******************************************************************************/
 
-    var sendEmail = function(object) {
+    var sendEmail = function(email_to, subject, content, callback) {
       var smtpTransport = nodemailer.createTransport("SMTP", {
         service: "Gmail",
         auth: {
@@ -311,22 +316,50 @@ module.exports = {
         }
       });
 
-      var stringifiedJSON = JSON.stringify(object);
-
       var mailOptions = {
-        to: "alex@crownsocial.com",
-        subject : "Here is the passed object",
-        text : stringifiedJSON
+        to: email_to,
+        subject: subject,
+        text: content
       }
 
       smtpTransport.sendMail(mailOptions, function(error, response) {
-        if (error) {
-          console.log("email error", error);
-        } else {
-          console.log("email sent");
+        if (callback) {
+          callback(error, response);
         }
       });
-    };
+    }
+
+    /*******************************************************************************
+    * Testing methods for cron jobs
+    * Delete at any time
+    *******************************************************************************/
+
+    // logs a message every five seconds
+    new CronJob('*/5 * * * * *', function() {
+      console.log(new Date(), 'You will see this message every 5 seconds.');
+    }, null, true, 'America/Los_Angeles');
+
+    // logs a message every minute
+    new CronJob('00 * * * * *', function() {
+      console.log(new Date(), 'You will see this message every minute.');
+    }, null, true, 'America/Los_Angeles');
+
+    // every ten seconds, this will make an API call and then email the result
+    new CronJob('*/10 * * * * *', function() {
+        client.get("users/show", {screen_name: "alexthephallus"}, function(error, data, response) {
+        if (!error) {
+
+          formatDates(data);
+          sendEmail("alex@crownsocial.com", "Cron job message", "You should get this every ten seconds: " + JSON.stringify(data));
+        } else {
+          console.log("Error:", error);
+        }
+      });
+    }, null, true, 'America/Los_Angeles');
+
+    /*******************************************************************************
+    * Alex comment
+    *******************************************************************************/
 
     User.findOne({id: req.params.id}).then(function(user){
       console.log('user retrieve function', user)

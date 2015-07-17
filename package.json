@@ -9,6 +9,7 @@
     "bcryptjs": "^2.2.0",
     "body-parser": "^1.13.2",
     "connect-mongo": "^0.7.x",
+    "cron": "^1.0.9",
     "ejs": "~0.8.4",
     "geocoder": "^0.2.2",
     "grunt": "0.4.2",
