@@ -34,8 +34,6 @@
     "passport-local": "^1.0.0",
     "passport-twitter": "^1.0.3",
     "rc": "~0.5.0",
-    "react": "^0.13.3",
-    "react-tap-event-plugin": "^0.1.7",
     "sails": "~0.11.x",
     "sails-disk": "~0.10.x",
     "sails-generate-auth": "^0.3.1",
