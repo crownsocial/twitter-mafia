@@ -138,22 +138,25 @@ module.exports = {
           var influencers = ['MicrosoftDesign', 'EMC', 'Zapan']
           console.log("get tweets successful.");
           formatDates(data);
-          data.forEach(function(tweet){
-            var timestamp = tweet.created_at.split(',');
-            var day = timestamp[0].replace(' ', '');
-            var month = timestamp[1].replace(' ', '');
-            var year = timestamp[2].replace(' ', '');
+          async.eachSeries(data, function(tweet, callback){
+            console.log(tweet.created_at)
+            var timestamp = tweet.created_at.replace(' ', '').split(',');
             TweetCollection.findOrCreate(
               {twitter_account: object.myTwitterAccount.id},
-              {day: day, month: month, year: year, twitter_account: object.myTwitterAccount})
+              {day: timestamp[0], month: timestamp[1], year: timestamp[2], twitter_account: object.myTwitterAccount, tweets: []})
             .exec(function(err, tweetCol){
               console.log('after find or create:', tweetCol)
               if (tweetCol){
                 Tweet.findOrCreate({tweet_id: tweet.id}, {tweet_id: tweet.id, text: tweet.text, retweet_count: tweet.retweet_count, favorite_count: tweet.favorite_count, entities: tweet.entities, tweet: tweetCol}).exec(function(err, addedTweet){
+                  tweetCol.tweets.unshift(addedTweet)
                   console.log('tweet added:', addedTweet)
+                  callback()
                 })
               }
             })
+          }, function(err){
+            if (err) {console.log(err)}
+            console.log('end of async db call reached')
           })
           object.myTweets = data;
           object.myTopTweet = markTopTweets(data);
