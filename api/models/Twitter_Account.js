@@ -46,7 +46,7 @@ module.exports = {
     },
     // assocations below -- all self explanatory. refer to other models by calling the name (collection) and stating a reference (via).
     tweets: {
-      collection: 'Tweet',
+      collection: 'TweetCollection',
       via: 'twitter_account'
     },
     favorites: {

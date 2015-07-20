@@ -4,6 +4,7 @@ var twitter = require('twitter');
 var moment = require("moment");
 var nodemailer = require("nodemailer");
 var CronJob = require('cron').CronJob;
+var async = require('async')
 
 var client = new twitter({
   consumer_key: process.env.TWITTER_CONSUMER_KEY,
@@ -137,6 +138,23 @@ module.exports = {
           var influencers = ['MicrosoftDesign', 'EMC', 'Zapan']
           console.log("get tweets successful.");
           formatDates(data);
+          data.forEach(function(tweet){
+            var timestamp = tweet.created_at.split(',');
+            var day = timestamp[0].replace(' ', '');
+            var month = timestamp[1].replace(' ', '');
+            var year = timestamp[2].replace(' ', '');
+            TweetCollection.findOrCreate(
+              {twitter_account: object.myTwitterAccount.id},
+              {day: day, month: month, year: year, twitter_account: object.myTwitterAccount})
+            .exec(function(err, tweetCol){
+              console.log('after find or create:', tweetCol)
+              if (tweetCol){
+                Tweet.findOrCreate({tweet_id: tweet.id}, {tweet_id: tweet.id, text: tweet.text, retweet_count: tweet.retweet_count, favorite_count: tweet.favorite_count, entities: tweet.entities, tweet: tweetCol}).exec(function(err, addedTweet){
+                  console.log('tweet added:', addedTweet)
+                })
+              }
+            })
+          })
           object.myTweets = data;
           object.myTopTweet = markTopTweets(data);
           getInfluencers(object, influencers, res);
@@ -215,7 +233,7 @@ module.exports = {
       });
     }
 
-    var getMyUser = function(object, username, res) {
+    var getMyUser = function(object, username, req, res) {
       var params;
       if (isNaN(parseInt(username))) {
         params = {screen_name: username};
@@ -227,6 +245,10 @@ module.exports = {
         if (!error) {
           console.log("get user successful.");
           object.myUser = data;
+          Twitter_Account.findOrCreate({twitter_id: data.id}, {twitter_id: data.id, name: data.name, screen_name: data.screen_name, description: data.description, followers_count: data.followers_count, friends_count: data.friends_count, verified: data.verified, profile_image: data.profile_image_url, latest_status: data.status, url: data.url, user: req.session.user}, function(err, twitterAcc){
+            console.log('twitter account stored into database', twitterAcc)
+            object.myTwitterAccount = twitterAcc;
+          })
           getMyFollowers(object, data.id_str, res);
         } else {
           res.send("Error:", error);
@@ -246,7 +268,7 @@ module.exports = {
       entities.forEach(function(entity) {
 
         // check http://momentjs.com/docs/#/displaying/
-        entity.created_at = moment(Date.parse(entity.created_at)).format("ddd MMM Do YY, h:mma");
+        entity.created_at = moment(Date.parse(entity.created_at)).format("D, M, YY, HHH, ddd");
       });
     }
 
@@ -262,6 +284,7 @@ module.exports = {
       var topIndices = [];
       tweets.forEach(function(tweet, index) {
         var thisCount = tweet.retweet_count + tweet.favorite_count;
+        tweet.engagements = thisCount;
         if (thisCount > topCount) {
           topCount = thisCount;
           topIndices = [index];
@@ -351,12 +374,12 @@ module.exports = {
 
     // logs a message every five seconds
     new CronJob('*/5 * * * * *', function() {
-      console.log(new Date(), 'You will see this message every 5 seconds.');
+      // console.log(new Date(), 'You will see this message every 5 seconds.');
     }, null, true, 'America/Los_Angeles');
 
     // logs a message every minute
     new CronJob('00 * * * * *', function() {
-      console.log(new Date(), 'You will see this message every minute.');
+      // console.log(new Date(), 'You will see this message every minute.');
     }, null, true, 'America/Los_Angeles');
 
     // every ten seconds, this will make an API call and then email the result
@@ -379,7 +402,7 @@ module.exports = {
     User.findOne({id: req.params.id}).then(function(user){
       console.log('user retrieve function', user)
       Passport.find({user: user.id}).then(function(passport){
-        getMyUser({}, user.username, res)
+        getMyUser({}, user.username, req, res)
       })
     })
   }
