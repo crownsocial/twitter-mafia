@@ -52,6 +52,8 @@ module.exports.routes = {
   // user requests
   'get /user': 'UserController.index',
   'get /api/user/:id': 'UserController.retrieve',
+  'get /api/user/:id/update': 'UserController.update',
+  'post /api/user/:id/influencers': 'UserController.updateInfluencers',
   'post /user': 'UserController.create',
 
   "get *":{

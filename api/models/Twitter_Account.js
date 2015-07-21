@@ -1,10 +1,11 @@
 module.exports = {
 
   attributes: {
-    date: {
-      type: 'string'
+    twitter_id: {
+      type: 'string',
+      unique: true
     },
-    user_id: {
+    date: {
       type: 'string'
     },
     screen_name: {
@@ -17,12 +18,6 @@ module.exports = {
       type: 'string'
     },
     location: {
-      type: 'string'
-    },
-    user_id: {
-      type: 'string'
-    },
-    user_id: {
       type: 'string'
     },
     verified: {
@@ -45,7 +40,7 @@ module.exports = {
       type: 'integer'
     },
     // assocations below -- all self explanatory. refer to other models by calling the name (collection) and stating a reference (via).
-    tweets: {
+    tweetCollections: {
       collection: 'TweetCollection',
       via: 'twitter_account'
     },
@@ -59,6 +54,14 @@ module.exports = {
     },
     friends: {
       collection: 'Friend',
+      via: 'twitter_account'
+    },
+    influencers: {
+      collection: 'Influencer',
+      via: 'twitter_account'
+    },
+    hashtags: {
+      collection: 'Hashtag',
       via: 'twitter_account'
     },
     user: {

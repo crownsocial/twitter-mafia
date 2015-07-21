@@ -4,7 +4,8 @@ var twitter = require('twitter');
 var moment = require("moment");
 var nodemailer = require("nodemailer");
 var CronJob = require('cron').CronJob;
-var async = require('async')
+// var async = require('async')
+var _ = require('lodash')
 
 var client = new twitter({
   consumer_key: process.env.TWITTER_CONSUMER_KEY,
@@ -28,7 +29,75 @@ module.exports = {
     });
   },
 
+  updateInfluencers: function(req, res) {
+    var influencers = req.body.influencers;
+    console.log(influencers)
+    Twitter_Account.find({user: req.session.user.id}).populate('influencers').exec(function(err, twitterAcc){
+      console.log(twitterAcc)
+
+      // {influencers: influencers}).populate('influencers').exec(function(err, twitterAcc){
+      twitterAcc.influencers = influencers
+      // twitterAcc.influencers.forEach(function(influencer) {
+      //   influencer.twitter_account = twitterAcc.id
+      //   influencer[0].save(function(err){console.log(err)})
+      // })
+      res.send({influencers: twitterAcc.influencers})
+    })
+  },
+
   retrieve: function(req, res) {
+    console.log('inside of user retrieve function', req.session.user)
+    async.auto({
+      twitterAccount: function(callback){
+        Twitter_Account.find({user: req.session.user.id}).populate('tweetCollections').exec(function(err, user){
+          console.log('first cb:',user)
+          callback(null, user[0])
+        });
+      },
+      collectionTweets: ['twitterAccount', function(callback, twitterAccount){
+        console.log('second cb:',twitterAccount)
+        async.map(twitterAccount.twitterAccount.tweetCollections, function(tweetCollection, innercb){
+          TweetCollection.find({id: tweetCollection.id}).populate('tweets').exec(function(err, data){
+            console.log('inner cb:', data)
+            innercb(null, data[0]);
+          });
+        }, function(err, results){
+          callback(null, results)
+        })
+      }],
+    }, function(err, result) {
+      // console.log('err is:', err)
+      // console.log('results: ', result)
+      res.send(result)
+    })
+    // Twitter_Account.findOne({user: req.session.user.id}).populate('tweetCollections')
+    // .then(function(twitterAcc) {
+    //   var tweets = TweetCollection.find({
+    //     tweets: _.pluck(twitterAcc.tweetCollections, 'tweets')
+    //   })
+    //   .then(function(tweets){
+    //     console.log('retrieved tweets:', tweets)
+    //     return tweets;
+    //   });
+    //   console.log('retrieved tweets (after promise) :', tweets)
+    //   return [twitterAcc, tweets]
+    // })
+    // .spread(function(twitterAcc, tweets) {
+    //   var tweets = _.indexBy(tweets, 'tweet_id');
+    //   twitterAcc.tweetCollections = _.map(twitterAcc.tweetCollections, function(collection){
+    //     collection.tweets = tweets[twitterAcc.tweetCollections];
+    //     return collection;
+    //   })
+    //   res.json(twitterAcc)
+    // })
+    // .catch(function(err){
+    //   if (err) {
+    //     return res.send(err)
+    //   }
+    // })
+  },
+
+  update: function(req, res) {
 
 
     // var formatDates = function(entities) {
@@ -105,7 +174,7 @@ module.exports = {
           var hashtags = ["socialmedia", 'microsoft', 'inclusivedesign']
           object.influencers = data;
           async.each(data, function(influencer, callback) {
-            var params = {user_id: influencer.id_str, count: 200, include_rts: 1};
+            var params = {user_id: influencer.id_str, count: 10, include_rts: 1};
             client.get("statuses/user_timeline", params, function(error, data, response) {
               if (!error) {
                 formatDates(data);
@@ -132,22 +201,26 @@ module.exports = {
     }
 
     var getMyTweets = function(object, user_id, res) {
-      var params = {user_id: user_id, count: 200, include_rts: 1};
+      object.myTweets = [];
+      var params = {user_id: user_id, count: 10, include_rts: 0};
       client.get("statuses/user_timeline", params, function(error, data, response) {
         if (!error) {
-          var influencers = ['MicrosoftDesign', 'EMC', 'Zapan']
+          // var influencers = ['MicrosoftDesign', 'EMC', 'Zapan']
           console.log("get tweets successful.");
           formatDates(data);
           async.eachSeries(data, function(tweet, callback){
-            console.log(tweet.created_at)
-            var timestamp = tweet.created_at.replace(' ', '').split(',');
+            console.log(tweet.date)
+            var timestamp = tweet.date.replace(' ', '').split(',');
             TweetCollection.findOrCreate(
-              {twitter_account: object.myTwitterAccount.id},
+              {month: timestamp[1], year: timestamp[2], twitter_account: object.myTwitterAccount.id},
               {day: timestamp[0], month: timestamp[1], year: timestamp[2], twitter_account: object.myTwitterAccount, tweets: []})
+            .populate('tweets')
             .exec(function(err, tweetCol){
               console.log('after find or create:', tweetCol)
               if (tweetCol){
-                Tweet.findOrCreate({tweet_id: tweet.id}, {tweet_id: tweet.id, text: tweet.text, retweet_count: tweet.retweet_count, favorite_count: tweet.favorite_count, entities: tweet.entities, tweet: tweetCol}).exec(function(err, addedTweet){
+                object.myTweets.unshift(tweetCol);
+                // object.myTwitterAccount.tweetCollections.unshift(tweetCol)
+                Tweet.findOrCreate({tweet_id: tweet.id}, {tweet_id: tweet.id, date: tweet.date, text: tweet.text, retweet_count: tweet.retweet_count, favorite_count: tweet.favorite_count, entities: tweet.entities, tweetCollection: tweetCol.id}).exec(function(err, addedTweet){
                   tweetCol.tweets.unshift(addedTweet)
                   console.log('tweet added:', addedTweet)
                   callback()
@@ -158,7 +231,6 @@ module.exports = {
             if (err) {console.log(err)}
             console.log('end of async db call reached')
           })
-          object.myTweets = data;
           object.myTopTweet = markTopTweets(data);
           getInfluencers(object, influencers, res);
         } else {
@@ -248,7 +320,21 @@ module.exports = {
         if (!error) {
           console.log("get user successful.");
           object.myUser = data;
-          Twitter_Account.findOrCreate({twitter_id: data.id}, {twitter_id: data.id, name: data.name, screen_name: data.screen_name, description: data.description, followers_count: data.followers_count, friends_count: data.friends_count, verified: data.verified, profile_image: data.profile_image_url, latest_status: data.status, url: data.url, user: req.session.user}, function(err, twitterAcc){
+          Twitter_Account.findOrCreate(
+            {twitter_id: data.id}, {
+              twitter_id: data.id,
+              name: data.name,
+              screen_name: data.screen_name,
+              description: data.description,
+              followers_count: data.followers_count,
+              friends_count: data.friends_count,
+              verified: data.verified,
+              profile_image: data.profile_image_url,
+              latest_status: data.status,
+              url: data.url,
+              user: req.session.user.id
+            })
+          .populate('tweetCollections').exec(function(err, twitterAcc){
             console.log('twitter account stored into database', twitterAcc)
             object.myTwitterAccount = twitterAcc;
           })
@@ -271,7 +357,7 @@ module.exports = {
       entities.forEach(function(entity) {
 
         // check http://momentjs.com/docs/#/displaying/
-        entity.created_at = moment(Date.parse(entity.created_at)).format("D, M, YY, HHH, ddd");
+        entity.date = moment(Date.parse(entity.created_at)).format("D, M, YY, HHH, ddd");
       });
     }
 
@@ -280,6 +366,73 @@ module.exports = {
     * with a top_tweet: true property
     *
     * return first top tweet
+
+          // $scope.overlayData = {
+      //     $scope.lineLabels: ["July"],
+      //     $scope.lineDatasets: [
+      //       {
+      //         label: "total followers",
+      //         type: "bar",
+      //         fillColor: "rgba(128, 128, 128, 0.4)",
+      //         strokeColor: "rgba(128, 128, 128, 0.8)",
+      //         highlightFill: "rgba(228, 135, 27, 0.75)",
+      //         highlightStroke: "rgba(228, 135, 27, 1)",
+      //         data: [$scope.user.myUser.followers_count]
+      //       },
+      //       {
+      //         label: "engagements per post",
+      //         type: "line",
+      //         fillColor: "rgba(192, 192, 192,0.4)",
+      //         strokeColor: "rgba(192, 192, 192,0.8)",
+      //         pointColor: "rgba(192, 192, 192,1)",
+      //         pointStrokeColor: "#fff",
+      //         pointHighlightFill: "#fff",
+      //         pointHighlightStroke: "rgba(110,110,110,1)",
+      //         data: [65]
+      //       }
+      //     ]
+      //   };
+
+      //   $scope.barData = {
+      //     labels: ["July"],
+      //     datasets: [
+      //       {
+      //         label: "total tweets",
+      //         fillColor: "rgba(160, 160, 160, 0.4)",
+      //         strokeColor: "rgba(160, 160, 160, 0.8)",
+      //         highlightFill: "rgba(228, 135, 27, 0.75)",
+      //         highlightStroke: "rgba(228, 135, 27, 1)",
+      //         data: [$scope.user.myUser.statuses_count]
+      //       }
+      //     ]
+      //   };
+
+      //   $scope.doughnutData = [
+      //     {
+      //       value: 125,
+      //       color:"rgb(96, 96, 96)",
+      //       highlight: "rgb(228, 135, 27)",
+      //       label: "replies"
+      //     },
+      //     {
+      //       value: 100,
+      //       color: "rgb(160, 160, 160)",
+      //       highlight: "rgb(228, 135, 27)",
+      //       label: "retweets"
+      //     },
+      //     {
+      //       value: 50,
+      //       color: "rgb(128, 128, 128)",
+      //       highlight: "rgb(228, 135, 27)",
+      //       label: "links"
+      //     },
+      //     {
+      //       value: 75,
+      //       color: "rgb(192, 192, 192)",
+      //       highlight: "rgb(228, 135, 27)",
+      //       label: "hashtags"
+      //     }
+      //   ]
     *******************************************************************************/
 
     var markTopTweets = function(tweets) {

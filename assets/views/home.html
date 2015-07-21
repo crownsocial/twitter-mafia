@@ -21,7 +21,7 @@
       <div class="col-lg-10 col-lg-offset-1 section-header-container">
         <h2>Content</h2>
         <ul>
-          <li><i class="fa fa-user"></i> Current follower count: {{user.myUser.followers_count}}</li>
+          <li><i class="fa fa-user"></i> Current follower count: <strong> {{user.twitterAccount.followers_count}}</strong></li>
           <li><i class="fa fa-clock-o"></i> Average time to respond: <strong>10s</strong></li>
           <li><i class="fa fa-reply-all"></i> Mentions replied to: <strong>45%</strong></li>
         </ul>
@@ -158,7 +158,7 @@
         <div class="module">
           <h5>Influencers</h5>
           <p>top post by each influencer</p>
-            <div class="trend-module" ng-repeat="influencer in user.influencers">
+            <div class="trend-module" ng-repeat="influencer in user.influencers" ng-show="influencerInitialised">
               <img ng-src="{{influencer.profile_image_url.replace('_normal.', '.')}}" alt="">
               <div class="trend-submodule-left">
                 <a href="#">@{{influencer.screen_name}}</a>
@@ -167,13 +167,18 @@
                   <a href="#" ng-if="influencer.status">{{influencer.status.text}}</a>
               </div>
             </div>
+            <div class="trend-module" ng-hide="influencerInitialised">
+              <form ng-submit="saveInfluencers()">
+                <input type="text" ng-repeat="influencer in influencers" ng-model="influencer.screen_name">
+              </form>
+            </div>
         </div>
       </div>
       <div class="col-sm-6 module-wrapper">
         <div class="module">
           <h5>Hashtags</h5>
           <p>top hashtag usages</p>
-            <div class="trend-module" ng-repeat="hashtagPost in user.hashtagPosts">
+            <div class="trend-module" ng-repeat="hashtagPost in user.hashtagPosts" ng-if="user.hashtagPosts.length > 0">
               <img alt="">
               <div class="trend-submodule-left">
                 <a href="#">#{{hashtagPost.hashtag}}</a>

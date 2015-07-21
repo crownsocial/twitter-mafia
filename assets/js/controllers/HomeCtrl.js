@@ -70,88 +70,48 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
     );
   }
 
-  $scope.getUser = function() {
+  // function that hits a route which fires off API call to update user.
+  $scope.updateUser = function() {
+    // $scope.twitterPassports = [];
+    console.log('get user ran')
+    $http.get('/api/user/' + $rootScope.currentUser.id + '/update/').success(function(user){
+      console.log('get user success', user)
+      $scope.user = user;
+      $scope.loaded = true;
+    })
+  }
+
+  // function that hits a route to retrieve locally stored User info.
+  $scope.retrieveUser = function() {
     // $scope.twitterPassports = [];
     console.log('get user ran')
     $http.get('/api/user/' + $rootScope.currentUser.id).success(function(user){
       console.log('get user success', user)
       $scope.user = user;
       $scope.loaded = true;
-
-      console.log('statuses count:', $scope.user.myUser.statuses_count);
-      console.log('followers count:', $scope.user.myUser.followers_count);
-
-      // $scope.overlayData = {
-      //     $scope.lineLabels: ["July"],
-      //     $scope.lineDatasets: [
-      //       {
-      //         label: "total followers",
-      //         type: "bar",
-      //         fillColor: "rgba(128, 128, 128, 0.4)",
-      //         strokeColor: "rgba(128, 128, 128, 0.8)",
-      //         highlightFill: "rgba(228, 135, 27, 0.75)",
-      //         highlightStroke: "rgba(228, 135, 27, 1)",
-      //         data: [$scope.user.myUser.followers_count]
-      //       },
-      //       {
-      //         label: "engagements per post",
-      //         type: "line",
-      //         fillColor: "rgba(192, 192, 192,0.4)",
-      //         strokeColor: "rgba(192, 192, 192,0.8)",
-      //         pointColor: "rgba(192, 192, 192,1)",
-      //         pointStrokeColor: "#fff",
-      //         pointHighlightFill: "#fff",
-      //         pointHighlightStroke: "rgba(110,110,110,1)",
-      //         data: [65]
-      //       }
-      //     ]
-      //   };
-
-      //   $scope.barData = {
-      //     labels: ["July"],
-      //     datasets: [
-      //       {
-      //         label: "total tweets",
-      //         fillColor: "rgba(160, 160, 160, 0.4)",
-      //         strokeColor: "rgba(160, 160, 160, 0.8)",
-      //         highlightFill: "rgba(228, 135, 27, 0.75)",
-      //         highlightStroke: "rgba(228, 135, 27, 1)",
-      //         data: [$scope.user.myUser.statuses_count]
-      //       }
-      //     ]
-      //   };
-
-      //   $scope.doughnutData = [
-      //     {
-      //       value: 125,
-      //       color:"rgb(96, 96, 96)",
-      //       highlight: "rgb(228, 135, 27)",
-      //       label: "replies"
-      //     },
-      //     {
-      //       value: 100,
-      //       color: "rgb(160, 160, 160)",
-      //       highlight: "rgb(228, 135, 27)",
-      //       label: "retweets"
-      //     },
-      //     {
-      //       value: 50,
-      //       color: "rgb(128, 128, 128)",
-      //       highlight: "rgb(228, 135, 27)",
-      //       label: "links"
-      //     },
-      //     {
-      //       value: 75,
-      //       color: "rgb(192, 192, 192)",
-      //       highlight: "rgb(228, 135, 27)",
-      //       label: "hashtags"
-      //     }
-      //   ]
     })
   }
 
+  $scope.saveInfluencers = function() {
+    console.log($scope.influencers);
+    $http.post('/api/user/' + $rootScope.currentUser.id + '/influencers', {influencers: $scope.influencers}).success(function(influencers) {
+      console.log('user influencers updated', influencers)
+      $scope.influencers = influencers
+      $scope.influencerInitialised = true;
+    })
+  }
+
+  if (!$rootScope.currentUser.influencers) {
+    console.log('no influencers')
+    $scope.influencerInitialised = false;
+    $scope.influencers = [{screen_name: null}, {screen_name: null}, {screen_name: null}]
+  }else if (!$rootScope.currentUser.hashtagPosts) {
+    $scope.hashtagPosts;
+  }
+
   if($rootScope.currentUser){
-    $scope.getUser();
+    // $scope.updateUser();
+    $scope.retrieveUser();
   }
 
   L.mapbox.accessToken = 'pk.eyJ1IjoiYmVubmV0dHNsaW4iLCJhIjoiYzU0V200YyJ9._G57JU3841MTuFULQD9pVg';
