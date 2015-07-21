@@ -45,24 +45,31 @@
 		
 * ### chart 2
 	* total created tweets per month
+	
 * ### chart 3
 	* engagements breakdown (average engagement for all posts dependant on type, i.e. did that post contain a link, image, trending hashtag?)
 	
 ## audience:
+
 * ### top words
 	* top words in follower bios. function is already written for this, but as of now brings back trash words, e.g. 'i', 'the' etc.
+	
 * ### most frequently followed by followers
 	* pull data from Follower -> Friend (nested)
+	
 * ### heatmap of followers
 	* a bit tricky because most people don't include location info.
 	
 ## trends:
+
 * ### influencers
 	* displays top post by each influencer (max 3 influencers, chosen by user)
+	
 * ### hashtags
 	* displays top tweet of tracked hashtags (max 3 hashtags, chosen by user)
 	
 ## email alert settings
+
 * users will eventually be able to receive emails if:
 	* their tweets receive an abnormal number (lower or higher) of engagements than usual. 
 		* plan: will create a function that will take cumulative number of engagements, map it to a graph of standard deviation, and any tweet that is an outlier will trigger email alert
@@ -72,13 +79,16 @@
 	* more to come.
 	
 ## Our codebase:
+
 ### auth
 * user can sign in locally, though for right now, functionality is limited to twitter-oauth users.
 	* currentUser is accessible from the frontend through $rootScope.currentUser (app.js line 43) or the backend through req.session.user
+	
 * #### TODO:
 	* Need to get local auth + connecting multiple twitter accounts
 
 ### front end controllers (ctrls):
+
 * NavCtrl just shows login/signup modals and controls navbar anchor scrolling
 * HomeCtrl controls everything on the dashboard.
 	* initializes graphs
@@ -88,21 +98,27 @@
 * ModalCtrl (badly named, should be AuthCtrl). self explanatory
 
 ### backend controllers:
+
 * ##### AuthController created with passport
+
 * ##### UserController - main functionality here	
 	* index - retrieves all users
 	* create - creates new user
 	* update influencers - pulls parameters sent from HomeCtrl line 95 to update Twitter_Account model's influencers and sends it back.
+	
 	* #### retrieve - asynchronously:
 		* finds Twitter_Account with req.session.user.id
 		* populates twitterAccount(instance) tweetCollections
 		* populates tweetCollections' tweets
 		* sends back object with twitter_account and tweet_collection (populated)
+		
 	* ##### update - CALLBACK HELL to pull data from Twitter API
+	
 		* ##### getMyUser
 			* hits api with screenname (from Passport model that is created with twitter oauth, line 558)
 			* creates twitter_account with data pulled from twitter
 			* calls getMyFollowers, storing results in object.myTwitterAccount
+			
 		* ##### getMyFollowers
 			* hits api with twitterid (user_id)
 			* retrieves followers in lists of 100
@@ -122,6 +138,7 @@
 				* pushes tweetCollection to object.myTweets
 			* Then, marks the top tweet (through markTopTweets helper method)
 			* calls getInfluencers, data passed through as object.myTweets, object.myTopTweet. 
+			
 		* ##### getInfluencers & getHashtags
 			* self explanatory, same sort of process.
 				
