@@ -1,9 +1,9 @@
-#Twitter-Mafia Docs
+# Twitter-Mafia Docs
 
-#Links:
-###[Github Repo](https://github.com/nguyenalexander/twitter-analytics)
+# Links:
+### [Github Repo](https://github.com/nguyenalexander/twitter-analytics)
 
-#Technologies used
+# Technologies used
 * Sails Generate Auth used for creating local auth and oauth with twitter.
 * twitter npm module used to interact with twitter api (from UserController (backend))
 * Nodemailer and Cron used to time emails (as of right now, emails are sent when a user logs in with a twitter account.)
@@ -13,7 +13,7 @@
 * bootstrap for the css framework.
 
 
-#Current functionality/flow
+# Current functionality/flow
 * Any can land on the dashboard page (everything is broken because current user is not yet defined)
 * User can log in (twitter-oauth)
 * logging in creates the following models:
@@ -22,7 +22,7 @@
 * Saves twitter account info to -> twitter_account, tweet info to -> tweet, tweet collection info to -> tweetCollection.
 * data can be rendered on the page, from local db.
 
-#Model setup
+# Model setup
 * User > Passport
 	* Twitter_Account (multiple)
 		* Tweet Collection (assorted by MM/YY)
@@ -35,34 +35,34 @@
 		* Friend (following)
 		* Favorite
 		
-#Dashboard Components / Desired Functionality (TODO)
+# Dashboard Components / Desired Functionality (TODO)
 
-##content: 
-* ###chart 1
+## content: 
+* ### chart 1
 	* total followers vs engagements
 		* pull historical data, if we don't have it (avg followers from each month of past year)
 		* take average # of engagements (likes + retweets + replies) per post from each month
 		
-* ###chart 2
+* ### chart 2
 	* total created tweets per month
-* ###chart 3
+* ### chart 3
 	* engagements breakdown (average engagement for all posts dependant on type, i.e. did that post contain a link, image, trending hashtag?)
 	
-##audience:
-* ###top words
+## audience:
+* ### top words
 	* top words in follower bios. function is already written for this, but as of now brings back trash words, e.g. 'i', 'the' etc.
-* ###most frequently followed by followers
+* ### most frequently followed by followers
 	* pull data from Follower -> Friend (nested)
-* ###heatmap of followers
+* ### heatmap of followers
 	* a bit tricky because most people don't include location info.
 	
-##trends:
-* ###influencers
+## trends:
+* ### influencers
 	* displays top post by each influencer (max 3 influencers, chosen by user)
-* ###hashtags
+* ### hashtags
 	* displays top tweet of tracked hashtags (max 3 hashtags, chosen by user)
 	
-##email alert settings
+## email alert settings
 * users will eventually be able to receive emails if:
 	* their tweets receive an abnormal number (lower or higher) of engagements than usual. 
 		* plan: will create a function that will take cumulative number of engagements, map it to a graph of standard deviation, and any tweet that is an outlier will trigger email alert
@@ -71,14 +71,14 @@
 	* influx of followers
 	* more to come.
 	
-##Our codebase:
-###auth
+## Our codebase:
+### auth
 * user can sign in locally, though for right now, functionality is limited to twitter-oauth users.
 	* currentUser is accessible from the frontend through $rootScope.currentUser (app.js line 43) or the backend through req.session.user
-* ####TODO:
+* #### TODO:
 	* Need to get local auth + connecting multiple twitter accounts
 
-###front end controllers (ctrls):
+### front end controllers (ctrls):
 * NavCtrl just shows login/signup modals and controls navbar anchor scrolling
 * HomeCtrl controls everything on the dashboard.
 	* initializes graphs
@@ -87,9 +87,9 @@
 	* sets and gets user's influencers (HomeCtrl.js line 95)
 * ModalCtrl (badly named, should be AuthCtrl). self explanatory
 
-###backend controllers:
-* #####AuthController created with passport
-* #####UserController - main functionality here	
+### backend controllers:
+* ##### AuthController created with passport
+* ##### UserController - main functionality here	
 	* index - retrieves all users
 	* create - creates new user
 	* update influencers - pulls parameters sent from HomeCtrl line 95 to update Twitter_Account model's influencers and sends it back.
@@ -126,7 +126,7 @@
 			* self explanatory, same sort of process.
 				
 		
-* ###View controller renders index.ejs and the viewcontroller.get serves to authenticate user.
+* ### View controller renders index.ejs and the viewcontroller.get serves to authenticate user.
 
 
 
