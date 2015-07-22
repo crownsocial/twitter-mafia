@@ -20,11 +20,11 @@ module.exports.bootstrap = function(cb) {
 
   const TIMEZONE = 'America/Los_Angeles';
 
-
-  var cronJobs = sails.config.crons.cron;
+  var CronJob = require('cron').CronJob;
+  var cronJobs = Object.keys(sails.config.cron);
 
   cronJobs.forEach(function(key) {
-    var value = sails.config.crons.cron[key];
+    var value = sails.config.cron[key];
     new CronJob(key, value, null, true, TIMEZONE);
   })
 

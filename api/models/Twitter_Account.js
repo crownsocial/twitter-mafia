@@ -44,30 +44,25 @@ module.exports = {
       collection: 'TweetCollection',
       via: 'twitter_account'
     },
-    favorites: {
-      collection: 'Favorite',
-      via: 'twitter_account'
-    },
-    followers: {
-      collection: 'Follower',
-      via: 'twitter_account'
-    },
-    friends: {
-      collection: 'Friend',
-      via: 'twitter_account'
-    },
-    influencers: {
-      collection: 'Influencer',
-      via: 'twitter_account'
-    },
-    hashtags: {
-      collection: 'Hashtag',
-      via: 'twitter_account'
-    },
+    // followers: {
+    //   collection: 'Follower',
+    //   via: 'twitter_account'
+    // },
+    // friends: {
+    //   collection: 'Friend',
+    //   via: 'twitter_account'
+    // },
     user: {
       model: 'User'
     },
-    trackers: {
+    influencers: {
+      collection: 'Tracker',
+      via: 'twitter_account'
+    },
+    hashtags: {
+      collection: 'Tracker'
+    },
+    mentions: {
       collection: 'Tracker'
     }
   }

@@ -225,8 +225,8 @@ var client = new twitter({
           console.log("get user successful.");
           object.myUser = data;
           Twitter_Account.findOrCreate(
-            {twitter_id: data.id}, {
-              twitter_id: data.id,
+            {twitter_id: data.id_str}, {
+              twitter_id: data.id_str,
               name: data.name,
               screen_name: data.screen_name,
               description: data.description,

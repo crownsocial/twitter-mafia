@@ -23,17 +23,28 @@ module.exports = {
 
   updateInfluencers: function(req, res) {
     var influencers = req.body.influencers;
-    console.log(influencers)
-    Twitter_Account.find({user: req.session.user.id}).populate('influencers').exec(function(err, twitterAcc){
-      console.log(twitterAcc)
-
-      // {influencers: influencers}).populate('influencers').exec(function(err, twitterAcc){
-      twitterAcc.influencers = influencers
-      // twitterAcc.influencers.forEach(function(influencer) {
-      //   influencer.twitter_account = twitterAcc.id
-      //   influencer[0].save(function(err){console.log(err)})
-      // })
-      res.send({influencers: twitterAcc.influencers})
+    console.log('sent influencers:', influencers)
+    console.log('user id:', req.session.user.id)
+    Twitter_Account.findOne({user: req.session.user.id}).populate('influencers').exec(function(err, twitterAcc){
+      console.log('found twitter account:', twitterAcc)
+      async.each(influencers, function(influencer, callback) {
+        Tracker.findOrCreate({name: influencer.screen_name}, {name: influencer.screen_name, type: 'influencer', twitter_account: twitterAcc.id}).exec(function(err, addedInfluencer){
+          console.log('added influencer:', addedInfluencer)
+          if (!Array.isArray(twitterAcc)) {
+            twitterAcc.influencers = [];
+          }
+          twitterAcc.influencers.push(addedInfluencer);
+          twitterAcc.save();
+          callback()
+        })
+      }, function(err){
+        if(err) {
+          console.log('there has been an error updating influencers:',err)
+          res.send({error: err})
+        }else{
+          res.send({influencers: twitterAcc.influencers})
+        }
+      })
     })
   },
 
@@ -41,7 +52,7 @@ module.exports = {
     console.log('inside of user retrieve function', req.session.user)
     async.auto({
       twitterAccount: function(callback){
-        Twitter_Account.find({user: req.session.user.id}).populate('tweetCollections').exec(function(err, user){
+        Twitter_Account.find({user: req.session.user.id}).populate('tweetCollections').populateAll().exec(function(err, user){
           console.log('first cb:',user)
           callback(null, user[0])
         });
