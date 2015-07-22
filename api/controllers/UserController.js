@@ -134,20 +134,5 @@ module.exports = {
       })
     })
 
-    // CRON JOBS FOR INFLUENCERS, HASHTAGS, MENTIONS
-    // Runs every 15 minutes
-
-    new CronJob('* */15 * * * *', function() {
-        client.get("users/show", {screen_name: "alexthephallus"}, function(error, data, response) {
-        if (!error) {
-
-          formatDates(data);
-          sendEmail("alex@crownsocial.com", "Cron job message", "You should get this every ten seconds: " + JSON.stringify(data));
-        } else {
-          console.log("Error:", error);
-        }
-      });
-    }, null, true, 'America/Los_Angeles');
-
   }
 };

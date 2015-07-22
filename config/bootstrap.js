@@ -14,6 +14,24 @@ module.exports.bootstrap = function(cb) {
   // It's very important to trigger this callback method when you are finished
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
   sails.services.passport.loadStrategies();
+
+  // CRON JOBS FOR INFLUENCERS, HASHTAGS, MENTIONS
+  // Runs every 15 minutes
+
+  const TIMEZONE = 'America/Los_Angeles';
+
+
+  var cronJobs = sails.config.crons.cron;
+
+  cronJobs.forEach(function(key) {
+    var value = sails.config.crons.cron[key];
+    new CronJob(key, value, null, true, TIMEZONE);
+  })
+
+    // new CronJob('00 * * * * *', function() {
+    //   console.log(new Date(), 'You will see this message every minute.');
+    // }, null, true, TIMEZONE);
+
   cb();
 
 };
