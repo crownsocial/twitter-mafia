@@ -101,7 +101,7 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
     })
   }
 
-  if (!$rootScope.currentUser.influencers) {
+  if (!$rootScope.currentUser || !$rootScope.currentUser.influencers) {
     console.log('no influencers')
     $scope.influencerInitialised = false;
     $scope.influencers = [{screen_name: null}, {screen_name: null}, {screen_name: null}]
@@ -110,8 +110,8 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
   }
 
   if($rootScope.currentUser){
-    // $scope.updateUser();
-    $scope.retrieveUser();
+    $scope.updateUser();
+    // $scope.retrieveUser();
   }
 
   L.mapbox.accessToken = 'pk.eyJ1IjoiYmVubmV0dHNsaW4iLCJhIjoiYzU0V200YyJ9._G57JU3841MTuFULQD9pVg';
