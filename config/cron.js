@@ -17,32 +17,66 @@ var utility = require('../api/helpers/utilities.js')
 module.exports.cron = {
   '*/15 * * * * *': function() {
     Twitter_Account.find().populateAll().exec(function(err, data){
+      latest_id = 0;
+
       data.forEach(function(account){
-        var influencerNames = account.influencers.map(function(influencer){
-          return 'from:'+influencer.name;
+        var qTerms = account.trackers.map(function(tracker){
+          if(tracker.data && tracker.data.id > latest_id) {
+            latest_id = tracker.data.id;
+          }
+
+          switch(tracker.type) {
+            case 'influencer':
+              return 'from:' + tracker.name;
+            case 'hastag':
+              return '#' + tracker.name;
+            case 'mention':
+              return '@' + tracker.name;
+          }
         }).join(' OR ');
-        console.log(influencerNames)
-        client.get('search/tweets', {q: influencerNames+' since:2015-07-21', result_type: 'recent', count: 100}, function(err, data, response){
+        console.log(qTerms);
+
+        searchParams = {
+          q: qTerms,
+          result_type: 'recent',
+          count: 100
+        }
+
+        if(latest_id > 0) {
+          searchParams.since_id = latest_id;
+        } else {
+          searchParams.q += ' since:' + utility.getPreviousDate();
+        }
+        console.log('search params:',searchParams);
+
+        client.get('search/tweets', searchParams, function(err, data, response){
           if (!err){
             var obj = {};
             for (var i = 0; i < data.statuses.length; i++){
               if (!obj[data.statuses[i].user.screen_name.toLowerCase()]){
                 obj[data.statuses[i].user.screen_name.toLowerCase()] = data.statuses[i];
               }
-              if (Object.keys(obj).length == account.influencers.length){
+              if (Object.keys(obj).length == account.trackers.length){
                 break;
               }
             }
+            console.log('data:',data.statuses.length > 0);
+            console.log('\n**************************************************\n');
             console.log('object:', obj)
-            utility.sendEmail("alex@crownsocial.com", "Item has been updated", JSON.stringify(obj));
-            async.each(Object.keys(obj), function(key, callback){
-              Tracker.update({name: key, type: 'influencer'}, {data: obj[key]}).exec(function(err, updated){
-                console.log(updated)
-                callback();
-              }, function(err){
+            console.log('\n**************************************************\n');
 
+            if(Object.keys(obj).length !== 0) {
+              utility.sendEmail("alex@crownsocial.com", "Item has been updated", JSON.stringify(obj));
+              async.each(Object.keys(obj), function(key, callback){
+                console.log('running async...')
+                Tracker.update({name: key, type: 'influencer'}, {data: obj[key]}).exec(function(err, updated){
+                  console.log(updated)
+                  callback();
+                }, function(err){
+
+                })
               })
-            })
+            }
           }
         })
       })

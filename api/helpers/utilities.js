@@ -181,6 +181,50 @@ module.exports = {
         callback(error, response);
       }
     });
+  },
+
+  getPreviousDate: function() {
+    var d = new Date(Date.now());
+    var dStr = '';
+    if(d.getDate() === 1) {
+      if(d.getMonth() === 0) {
+        dStr = d.getFullYear()-1 + '-12-31';
+      } else {
+        dStr = d.getFullYear() + '-' + (d.getMonth() + 1);
+        switch(d.getMonth() + 1) {
+          case 1:
+          case 3:
+          case 5:
+          case 7:
+          case 8:
+          case 10:
+          case 12:
+            dStr += '-31';
+            break;
+          case 4:
+          case 6:
+          case 9:
+          case 11:
+            dStr += '-30';
+            break;
+          case 2:
+            var y = d.getFullYear();
+            if((y % 4 === 0 && y % 100 !== 0) || y % 400 === 0) {
+              dStr += '-29';
+            } else {
+              dStr += '-28'
+            }
+            break;
+          default:
+            dStr += '-30';
+            break;
+        }
+      }
+    } else {
+        dStr = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + (d.getDate() - 1)
+    }
+
+    return dStr;
   }
 
 }

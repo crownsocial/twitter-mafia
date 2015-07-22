@@ -21,8 +21,9 @@ module.exports = {
     //////////////////
     // Associations //
     //////////////////
-    twitter_account: {
-      model: 'Twitter_Account'
+    twitter_accounts: {
+      collection: 'Twitter_Account',
+      via: 'trackers'
     }
   }
 };

@@ -25,15 +25,15 @@ module.exports = {
     var influencers = req.body.influencers;
     console.log('sent influencers:', influencers)
     console.log('user id:', req.session.user.id)
-    Twitter_Account.findOne({user: req.session.user.id}).populate('influencers').exec(function(err, twitterAcc){
+    Twitter_Account.findOne({user: req.session.user.id}).populate('trackers').exec(function(err, twitterAcc){
       console.log('found twitter account:', twitterAcc)
       async.each(influencers, function(influencer, callback) {
-        Tracker.findOrCreate({name: influencer.screen_name}, {name: influencer.screen_name, type: 'influencer', twitter_account: twitterAcc.id}).exec(function(err, addedInfluencer){
+        Tracker.findOrCreate({name: influencer.screen_name}, {name: influencer.screen_name, type: 'influencer', twitter_accounts: twitterAcc.id}).exec(function(err, addedInfluencer){
           console.log('added influencer:', addedInfluencer)
-          if (!Array.isArray(twitterAcc)) {
-            twitterAcc.influencers = [];
+          if (!Array.isArray(twitterAcc.trackers)) {
+            twitterAcc.trackers = [];
           }
-          twitterAcc.influencers.push(addedInfluencer);
+          twitterAcc.trackers.push(addedInfluencer);
           twitterAcc.save();
           callback()
         })
@@ -42,7 +42,7 @@ module.exports = {
           console.log('there has been an error updating influencers:',err)
           res.send({error: err})
         }else{
-          res.send({influencers: twitterAcc.influencers})
+          res.send({influencers: twitterAcc.trackers})
         }
       })
     })
