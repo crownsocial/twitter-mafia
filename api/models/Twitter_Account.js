@@ -66,6 +66,9 @@ module.exports = {
     },
     user: {
       model: 'User'
+    },
+    trackers: {
+      collection: 'Tracker'
     }
   }
 };
