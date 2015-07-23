@@ -190,44 +190,48 @@ module.exports = {
     var y = d.getFullYear();
 
     if(d.getDate() === 1) {
-      if(d.getMonth() === 0) {
+      if(m === 0) {
         dStr = d.getFullYear()-1 + '-12-31';
       } else {
         dStr = d.getFullYear() + '-';
-        switch(d.getMonth() + 1) {
+        m += 1;
+        switch(m) {
           case 1:
           case 3:
           case 5:
           case 7:
           case 8:
-            dStr += '0' + (d.getMonth() + 1) + '-31';
-            break;
+            m = '0' + m;
           case 10:
           case 12:
-            dStr += (d.getMonth() + 1) +'-31';
+            dStr += m +'-31';
             break;
           case 4:
           case 6:
           case 9:
-            m
+            m = '0' + m;
           case 11:
-            dStr += '-30';
+            dStr += m + '-30';
             break;
           case 2:
             var y = d.getFullYear();
             if((y % 4 === 0 && y % 100 !== 0) || y % 400 === 0) {
-              dStr += '-29';
+              dStr += '02-29';
             } else {
-              dStr += '-28'
+              dStr += '02-28'
             }
             break;
           default:
-            dStr += '-30';
+            dStr += m + '-30';
             break;
         }
       }
     } else {
-        dStr = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + (d.getDate() - 1)
+      m += 1;
+      if(m < 10) {
+        m = '0' + m;
+      }
+      dStr = d.getFullYear() + '-' + m + '-' + (d.getDate() - 1);
     }
 
     return dStr;
