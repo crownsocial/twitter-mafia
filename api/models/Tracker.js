@@ -25,6 +25,10 @@ module.exports = {
       collection: 'Twitter_Account',
       via: 'trackers'
     }
+  },
+  beforeCreate: function(values, callback) {
+    values.name = values.name.toLowerCase();
+    callback();
   }
 };
 

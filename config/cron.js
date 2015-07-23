@@ -12,7 +12,40 @@ var client = new twitter({
 var fs = require('fs')
 var utility = require('../api/helpers/utilities.js')
 
-// var file = new File('/Users/nguyenalexander/Crown_Social/projects/twitter-analytics/test/cron.json');
+var addToCollection = function(obj, key, add) {
+  if(obj[key]) {
+    obj[key].push(add);
+  } else {
+    obj[key] = [add];
+  }
+  return obj;
+}
+
+// checkDataType parses the tweet object to find any matching influencers, hastags, or mentions and then returns an array of each found in the tweet
+var checkDataType = function(tweet, trackers) {
+  var hashtags = tweet.entities.hashtags;
+  var mentions = tweet.entities.user_mentions;
+
+  return trackers.reduce(function(collection, tracker) {
+    if(tracker.type === 'influencer' && tweet.screen_name === tracker.name) { // check tweet.user.screen_name
+
+      return addToCollection(collection, tracker.name+'.'+tracker.type, tweet);
+    } else if (tracker.type === 'hastag') { // check tweet.entities.hastags[i].text
+      for(var i = 0; i < hashtags.length; i++) {
+        if(hashtags[i].text.toLowerCase() === tracker.name) {
+          return addToCollection(collection, tracker.name+'.'+tracker.type, tweet);
+        }
+      }
+    } else if (tracker.type === 'mention') { // check tweet.entities.user_mentions[i].screen_name
+      for(var i = 0; i < mentions.length; i++) {
+        if(mentions[i].screen_name.toLowerCase() === tracker.name) {
+          return addToCollection(collection, tracker.name+'.'+tracker.type, tweet);
+        }
+      }
+    }
+    return collection;
+  }, {});
+}
 
 module.exports.cron = {
   '*/15 * * * * *': function() {
@@ -53,12 +86,10 @@ module.exports.cron = {
           if (!err){
             var obj = {};
             for (var i = 0; i < data.statuses.length; i++){
-              if (!obj[data.statuses[i].user.screen_name.toLowerCase()]){
-                obj[data.statuses[i].user.screen_name.toLowerCase()] = data.statuses[i];
-              }
-              if (Object.keys(obj).length == account.trackers.length){
-                break;
-              }
+              obj = checkDataType(data.statuses[i], account.trackers);
+              // if (Object.keys(obj).length == account.trackers.length){
+              //   break;
+              // }
             }
             console.log('data:',data.statuses.length > 0);
             console.log('\n**************************************************\n');
@@ -66,7 +97,7 @@ module.exports.cron = {
             console.log('\n**************************************************\n');
 
             if(Object.keys(obj).length !== 0) {
-              utility.sendEmail("alex@crownsocial.com", "Item has been updated", JSON.stringify(obj));
+              // utility.sendEmail("alex@crownsocial.com", "Item has been updated", JSON.stringify(obj));
               async.each(Object.keys(obj), function(key, callback){
                 console.log('running async...')
                 Tracker.update({name: key, type: 'influencer'}, {data: obj[key]}).exec(function(err, updated){
