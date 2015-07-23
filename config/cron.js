@@ -98,25 +98,25 @@ module.exports.cron = {
               //   break;
               // }
             }
-            fs.writeFile("/home/timon/Crown Social/twitter-analytics/tweetdata.json", JSON.stringify(data), function(err) {
-              if(err) {
-                return console.log(err);
-              }
-              console.log("The tweet file was saved!");
-            });
-            fs.writeFile("/home/timon/Crown Social/twitter-analytics/builtobject.json", JSON.stringify(trackerData), function(err) {
-              if(err) {
-                return console.log(err);
-              }
-              console.log("The obj file was saved!");
-            });
+            // // fs.writeFile("/home/timon/Crown Social/twitter-analytics/tweetdata.json", JSON.stringify(data), function(err) {
+            //   if(err) {
+            //     return console.log(err);
+            //   }
+            //   console.log("The tweet file was saved!");
+            // });
+            // fs.writeFile("/home/timon/Crown Social/twitter-analytics/builtobject.json", JSON.stringify(trackerData), function(err) {
+            //   if(err) {
+            //     return console.log(err);
+            //   }
+            //   console.log("The obj file was saved!");
+            // });
             console.log('num of tweets:',data.statuses.length);
             console.log('\n**************************************************\n');
             // console.log('trackerData:', trackerData)
             // console.log('\n**************************************************\n');
 
-            if(Object.keys(trackerData).length !== 0) {
-              // utility.sendEmail("alex@crownsocial.com", "Item has been updated", JSON.stringify(obj));
+            if(data.statuses.length !== 0) {
+              utility.sendEmail("alex@crownsocial.com", "Item has been updated", trackerData);
               async.each(Object.keys(trackerData), function(key, callback){
                 var keyArr = key.split('.');
                 if(trackerData[key].latest_id > 0) {

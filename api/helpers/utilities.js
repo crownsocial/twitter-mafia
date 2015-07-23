@@ -5,7 +5,7 @@ var fs = require('fs');
 
 var parseDataForEmail = function(obj) {
   var content = {
-    infleuncers: [],
+    influencers: [],
     hashtags: [],
     mentions: []
   }
@@ -14,12 +14,13 @@ var parseDataForEmail = function(obj) {
 
   for(var key in obj) {
     var keyArr = key.split('.');
-    content[keyArr[1]].push({
+    content[keyArr[1]+'s'].push({
       name: keyArr[0],
       tweets: obj[key].data
     });
   }
-
+  console.log(content)
+  console.log(content.influencers)
   return ejs.render(file, content);
 }
 
@@ -195,7 +196,7 @@ module.exports = {
     var mailOptions = {
       to: email_to,
       subject: subject,
-      text: parseDataForEmaill(content)
+      html: parseDataForEmail(content)
     }
 
     smtpTransport.sendMail(mailOptions, function(error, response) {
