@@ -55,15 +55,9 @@ module.exports = {
     user: {
       model: 'User'
     },
-    influencers: {
+    trackers: {
       collection: 'Tracker',
-      via: 'twitter_account'
-    },
-    hashtags: {
-      collection: 'Tracker'
-    },
-    mentions: {
-      collection: 'Tracker'
+      via: 'twitter_accounts'
     }
   }
 };
