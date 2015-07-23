@@ -186,24 +186,30 @@ module.exports = {
   getPreviousDate: function() {
     var d = new Date(Date.now());
     var dStr = '';
+    var m = d.getMonth();
+    var y = d.getFullYear();
+
     if(d.getDate() === 1) {
       if(d.getMonth() === 0) {
         dStr = d.getFullYear()-1 + '-12-31';
       } else {
-        dStr = d.getFullYear() + '-' + (d.getMonth() + 1);
+        dStr = d.getFullYear() + '-';
         switch(d.getMonth() + 1) {
           case 1:
           case 3:
           case 5:
           case 7:
           case 8:
+            dStr += '0' + (d.getMonth() + 1) + '-31';
+            break;
           case 10:
           case 12:
-            dStr += '-31';
+            dStr += (d.getMonth() + 1) +'-31';
             break;
           case 4:
           case 6:
           case 9:
+            m
           case 11:
             dStr += '-30';
             break;
