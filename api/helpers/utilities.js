@@ -1,5 +1,27 @@
 var moment = require("moment");
 var nodemailer = require("nodemailer");
+var ejs = require('ejs');
+var fs = require('fs');
+
+var parseDataForEmail = function(obj) {
+  var content = {
+    infleuncers: [],
+    hashtags: [],
+    mentions: []
+  }
+
+  var file = fs.readFileSync(__dirname + '/emailTemplate.ejs', 'utf8');
+
+  for(var key in obj) {
+    var keyArr = key.split('.');
+    content[keyArr[1]].push({
+      name: keyArr[0],
+      tweets: obj[key].data
+    });
+  }
+
+  return ejs.render(file, content);
+}
 
 module.exports = {
   /*******************************************************************************
@@ -173,7 +195,7 @@ module.exports = {
     var mailOptions = {
       to: email_to,
       subject: subject,
-      text: content
+      text: parseDataForEmaill(content)
     }
 
     smtpTransport.sendMail(mailOptions, function(error, response) {
