@@ -1,19 +1,63 @@
 <!DOCTYPE html>
 <html>
 <body>
-<ul>
-<% influencers.forEach(function(influencer){ %>
-  <li><%= influencer.name %>
-    <ul>
-  <% influencer.tweets.forEach(function(tweet){ %>
-      <li>
-        <a href="https://twitter.com/<%=influencer.name%>/status/<%=tweet.id_str%>"> <%= tweet.text %> </a>
+<% if (influencers.length !== 0) { %>
+  <h3> Influencers: </h3>
+  <ul>
+  <% influencers.forEach(function(influencer){ %>
+    <% if (influencer.tweets.length > 0){ %>
+      <li><%= influencer.name %>
+        <ul>
+      <% influencer.tweets.forEach(function(tweet){ %>
+          <li>
+            <a href="https://twitter.com/<%=influencer.name%>/status/<%=tweet.id_str%>"> <%= tweet.text %> </a>
+          </li>
+      <% }) %>
+        </ul>
       </li>
+    <% } %>
   <% }) %>
-    </ul>
-  </li>
-<% }) %>
-</ul>
+  </ul>
+<% } %>
+
+<% if (hashtags.length !== 0) { %>
+  <h3> Hashtags: </h3>
+  <ul>
+  <% hashtags.forEach(function(hashtag){ %>
+    <% if (hashtag.tweets.length > 0){ %>
+      <li><%= hashtag.name %>
+        <ul>
+      <% hashtag.tweets.forEach(function(tweet){ %>
+          <li>
+            <a href="https://twitter.com/<%=tweet.user.screen_name%>/status/<%=tweet.id_str%>"> <%= tweet.text %> </a>
+          </li>
+      <% }) %>
+        </ul>
+      </li>
+    <% } %>
+  <% }) %>
+  </ul>
+<% } %>
+
+<% if (mentions.length !== 0) { %>
+  <h3> Mentions: </h3>
+  <ul>
+  <% mentions.forEach(function(mention){ %>
+    <% if (mention.tweets.length > 0){ %>
+      <li><%= mention.name %>
+        <ul>
+      <% mention.tweets.forEach(function(tweet){ %>
+          <li>
+            <a href="https://twitter.com/<%=tweet.user.screen_name%>/status/<%=tweet.id_str%>"> <%= tweet.text %> </a>
+          </li>
+      <% }) %>
+        </ul>
+      </li>
+    <% } %>
+  <% }) %>
+  </ul>
+<% } %>
+
 
 </body>
 </html>

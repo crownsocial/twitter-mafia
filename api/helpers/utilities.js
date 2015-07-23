@@ -14,13 +14,13 @@ var parseDataForEmail = function(obj) {
 
   for(var key in obj) {
     var keyArr = key.split('.');
-    content[keyArr[1]+'s'].push({
-      name: keyArr[0],
-      tweets: obj[key].data
-    });
+    if (obj[key].data.length > 0){
+      content[keyArr[1]+'s'].push({
+        name: keyArr[0],
+        tweets: obj[key].data
+      });
+    }
   }
-  console.log(content)
-  console.log(content.influencers)
   return ejs.render(file, content);
 }
 

@@ -20,7 +20,7 @@ var checkLatestId = function(current, tweet) {
   }
 }
 
-// checkDataType parses the tweet object to find any matching influencers, hastags, or mentions and then returns an array of each found in the tweet
+// checkDataType parses the tweet object to find any matching influencers, hashtags, or mentions and then returns an array of each found in the tweet
 var checkDataType = function(tracker, tweets) {
   // console.log(tweet)
   var obj = { latest_id: 0 };
@@ -32,7 +32,7 @@ var checkDataType = function(tracker, tweets) {
     if(tracker.type === 'influencer' && tweet.user.screen_name.toLowerCase() === tracker.name) { // check tweet.user.screen_name
       collection.push(tweet);
       obj.latest_id = checkLatestId(obj, tweet);
-    } else if (tracker.type === 'hastag') { // check tweet.entities.hastags[i].text
+    } else if (tracker.type === 'hashtag') { // check tweet.entities.hashtags[i].text
       for(var i = 0; i < hashtags.length; i++) {
         if(hashtags[i].text.toLowerCase() === tracker.name) {
           collection.push(tweet);
@@ -68,7 +68,7 @@ module.exports.cron = {
           switch(tracker.type) {
             case 'influencer':
               return 'from:' + tracker.name;
-            case 'hastag':
+            case 'hashtag':
               return '#' + tracker.name;
             case 'mention':
               return '@' + tracker.name;
@@ -116,7 +116,7 @@ module.exports.cron = {
             // console.log('\n**************************************************\n');
 
             if(data.statuses.length !== 0) {
-              utility.sendEmail("alex@crownsocial.com", "Item has been updated", trackerData);
+              utility.sendEmail("alex@crownsocial.com", "You have "+data.statuses.length+" new updates!", trackerData);
               async.each(Object.keys(trackerData), function(key, callback){
                 var keyArr = key.split('.');
                 if(trackerData[key].latest_id > 0) {
