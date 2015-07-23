@@ -66,7 +66,11 @@ module.exports.cron = {
             console.log('\n**************************************************\n');
 
             if(Object.keys(obj).length !== 0) {
-              utility.sendEmail("alex@crownsocial.com", "Item has been updated", JSON.stringify(obj));
+              utility.sendEmail("alex@crownsocial.com", "Item has been updated",
+
+                console.log(JSON.stringify(obj))
+
+                );
               async.each(Object.keys(obj), function(key, callback){
                 console.log('running async...')
                 Tracker.update({name: key, type: 'influencer'}, {data: obj[key]}).exec(function(err, updated){
