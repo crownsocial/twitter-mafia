@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<body>
+<ul>
+<% influencers.forEach(function(influencer){ %>
+  <li><%= influencer.name %>
+    <ul>
+  <% influencer.tweets.forEach(function(tweet){ %>
+      <li>
+        <a href="https://twitter.com/<%=influencer.name%>/status/<%=tweet.id%>"> <%= tweet.text %> </a>
+      </li>
+  <% }) %>
+    </ul>
+  </li>
+<% }) %>
+</ul>
+
+</body>
+</html>
