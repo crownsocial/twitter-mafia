@@ -25,7 +25,7 @@ module.exports.bootstrap = function(cb) {
 
   cronJobs.forEach(function(key) {
     var value = sails.config.cron[key];
-    new CronJob(key, value, null, true, TIMEZONE);
+    // new CronJob(key, value, null, true, TIMEZONE);
   })
 
     // new CronJob('00 * * * * *', function() {

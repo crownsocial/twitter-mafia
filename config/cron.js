@@ -55,7 +55,7 @@ var checkDataType = function(tracker, tweets) {
 }
 
 module.exports.cron = {
-  '*/15 * * * * *': function() {
+  '*/30 * * * * *': function() {
     Twitter_Account.find().populateAll().exec(function(err, data){
       latest_id = 0;
 
@@ -116,7 +116,7 @@ module.exports.cron = {
             // console.log('\n**************************************************\n');
 
             if(data.statuses.length !== 0) {
-              utility.sendEmail("alex@crownsocial.com", "You have "+data.statuses.length+" new updates!", trackerData);
+              // utility.sendEmail("msdesign@crownsocial.com", "[TwitterMafiaApp] You have new updates!", trackerData);
               async.each(Object.keys(trackerData), function(key, callback){
                 var keyArr = key.split('.');
                 if(trackerData[key].latest_id > 0) {
@@ -134,23 +134,4 @@ module.exports.cron = {
       })
     })
   },
-  // '*/5 * * * * *': function() {
-  //   client.get('users/show', {screen_name: 'microsoftdesign'}, function(err, data, response){
-  //     if(!err) {
-
-  //     }
-  //   })
-  // }
 }
-
-    // new CronJob('* */15 * * * *', function() {
-    //     client.get("users/show", {screen_name: "alexthephallus"}, function(error, data, response) {
-    //     if (!error) {
-
-    //       formatDates(data);
-    //       sendEmail("alex@crownsocial.com", "Cron job message", "You should get this every ten seconds: " + JSON.stringify(data));
-    //     } else {
-    //       console.log("Error:", error);
-    //     }
-    //   });
-    // }, null, true, 'America/Los_Angeles');

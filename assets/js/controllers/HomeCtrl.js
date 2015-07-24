@@ -87,14 +87,35 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
     console.log('get user ran')
     $http.get('/api/user/' + $rootScope.currentUser.id).success(function(user){
       console.log('get user success', user)
-      $scope.user = user;
+      $scope.user = user.twitterAccount;
       $scope.loaded = true;
+
+      var separateTrackers = function(type){
+        type.forEach(function(trackerType){
+          console.log(trackerType)
+          $scope.user[trackerType] = $scope.user.trackers.filter(function(tracker){
+            return (tracker.type == trackerType.toString())
+          })
+        })
+      }
+      separateTrackers(['influencer', 'hashtag', 'mention']);
+
+      var enableAddTrackers = function(type) {
+        type.forEach(function(trackerType){
+          if ($scope.user[trackerType].length < 3){
+            $scope.user[trackerType].addable = true;
+            $scope.user[trackerType].addLength = new Array(3-$scope.user[trackerType].length);
+          }
+        })
+      }
+
+      enableAddTrackers(['influencer', 'hashtag', 'mention'])
     })
   }
 
   $scope.saveInfluencers = function() {
     console.log($scope.influencers);
-    $http.post('/api/user/' + $rootScope.currentUser.id + '/influencers', {influencers: $scope.influencers}).success(function(influencers) {
+    $http.post('/api/user/' + $rootScope.currentUser.id + '/influencer', {influencers: $scope.influencers}).success(function(influencers) {
       console.log('user influencers updated', influencers)
       $scope.influencers = influencers
       $scope.influencerInitialised = true;
@@ -102,17 +123,26 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
     })
   }
 
-  if (!$rootScope.currentUser || !$rootScope.currentUser.influencers) {
-    console.log('no influencers')
-    $scope.influencerInitialised = false;
-    $scope.influencers = [{screen_name: null}, {screen_name: null}, {screen_name: null}]
-  }else if (!$rootScope.currentUser.hashtagPosts) {
-    $scope.hashtagPosts;
+  $scope.createHashtag = function(hashtag){
+    console.log(hashtag)
+    $http.post('/api/user/' + $rootScope.currentUser.id + '/hashtag', {hashtag: hashtag}).success(function(hashtags) {
+      console.log('user hashtags updated', hashtags)
+      // $scope.hashtags = hashtags
+      $scope.retrieveUser();
+    })
   }
 
+  // if (!$scope.user || !$scope.user.influencers) {
+  //   console.log('no influencers')
+  //   $scope.influencerInitialised = false;
+  //   $scope.influencers = [{screen_name: null}, {screen_name: null}, {screen_name: null}]
+  // }else if (!$rootScope.currentUser.hashtagPosts) {
+  //   $scope.hashtagPosts;
+  // }
+
   if($rootScope.currentUser){
-    // $scope.updateUser();
-    $scope.retrieveUser();
+    $scope.updateUser();
+    // $scope.retrieveUser();
   }
 
   L.mapbox.accessToken = 'pk.eyJ1IjoiYmVubmV0dHNsaW4iLCJhIjoiYzU0V200YyJ9._G57JU3841MTuFULQD9pVg';

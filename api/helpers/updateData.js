@@ -46,7 +46,7 @@ var client = new twitter({
           * Delete at any time
           *******************************************************************************/
 
-          utility.sendEmail("alex@crownsocial.com", "Passing the object", JSON.stringify(object));
+          // utility.sendEmail("alex@crownsocial.com", "Passing the object", JSON.stringify(object));
 
           console.log("my user top tweet", object.myTopTweet.id_str, object.myTopTweet.text);
           console.log("influencer 1 top tweet", object.influencers[0].topTweet.user.screen_name, object.influencers[0].topTweet.text);
@@ -224,25 +224,33 @@ var client = new twitter({
         if (!error) {
           console.log("get user successful.");
           object.myUser = data;
-          Twitter_Account.findOrCreate(
-            {twitter_id: data.id_str}, {
-              twitter_id: data.id_str,
-              name: data.name,
-              screen_name: data.screen_name,
-              description: data.description,
-              followers_count: data.followers_count,
-              friends_count: data.friends_count,
-              verified: data.verified,
-              profile_image: data.profile_image_url,
-              latest_status: data.status,
-              url: data.url,
-              user: req.session.user.id
-            })
-          .populate('tweetCollections').exec(function(err, twitterAcc){
-            console.log('twitter account stored into database', twitterAcc)
-            object.myTwitterAccount = twitterAcc;
+          User.findOne({id: req.session.user.id}).exec(function(err, user){
+              Twitter_Account.findOrCreate(
+                {twitter_id: data.id_str}, {
+                  twitter_id: data.id_str,
+                  name: data.name,
+                  screen_name: data.screen_name,
+                  description: data.description,
+                  followers_count: data.followers_count,
+                  friends_count: data.friends_count,
+                  verified: data.verified,
+                  profile_image: data.profile_image_url,
+                  latest_status: data.status,
+                  url: data.url,
+                  user: req.session.user.id
+                })
+              .populate('tweetCollections').exec(function(err, twitterAcc){
+                if (!user.twitter_accounts) {
+                  user.twitter_accounts = [];
+                }
+                user.twitter_accounts.push(twitterAcc);
+                user.save();
+                object.myTwitterAccount = twitterAcc;
+                console.log('twitter account stored into database', twitterAcc)
+                console.log('user associated twitter acc: ', user.twitter_accounts)
+              })
+              getMyFollowers(object, data.id_str, res);
           })
-          getMyFollowers(object, data.id_str, res);
         } else {
           res.send("Error:", error);
         }

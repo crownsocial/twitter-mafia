@@ -100,10 +100,11 @@ td {
   position: relative;
   text-align: left;
   vertical-align: top;
-  min-height: 96px;
+  height: 8em;
   margin: 2px 10px;
   background-color: rgb(216, 216, 216);
   border-radius: 4px;
+  overflow: hidden;
 }
 
 .trend-module img {
@@ -122,6 +123,23 @@ td {
 .trend-submodule-right {
   float: right;
   width: 240px;
+}
+
+/* add buttons for trackers */
+
+.trend-module-add {
+  position: relative;
+  text-align: center;
+  vertical-align: top;
+  height: 8em;
+  margin: 2px 10px;
+  background-color: rgb(216, 216, 216);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.trend-submodule-center {
+  width: inherit;
 }
 
 .modal-body {

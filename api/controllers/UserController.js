@@ -21,13 +21,15 @@ module.exports = {
     });
   },
 
-  updateInfluencers: function(req, res) {
-    var influencers = req.body.influencers;
-    console.log('sent influencers:', influencers)
-    console.log('user id:', req.session.user.id)
-    Twitter_Account.findOne({user: req.session.user.id}).populate('trackers').exec(function(err, twitterAcc){
-      console.log('found twitter account:', twitterAcc)
-      async.each(influencers, function(influencer, callback) {
+  updateTracker: function(req, res) {
+    var trackerType = req.params.tracker;
+
+    if(trackerType == 'influencer') {
+      var influencers = req.body.influencers;
+      console.log('sent influencers:', influencers)
+      console.log('user id:', req.session.user.id)
+      Twitter_Account.findOne({user: req.session.user.id}).populate('trackers').exec(function(err, twitterAcc){
+        console.log('found twitter account:', twitterAcc)
         Tracker.findOrCreate({name: influencer.screen_name}, {name: influencer.screen_name, type: 'influencer', twitter_accounts: twitterAcc.id}).exec(function(err, addedInfluencer){
           console.log('added influencer:', addedInfluencer)
           if (!Array.isArray(twitterAcc.trackers)) {
@@ -35,17 +37,27 @@ module.exports = {
           }
           twitterAcc.trackers.push(addedInfluencer);
           twitterAcc.save();
-          callback()
+          res.send({addedInfluencer: addedInfluencer, trackers: twitterAcc.trackers})
         })
-      }, function(err){
-        if(err) {
-          console.log('there has been an error updating influencers:',err)
-          res.send({error: err})
-        }else{
-          res.send({influencers: twitterAcc.trackers})
-        }
       })
-    })
+    }
+    else if (trackerType == 'hashtag') {
+      var hashtag = req.body.hashtag;
+      console.log('sent hashtag:', hashtag)
+      console.log('user id:', req.session.user.id)
+      Twitter_Account.findOne({user: req.session.user.id}).populate('trackers').exec(function(err, twitterAcc){
+        console.log('found twitter account:', twitterAcc)
+        Tracker.findOrCreate({name: hashtag}, {name: hashtag, type: 'hashtag', twitter_accounts: twitterAcc.id}).exec(function(err, addedHashtag){
+          console.log('added hashtag:', addedHashtag)
+          if (!Array.isArray(twitterAcc.trackers)) {
+            twitterAcc.trackers = [];
+          }
+          twitterAcc.trackers.push(addedHashtag);
+          twitterAcc.save();
+          res.send({addedHashtag: addedHashtag, trackers: twitterAcc.trackers})
+        })
+      })
+    }
   },
 
   retrieve: function(req, res) {

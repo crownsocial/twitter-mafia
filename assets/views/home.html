@@ -21,7 +21,7 @@
       <div class="col-lg-10 col-lg-offset-1 section-header-container">
         <h2>Content</h2>
         <ul>
-          <li><i class="fa fa-user"></i> Current follower count: <strong> {{user.twitterAccount.followers_count}}</strong></li>
+          <li><i class="fa fa-user"></i> Current follower count: <strong> {{user.followers_count}}</strong></li>
           <li><i class="fa fa-clock-o"></i> Average time to respond: <strong>10s</strong></li>
           <li><i class="fa fa-reply-all"></i> Mentions replied to: <strong>45%</strong></li>
         </ul>
@@ -158,20 +158,19 @@
         <div class="module">
           <h5>Influencers</h5>
           <p>top post by each influencer</p>
-            <div class="trend-module" ng-repeat="influencer in user.influencers" ng-show="influencerInitialised">
-              <img ng-src="{{influencer.profile_image_url.replace('_normal.', '.')}}" alt="">
+            <div class="trend-module" ng-repeat="influencer in user.influencer">
+              <img ng-src="{{influencer.data.data[0].user.profile_image_url.replace('_normal.', '.')}}" alt="">
               <div class="trend-submodule-left">
-                <a href="#">@{{influencer.screen_name}}</a>
+                <a href="http://twitter.com/{{influencer.name}}">@{{influencer.name}}</a>
               </div>
               <div class="trend-submodule-right">
-                  <a href="#" ng-if="influencer.status">{{influencer.status.text}}</a>
+                  <a href="#">{{influencer.data.data[0].text}}</a>
               </div>
             </div>
-            <div class="trend-module" ng-hide="influencerInitialised">
-              <form ng-submit="saveInfluencers()">
-                <input type="text" ng-repeat="influencer in influencers" ng-model="influencer.screen_name">
-                <input type="submit" class="btn btn-primary">
-              </form>
+            <div ng-repeat="i in user.influencer.addLength track by $index" class="trend-module-add" ng-if="user.influencer.addable">
+              <div class="trend-submodule-center">
+                <a class="text-center" href="#"> click here to add another influencer </a>
+              </div>
             </div>
         </div>
       </div>
@@ -179,14 +178,27 @@
         <div class="module">
           <h5>Hashtags</h5>
           <p>top hashtag usages</p>
-            <div class="trend-module" ng-repeat="hashtagPost in user.hashtagPosts" ng-if="user.hashtagPosts.length > 0">
-              <img alt="">
+            <div class="trend-module" ng-repeat="hashtag in user.hashtag">
+              <img ng-src="{{hashtag.data.data[0].user.profile_image_url.replace('_normal.', '.')}}" alt="">
               <div class="trend-submodule-left">
-                <a href="#">#{{hashtagPost.hashtag}}</a>
-                <a href="#">@{{ hashtagPost.topTweet.user.screen_name}}</a>
+                <a href="http://twitter.com/{{hashtag.name}}">#{{hashtag.name}}</a>
               </div>
               <div class="trend-submodule-right">
-                <a href="#">{{hashtagPost.topTweet.text}}</a>
+                  <a href="#">{{hashtag.data.data[0].text}}</a>
+              </div>
+            </div>
+            <div ng-repeat="i in user.hashtag.addLength track by $index" class="trend-module-add" ng-if="user.hashtag.addable">
+              <div class="trend-submodule-center">
+                <a class="text-center" ng-click="showForm = true"> click here to add another hashtag </a>
+              </div>
+              <div class="trend-submodule-center" ng-if="showForm">
+                <form role="form" ng-submit="createHashtag(newHashtag)">
+                  <div class="form-group">
+                    <label for="newHashtag">new hashtag</label>
+                    <input type="text" class="form-control" id="newHashtag[{{$index}}]" placeholder="e.g. #awesome" ng-model="newHashtag">
+                  </div>
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
               </div>
             </div>
         </div>
