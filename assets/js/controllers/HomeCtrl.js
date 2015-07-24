@@ -141,8 +141,35 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
   // }
 
   if($rootScope.currentUser){
+    $scope.emailToggle = $rootScope.currentUser.emailToggle || false;
+    $scope.email = $rootScope.currentUser.email || '';
     $scope.updateUser();
     // $scope.retrieveUser();
+  } else {
+    $scope.emailToggle = false;
+    $scope.email = '';
+  }
+  console.log($scope.email)
+
+  $scope.updateNotify = function() {
+    console.log('toggle change',$scope.emailToggle);
+    $http.post('/api/user/email/notify', {emailToggle: $scope.emailToggle}).success(function(value) {
+      if(!value) {
+        console.log('could not update email notification settings.');
+        // $scope.emailToggle = oldVal;
+      }
+    });
+  }
+
+  $scope.updateEmail = function() {
+    if($scope.email !== '') {
+      $http.post('/api/user/email/update', {email: $scope.email}).success(function(response) {
+        if(!response) {
+          console.log('Could not udpate your email address.');
+          $scope.email = $rootScope.currectUser.email || '';
+        }
+      })
+    }
   }
 
   L.mapbox.accessToken = 'pk.eyJ1IjoiYmVubmV0dHNsaW4iLCJhIjoiYzU0V200YyJ9._G57JU3841MTuFULQD9pVg';

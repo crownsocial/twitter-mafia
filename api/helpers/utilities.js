@@ -216,6 +216,8 @@ module.exports = {
           callback(error, response);
         }
       });
+    } else {
+      console.log('\n\nEmail would send to:',email_to,'\n\n')
     }
   },
 
