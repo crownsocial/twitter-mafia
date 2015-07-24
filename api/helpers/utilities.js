@@ -21,7 +21,16 @@ var parseDataForEmail = function(obj) {
       });
     }
   }
-  return ejs.render(file, content);
+
+  var emailRender = ejs.render(file, content);
+
+  fs.writeFile(__dirname + "/sentEmail.html", emailRender, function(err) {
+    if(err) {
+      return console.log(err);
+    }
+    console.log("The email file was saved!");
+  });
+  return emailRender;
 }
 
 module.exports = {
@@ -184,7 +193,7 @@ module.exports = {
   * helper method for sending email through Gmail
   *******************************************************************************/
 
-  sendEmail: function(email_to, subject, content, callback) {
+  sendEmail: function(email_to, subject, content, stopIt, callback) {
     var smtpTransport = nodemailer.createTransport("SMTP", {
       service: "Gmail",
       auth: {
@@ -199,11 +208,13 @@ module.exports = {
       html: parseDataForEmail(content)
     }
 
-    smtpTransport.sendMail(mailOptions, function(error, response) {
-      if (callback) {
-        callback(error, response);
-      }
-    });
+    if(!stopIt) {
+      smtpTransport.sendMail(mailOptions, function(error, response) {
+        if (callback) {
+          callback(error, response);
+        }
+      });
+    }
   },
 
   getPreviousDate: function() {
