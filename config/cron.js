@@ -69,9 +69,9 @@ module.exports.cron = {
             case 'influencer':
               return 'from:' + tracker.name;
             case 'hashtag':
-              return '#' + tracker.name;
+              return '#' + tracker.name + ' -RT';
             case 'mention':
-              return '@' + tracker.name;
+              return '@' + tracker.name + ' -RT';
           }
         }).join(' OR ');
         console.log(qTerms);
@@ -98,25 +98,25 @@ module.exports.cron = {
               //   break;
               // }
             }
-            // // fs.writeFile("/home/timon/Crown Social/twitter-analytics/tweetdata.json", JSON.stringify(data), function(err) {
-            //   if(err) {
-            //     return console.log(err);
-            //   }
-            //   console.log("The tweet file was saved!");
-            // });
-            // fs.writeFile("/home/timon/Crown Social/twitter-analytics/builtobject.json", JSON.stringify(trackerData), function(err) {
-            //   if(err) {
-            //     return console.log(err);
-            //   }
-            //   console.log("The obj file was saved!");
-            // });
+            fs.writeFile(__dirname + "/tweetData.json", JSON.stringify(data), function(err) {
+              if(err) {
+                return console.log(err);
+              }
+              console.log("The tweet file was saved!");
+            });
+            fs.writeFile(__dirname + "/trackerData.json", JSON.stringify(trackerData), function(err) {
+              if(err) {
+                return console.log(err);
+              }
+              console.log("The obj file was saved!");
+            });
             console.log('num of tweets:',data.statuses.length);
             console.log('\n**************************************************\n');
             // console.log('trackerData:', trackerData)
             // console.log('\n**************************************************\n');
 
             if(data.statuses.length !== 0) {
-              utility.sendEmail("alex@crownsocial.com", "You have "+data.statuses.length+" new updates!", trackerData);
+              utility.sendEmail("lordtataraus@gmail.com", "You have "+data.statuses.length+" new updates!", trackerData, true);
               async.each(Object.keys(trackerData), function(key, callback){
                 var keyArr = key.split('.');
                 if(trackerData[key].latest_id > 0) {
