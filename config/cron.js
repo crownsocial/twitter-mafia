@@ -58,80 +58,83 @@ module.exports.cron = {
   '*/30 * * * * *': function() {
     Twitter_Account.find().populateAll().exec(function(err, data){
       latest_id = 0;
-
       data.forEach(function(account){
-        var qTerms = account.trackers.map(function(tracker){
-          if(tracker.data && tracker.data.latest_id > latest_id) {
-            latest_id = tracker.data.latest_id;
-          }
-
-          switch(tracker.type) {
-            case 'influencer':
-              return 'from:' + tracker.name;
-            case 'hashtag':
-              return '#' + tracker.name + ' -RT';
-            case 'mention':
-              return '@' + tracker.name + ' -RT';
-          }
-        }).join(' OR ');
-        console.log(qTerms);
-
-        searchParams = {
-          q: qTerms,
-          result_type: 'recent',
-          count: 100
-        }
-
-        if(latest_id > 0) {
-          searchParams.since_id = latest_id;
-        } else {
-          searchParams.q += ' since:' + utility.getPreviousDate();
-        }
-        console.log('search params:',searchParams);
-
-        client.get('search/tweets', searchParams, function(err, data, response){
-          if (!err){
-            var trackerData = {};
-            for (var i = 0; i < account.trackers.length; i++){
-              trackerData[account.trackers[i].name+'.'+account.trackers[i].type] = checkDataType(account.trackers[i], data.statuses);
-              // if (Object.keys(obj).length == account.trackers.length){
-              //   break;
-              // }
+        if(account.user.emailToggle && account.user.email) {
+          var qTerms = account.trackers.map(function(tracker){
+            if(tracker.data && tracker.data.latest_id > latest_id) {
+              latest_id = tracker.data.latest_id;
             }
-            fs.writeFile(__dirname + "/tweetData.json", JSON.stringify(data), function(err) {
-              if(err) {
-                return console.log(err);
-              }
-              console.log("The tweet file was saved!");
-            });
-            fs.writeFile(__dirname + "/trackerData.json", JSON.stringify(trackerData), function(err) {
-              if(err) {
-                return console.log(err);
-              }
-              console.log("The obj file was saved!");
-            });
-            console.log('num of tweets:',data.statuses.length);
-            console.log('\n**************************************************\n');
-            // console.log('trackerData:', trackerData)
-            // console.log('\n**************************************************\n');
 
-            if(data.statuses.length !== 0) {
+            switch(tracker.type) {
+              case 'influencer':
+                return 'from:' + tracker.name;
+              case 'hashtag':
+                return '#' + tracker.name + ' -RT';
+              case 'mention':
+                return '@' + tracker.name + ' -RT';
+            }
+          }).join(' OR ');
+          console.log('Searching twitter for:',qTerms);
 
-              utility.sendEmail("msdesign@crownsocial.com", "[TwitterMafiaApp] You have new updates!", trackerData, true);
-              async.each(Object.keys(trackerData), function(key, callback){
-                var keyArr = key.split('.');
-                if(trackerData[key].latest_id > 0) {
-                  console.log('running async...',key)
-                  Tracker.update({name: keyArr[0], type: keyArr[1]}, {data: trackerData[key]}).exec(function(err, updated){
-                    console.log(updated)
-                    callback();
-                  }, function(err){
-                  })
+          searchParams = {
+            q: qTerms,
+            result_type: 'recent',
+            count: 100
+          }
+
+          if(latest_id > 0) {
+            searchParams.since_id = latest_id;
+          } else {
+            searchParams.q += ' since:' + utility.getPreviousDate();
+          }
+          // console.log('search params:',searchParams);
+
+          client.get('search/tweets', searchParams, function(err, data, response){
+            if (!err){
+              var trackerData = {};
+              for (var i = 0; i < account.trackers.length; i++){
+                trackerData[account.trackers[i].name+'.'+account.trackers[i].type] = checkDataType(account.trackers[i], data.statuses);
+                // if (Object.keys(obj).length == account.trackers.length){
+                //   break;
+                // }
+              }
+              fs.writeFile(__dirname + "/tweetData.json", JSON.stringify(data), function(err) {
+                if(err) {
+                  return console.log(err);
                 }
-              })
+                console.log("The tweet file was saved!");
+              });
+              fs.writeFile(__dirname + "/trackerData.json", JSON.stringify(trackerData), function(err) {
+                if(err) {
+                  return console.log(err);
+                }
+                console.log("The obj file was saved!");
+              });
+              console.log('num of tweets:',data.statuses.length);
+              console.log('\n**************************************************\n');
+              // console.log('trackerData:', trackerData)
+              // console.log('\n**************************************************\n');
+
+              if(data.statuses.length !== 0) {
+
+                utility.sendEmail(account.user.email, "[TwitterMafiaApp] You have new updates!", trackerData, true);
+                async.each(Object.keys(trackerData), function(key, callback){
+                  var keyArr = key.split('.');
+                  if(trackerData[key].latest_id > 0) {
+                    console.log('running async...',key)
+                    Tracker.update({name: keyArr[0], type: keyArr[1]}, {data: trackerData[key]}).exec(function(err, updated){
+                      console.log(updated)
+                      callback();
+                    }, function(err){
+                    })
+                  }
+                })
+              }
             }
-          }
-        })
+          })
+        } else {
+          console.log(account.user.username, 'update skipped');
+        }
       })
     })
   },
