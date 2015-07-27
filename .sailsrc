@@ -3,8 +3,5 @@
     "modules": {
       "auth-api": "sails-auth"
     }
-  },
-  "hooks": {
-    "grunt": true
   }
 }
