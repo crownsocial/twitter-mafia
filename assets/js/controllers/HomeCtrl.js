@@ -110,7 +110,7 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
       }
 
       enableAddTrackers(['influencer', 'hashtag', 'mention'])
-    })
+    });
   }
 
   $scope.saveInfluencers = function() {
@@ -141,8 +141,8 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
   // }
 
   if($rootScope.currentUser){
-    $scope.updateUser();
-    // $scope.retrieveUser();
+    // $scope.updateUser();
+    $scope.retrieveUser();
   }
 
   L.mapbox.accessToken = 'pk.eyJ1IjoiYmVubmV0dHNsaW4iLCJhIjoiYzU0V200YyJ9._G57JU3841MTuFULQD9pVg';

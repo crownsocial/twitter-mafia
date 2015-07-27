@@ -117,7 +117,7 @@ module.exports.cron = {
 
             if(data.statuses.length !== 0) {
 
-              utility.sendEmail("msdesign@crownsocial.com", "[TwitterMafiaApp] You have new updates!", trackerData, true);
+              utility.sendEmail("alex@crownsocial.com", "[TwitterMafiaApp] You have new updates!", trackerData, true);
               async.each(Object.keys(trackerData), function(key, callback){
                 var keyArr = key.split('.');
                 if(trackerData[key].latest_id > 0) {
