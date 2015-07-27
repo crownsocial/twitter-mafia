@@ -5,6 +5,6 @@
     }
   },
   "hooks": {
-    "grunt": false
+    "grunt": true
   }
 }
