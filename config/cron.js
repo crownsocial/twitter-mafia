@@ -98,18 +98,20 @@ module.exports.cron = {
                 //   break;
                 // }
               }
-              fs.writeFile(__dirname + "/tweetData.json", JSON.stringify(data), function(err) {
-                if(err) {
-                  return console.log(err);
-                }
-                console.log("The tweet file was saved!");
-              });
-              fs.writeFile(__dirname + "/trackerData.json", JSON.stringify(trackerData), function(err) {
-                if(err) {
-                  return console.log(err);
-                }
-                console.log("The obj file was saved!");
-              });
+              if(false) {
+                fs.writeFile("../tweetData.json", JSON.stringify(data), function(err) {
+                  if(err) {
+                    return console.log(err);
+                  }
+                  console.log("The tweet file was saved!");
+                });
+                fs.writeFile("../trackerData.json", JSON.stringify(trackerData), function(err) {
+                  if(err) {
+                    return console.log(err);
+                  }
+                  console.log("The obj file was saved!");
+                });
+              }
               console.log('num of tweets:',data.statuses.length);
               console.log('\n**************************************************\n');
               // console.log('trackerData:', trackerData)

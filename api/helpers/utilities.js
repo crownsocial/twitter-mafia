@@ -26,7 +26,7 @@ var parseDataForEmail = function(obj) {
 
   var emailRender = ejs.render(file, content);
 
-  fs.writeFile(__dirname + "/sentEmail.html", emailRender, function(err) {
+  fs.writeFile("../../sentEmail.html", emailRender, function(err) {
     if(err) {
       return console.log(err);
     }
