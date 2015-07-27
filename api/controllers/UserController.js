@@ -60,6 +60,35 @@ module.exports = {
     }
   },
 
+  emailToggle: function(req, res) {
+    User.findOne({id: req.session.user.id}).exec(function(err, user) {
+      if(err) {
+        console.log('\n*****************************************************************\n** Email Toggle failed\n*****************************************************************\n')
+        res.send(false);
+      } else {
+        console.log('\n*****************************************************************\n** Email Toggle set'+req.body.emailToggle+'\n*****************************************************************\n')
+        user.emailToggle = req.body.emailToggle;
+        user.save();
+        res.send(true);
+      }
+    });
+  },
+
+  emailUpdate: function(req, res) {
+    User.findOne({id: req.session.user.id}).exec(function(err, user) {
+      if(err) {
+        console.log('\n*****************************************************************\n** Email update failed\n*****************************************************************\n')
+        res.send(false);
+      } else {
+        console.log('\n*****************************************************************\n** Email update set\n*****************************************************************\n')
+        user.email = req.body.email;
+        user.save();
+        res.send(true);
+      }
+    });
+  },
+
+
   retrieve: function(req, res) {
     console.log('inside of user retrieve function', req.session.user)
     async.auto({

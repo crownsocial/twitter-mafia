@@ -219,6 +219,14 @@
       <div class="col-sm-12 module-wrapper">
         <div class="module">
           <h5>Email Alert Settings</h5>
+            <div ng-show="$root.currentUser">
+              <input type="email" ng-model="email" placeholder="Enter your email to recieve notifications">
+              <button class="btn btn-primary" ng-click="updateEmail()">{{email ? 'Change' : 'Save'}} Email</button>
+              <div ng-show="$root.currentUser.email">
+                <label for="email-toggle">Email notifications are turned {{emailToggle ? 'on' : 'off'}}</label>
+                <input type="checkbox" ng-model="emailToggle" name="emailToggle" id="emailToggle" ng-change="updateNotify()">
+              </div>
+            </div>
         </div>
       </div>
     </div>
