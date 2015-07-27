@@ -83,7 +83,7 @@ module.exports = {
         console.log('\n*****************************************************************\n** Email update set\n*****************************************************************\n')
         user.email = req.body.email;
         user.save();
-        res.send(true);
+        res.send(user.email);
       }
     });
   },

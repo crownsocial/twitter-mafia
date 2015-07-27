@@ -166,7 +166,7 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
       $http.post('/api/user/email/update', {email: $scope.email}).success(function(response) {
         if(!response) {
           console.log('Could not udpate your email address.');
-          $scope.email = $rootScope.currentUser.email || '';
+          $scope.email = response || '';
         }
       })
     }

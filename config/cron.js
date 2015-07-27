@@ -98,25 +98,27 @@ module.exports.cron = {
                 //   break;
                 // }
               }
-              fs.writeFile(__dirname + "/tweetData.json", JSON.stringify(data), function(err) {
-                if(err) {
-                  return console.log(err);
-                }
-                console.log("The tweet file was saved!");
-              });
-              fs.writeFile(__dirname + "/trackerData.json", JSON.stringify(trackerData), function(err) {
-                if(err) {
-                  return console.log(err);
-                }
-                console.log("The obj file was saved!");
-              });
+              if(false) {
+                fs.writeFile("../tweetData.json", JSON.stringify(data), function(err) {
+                  if(err) {
+                    return console.log(err);
+                  }
+                  console.log("The tweet file was saved!");
+                });
+                fs.writeFile("../trackerData.json", JSON.stringify(trackerData), function(err) {
+                  if(err) {
+                    return console.log(err);
+                  }
+                  console.log("The obj file was saved!");
+                });
+              }
               console.log('num of tweets:',data.statuses.length);
               console.log('\n**************************************************\n');
               // console.log('trackerData:', trackerData)
               // console.log('\n**************************************************\n');
 
               if(data.statuses.length !== 0) {
-                utility.sendEmail(account.user.email, "[TwitterMafiaApp] You have new updates!", trackerData, true);
+                utility.sendEmail(account.user.email, "[TwitterMafiaApp] You have new updates!", trackerData, false);
                 async.each(Object.keys(trackerData), function(key, callback){
                   var keyArr = key.split('.');
                   if(trackerData[key].latest_id > 0) {
