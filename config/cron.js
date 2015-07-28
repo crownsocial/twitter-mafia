@@ -13,8 +13,8 @@ var fs = require('fs')
 var utility = require('../api/helpers/utilities.js')
 
 var checkLatestId = function(current, tweet) {
-  if(current.latest_id < tweet.id) {
-    return tweet.id;
+  if(current.latest_id < tweet.id_str) {
+    return (tweet.id + 1).toString();
   } else {
     return current.latest_id;
   }
@@ -23,7 +23,7 @@ var checkLatestId = function(current, tweet) {
 // checkDataType parses the tweet object to find any matching influencers, hashtags, or mentions and then returns an array of each found in the tweet
 var checkDataType = function(tracker, tweets) {
   // console.log(tweet)
-  var obj = { latest_id: 0 };
+  var obj = { latest_id: "0" };
 
   obj.data = tweets.reduce(function(collection, tweet) {
     var hashtags = tweet.entities.hashtags;
@@ -82,7 +82,7 @@ module.exports.cron = {
             count: 100
           }
 
-          if(latest_id > 0) {
+          if(latest_id !== "0") {
             searchParams.since_id = latest_id;
           } else {
             searchParams.q += ' since:' + utility.getPreviousDate();
