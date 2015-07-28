@@ -14,7 +14,7 @@ var utility = require('../api/helpers/utilities.js')
 
 var checkLatestId = function(current, tweet) {
   if(current.latest_id < tweet.id_str) {
-    return (tweet.id + 1).toString();
+    return tweet.id_str;
   } else {
     return current.latest_id;
   }
@@ -61,8 +61,10 @@ module.exports.cron = {
       data.forEach(function(account){
         if(account.user.emailToggle && account.user.email) {
           var qTerms = account.trackers.map(function(tracker){
+            console.log("current latest_id = ",latest_id);
             if(tracker.data && tracker.data.latest_id > latest_id) {
               latest_id = tracker.data.latest_id;
+            console.log("set latest_id = ",latest_id);
             }
 
             switch(tracker.type) {
