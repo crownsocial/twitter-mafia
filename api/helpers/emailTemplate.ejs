@@ -6,7 +6,7 @@
   <ul>
   <% influencers.forEach(function(influencer){ %>
     <% if (influencer.tweets.length > 0){ %>
-      <li><%= influencer.name %>
+      <li><a href="http://twitter.com/<%=influencer.screen_name%>"><%= influencer.name %></a>
         <ul>
       <% influencer.tweets.forEach(function(tweet){ %>
           <li>
@@ -29,7 +29,12 @@
         <ul>
       <% hashtag.tweets.forEach(function(tweet){ %>
           <li>
-            <a href="https://twitter.com/<%=tweet.user.screen_name%>/status/<%=tweet.id_str%>"> <%= tweet.text %> </a>
+            <a href="https://twitter.com/<%=tweet.user.screen_name%>"><%=tweet.user.screen_name%></a>
+              <ul>
+                <li>
+                  <a href="https://twitter.com/<%=tweet.user.screen_name%>/status/<%=tweet.id_str%>"> <%= tweet.text %> </a>
+                </li>
+              </ul>
           </li>
       <% }) %>
         </ul>
@@ -48,7 +53,12 @@
         <ul>
       <% mention.tweets.forEach(function(tweet){ %>
           <li>
-            <a href="https://twitter.com/<%=tweet.user.screen_name%>/status/<%=tweet.id_str%>"> <%= tweet.text %> </a>
+            <a href="https://twitter.com/<%=tweet.user.screen_name%>"><%=tweet.user.screen_name%></a>
+              <ul>
+                <li>
+                  <a href="https://twitter.com/<%=tweet.user.screen_name%>/status/<%=tweet.id_str%>"> <%= tweet.text %> </a>
+                </li>
+              </ul>
           </li>
       <% }) %>
         </ul>
