@@ -26,12 +26,12 @@ var parseDataForEmail = function(obj) {
 
   var emailRender = ejs.render(file, content);
 
-  fs.writeFile("../../sentEmail.html", emailRender, function(err) {
-    if(err) {
-      return console.log(err);
-    }
-    console.log("The email file was saved!");
-  });
+  // fs.writeFile("../../sentEmail.html", emailRender, function(err) {
+  //   if(err) {
+  //     return console.log(err);
+  //   }
+  //   console.log("The email file was saved!");
+  // });
   return emailRender;
 }
 
