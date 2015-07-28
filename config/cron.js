@@ -13,8 +13,8 @@ var fs = require('fs')
 var utility = require('../api/helpers/utilities.js')
 
 var checkLatestId = function(current, tweet) {
-  if(parseInt(current.latest_id) < tweet.id) {
-    return (tweet.id + 1).toString();
+  if(current.latest_id < tweet.id_str) {
+    return tweet.id_str;
   } else {
     return current.latest_id;
   }
