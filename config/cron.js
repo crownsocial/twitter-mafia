@@ -92,6 +92,7 @@ module.exports.cron = {
           // console.log('search params:',searchParams);
 
           client.get('search/tweets', searchParams, function(err, data, response){
+            console.log("error?",err)
             if (!err){
               var trackerData = {};
               for (var i = 0; i < account.trackers.length; i++){
