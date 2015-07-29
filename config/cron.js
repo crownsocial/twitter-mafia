@@ -54,42 +54,6 @@ var checkDataType = function(tracker, tweets) {
   return obj;
 }
 
-var collectTwitterData = function(terms, callback) {
-  console.log('Searching twitter for:',terms.q);
-
-  searchParams = {
-    q: terms.q,
-    result_type: 'recent',
-    count: 100
-  }
-
-  if(terms.latest_id !== "0") {
-    searchParams.since_id = terms.latest_id;
-  } else {
-    searchParams.q += ' since:' + utility.getPreviousDate();
-  }
-  // console.log('search params:',searchParams);
-
-  client.get('search/tweets', searchParams, function(err, data, response){
-    console.log("error?",err)
-
-    if (!err){
-      if(data.statuses.length === 0) {
-        callback(null, {});
-        return;
-      }
-
-      var trackerData = {};
-      for (var i = 0; i < account.trackers.length; i++){
-        trackerData[account.trackers[i].name+'.'+account.trackers[i].type] = checkDataType(account.trackers[i], data.statuses);
-      }
-      callback(null, trackerData);
-    } else {
-      callback(err);
-    }
-  });
-}
-
 const MAX_CALL_LENGTH = 30;
 
 module.exports.cron = {
@@ -116,13 +80,18 @@ module.exports.cron = {
           })
           var callTimes = Math.ceil(qTerms.length / MAX_CALL_LENGTH)
           var qSplits = callTimes > 1 ? [] : [{q: qTerms.join(' OR '), latest_id: latest_id}];
-          for(var i = 0; i < callTimes; i++) {
-            var start = (i)*MAX_CALL_LENGTH
-            var end = (i+1)*MAX_CALL_LENGTH
-            if(end > qTerms.length) end = qTerms.length - 1
-            qSplits.push({q: qTerms.slice(start, end).join(' OR '), latest_id: latest_id})
+
+          console.log("callTimes:",callTimes,qSplits)
+          if(callTimes > 1) {
+            for(var i = 0; i < callTimes; i++) {
+              var start = (i)*MAX_CALL_LENGTH
+              var end = (i+1)*MAX_CALL_LENGTH
+              if(end > qTerms.length) end = qTerms.length - 1
+              qSplits.push({q: qTerms.slice(start, end).join(' OR '), latest_id: latest_id})
+            }
           }
 
+          console.log("qSplits",qSplits);
           async.mapSeries(qSplits, function(terms, callback) {
             console.log('Searching twitter for:',terms.q);
 
