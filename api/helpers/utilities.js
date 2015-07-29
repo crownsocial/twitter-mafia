@@ -212,6 +212,7 @@ module.exports = {
 
     if(!stopIt) {
       smtpTransport.sendMail(mailOptions, function(error, response) {
+        console.log("\n\nEmail sent to:", email_to,"\n\n");
         if (callback) {
           callback(error, response);
         }
