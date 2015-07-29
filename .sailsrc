@@ -3,9 +3,5 @@
     "modules": {
       "auth-api": "sails-auth"
     }
-  },
-  "hooks": {
-    "sockets": false,
-    "pubsub": false
   }
 }
