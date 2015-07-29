@@ -140,7 +140,7 @@ module.exports.cron = {
                 }
               }
               return obj;
-            });
+            }, {});
 
             var numOfTweets = Object.keys(trackerData).length;
 
