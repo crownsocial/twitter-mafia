@@ -4,34 +4,20 @@ var ejs = require('ejs');
 var fs = require('fs');
 
 var parseDataForEmail = function(obj) {
-  var content = {
-    influencers: [],
-    hashtags: [],
-    mentions: []
+  var file = fs.readFileSync(__dirname + '/emailTemplateSingleTweet.ejs', 'utf8');
+
+  obj.capitalize = function(word) {
+    return word[0].toUpperCase() + word.substr(1).toLowerCase();
   }
 
-  var file = fs.readFileSync(__dirname + '/emailTemplate.ejs', 'utf8');
+  var emailRender = ejs.render(file, obj);
 
-  for(var key in obj) {
-    var keyArr = key.split('.');
-    console.log(keyArr)
-
-    if (obj[key].data.length > 0){
-      content[keyArr[1]+'s'].push({
-        name: keyArr[0],
-        tweets: obj[key].data
-      });
+  fs.writeFile(__dirname + "/sentEmail.html", emailRender, function(err) {
+    if(err) {
+      return console.log(err);
     }
-  }
-
-  var emailRender = ejs.render(file, content);
-
-  // fs.writeFile("../../sentEmail.html", emailRender, function(err) {
-  //   if(err) {
-  //     return console.log(err);
-  //   }
-  //   console.log("The email file was saved!");
-  // });
+    console.log("The email file was saved!");
+  });
   return emailRender;
 }
 
@@ -203,7 +189,7 @@ module.exports = {
         pass: process.env.GMAIL_PASSWORD
       }
     });
-
+    console.log("preparing to email")
     var mailOptions = {
       to: email_to,
       subject: subject,
@@ -220,6 +206,7 @@ module.exports = {
     } else {
       console.log('\n\nEmail would send to:',email_to,'\n\n')
     }
+    return null;
   },
 
   getPreviousDate: function() {
