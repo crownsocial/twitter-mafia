@@ -54,7 +54,7 @@ var checkDataType = function(tracker, tweets) {
   return obj;
 }
 
-const MAX_CALL_LENGTH = 30;
+const MAX_CALL_LENGTH = 20;
 
 module.exports.cron = {
   '*/30 * * * * *': function() {
