@@ -123,7 +123,42 @@ module.exports.cron = {
             qSplits.push({q: qTerms.slice(start, end).join(' OR '), latest_id: latest_id})
           }
 
-          async.mapSeries(qSplits, collectTwitterData, function(err, results) {
+          async.mapSeries(qSplits, function(terms, callback) {
+            console.log('Searching twitter for:',terms.q);
+
+            searchParams = {
+              q: terms.q,
+              result_type: 'recent',
+              count: 100
+            }
+
+            if(terms.latest_id !== "0") {
+              searchParams.since_id = terms.latest_id;
+            } else {
+              searchParams.q += ' since:' + utility.getPreviousDate();
+            }
+            // console.log('search params:',searchParams);
+
+            client.get('search/tweets', searchParams, function(err, data, response){
+              console.log("error?",err)
+
+              if (!err){
+                if(data.statuses.length === 0) {
+                  callback(null, {});
+                  return;
+                }
+
+                var trackerData = {};
+                for (var i = 0; i < account.trackers.length; i++){
+                  trackerData[account.trackers[i].name+'.'+account.trackers[i].type] = checkDataType(account.trackers[i], data.statuses);
+                }
+                callback(null, trackerData);
+              } else {
+                callback(err);
+              }
+            })
+          },
+            function(err, results) {
             if(err) console.log("Async Twitter Call ERROR:",err);
 
             var trackerData = results.reduce(function(obj, curr) {
@@ -154,7 +189,7 @@ module.exports.cron = {
                 console.log("The obj file was saved!");
               });
             }
-            console.log('num of tweets:',data.statuses.length);
+            console.log('num of tweets:',numOfTweets);
             console.log('\n**************************************************\n');
 
             if(numOfTweets > 0) {
