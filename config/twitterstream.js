@@ -17,13 +17,13 @@ var checkDataType = function(tweet, trackers) {
   for(var i = 0; i < trackers.length; i++) {
     if(trackers[i].type === "influencer" && tweet.user.screen_name.toLowerCase() === trackers[i].name) {
         return {tweet: tweet, tracker: trackers[i]}
-    } else if(trackers[i].type === "mention" && tweet.entities.user_mentions.length > 0 && !tweet.retweet_status) {
+    } else if(trackers[i].type === "mention" && tweet.entities.user_mentions.length > 0 && !('retweet_status' in tweet)) {
         for(var j = 0; j < mentions.length; j++) {
             if(trackers[i].name === mentions[j].screen_name.toLowerCase()) {
                 return {tweet: tweet, tracker: trackers[i]}
             }
         }
-    } else if(trackers[i].type === "hashtag" && hashtags.length > 0 && !tweet.retweet_status) {
+    } else if(trackers[i].type === "hashtag" && hashtags.length > 0 && !('retweet_status' in tweet)) {
         for(var j = 0; j < hashtags.length; j++) {
             if(trackers[i].name === hashtags[j].text.toLowerCase()) {
                 return {tweet: tweet, tracker: trackers[i]}
