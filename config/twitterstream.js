@@ -15,15 +15,15 @@ var checkDataType = function(tweet, trackers) {
   var hashtags = tweet.entities.hashtags;
 
   for(var i = 0; i < trackers.length; i++) {
-    if(trackers[i].type === "influencer" && tweet.user.screen_name.toLowerCase() === trackers[i].name && tweet.text[0] !== '@') {
+    if(trackers[i].type === "influencer" && tweet.user.screen_name.toLowerCase() === trackers[i].name && tweet.text.trim()[0] !== '@') {
         return {tweet: tweet, tracker: trackers[i]}
-    } else if(trackers[i].type === "mention" && tweet.entities.user_mentions.length > 0 && !('retweet_status' in tweet)) {
+    } else if(trackers[i].type === "mention" && mentions.length > 0 && !('retweeted_status' in tweet)) {
         for(var j = 0; j < mentions.length; j++) {
             if(trackers[i].name === mentions[j].screen_name.toLowerCase()) {
                 return {tweet: tweet, tracker: trackers[i]}
             }
         }
-    } else if(trackers[i].type === "hashtag" && hashtags.length > 0 && !('retweet_status' in tweet)) {
+    } else if(trackers[i].type === "hashtag" && hashtags.length > 0 && !('retweeted_status' in tweet)) {
         for(var j = 0; j < hashtags.length; j++) {
             if(trackers[i].name === hashtags[j].text.toLowerCase()) {
                 return {tweet: tweet, tracker: trackers[i]}
