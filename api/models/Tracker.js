@@ -17,6 +17,9 @@ module.exports = {
     data: {
       type: 'json'
     },
+    twitter_id: {
+      type: 'string'
+    },
 
     //////////////////
     // Associations //
