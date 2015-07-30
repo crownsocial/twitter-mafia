@@ -38,15 +38,25 @@ var checkDataType = function(tweet, trackers) {
 module.exports.twitterstream = function() {
     Tracker.find().populateAll().exec(function(err, trackers) {
         if(!err) {
-            var track = trackers.map(function(t) {
+            var track = {};
+
+            trackers.forEach(function(t) {
                 if(t.type == "influencer") {
-                    return t.twitter_id;
+                    if(track.follow) {
+                      track.follow.push(t.twitter_id);
+                    } else {
+                      track.follow = [t.twitter_id];
+                    }
                 } else {
-                    return t.name;
+                    if(track.track) {
+                      track.track.push(t.name);
+                    } else {
+                      track.track = [t.name];
+                    }
                 }
             }).join(',');
 
-            client.stream('statuses/filter', {track: track}, function(stream) {
+            client.stream('statuses/filter', track, function(stream) {
               stream.on('data', function(tweet) {
                 console.log(tweet.text);
                 var trackerData = checkDataType(tweet, trackers);
