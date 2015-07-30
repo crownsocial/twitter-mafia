@@ -43,18 +43,18 @@ module.exports.twitterstream = function() {
             trackers.forEach(function(t) {
                 if(t.type == "influencer") {
                     if(track.follow) {
-                      track.follow.push(t.twitter_id);
+                      track.follow += ',' + t.twitter_id;
                     } else {
-                      track.follow = [t.twitter_id];
+                      track.follow = t.twitter_id.toString();
                     }
                 } else {
                     if(track.track) {
-                      track.track.push(t.name);
+                      track.track += ',' + t.name;
                     } else {
-                      track.track = [t.name];
+                      track.track = t.name;
                     }
                 }
-            }).join(',');
+            });
 
             client.stream('statuses/filter', track, function(stream) {
               stream.on('data', function(tweet) {
