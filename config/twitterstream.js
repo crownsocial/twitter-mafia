@@ -64,11 +64,13 @@ module.exports.twitterstream = function() {
                 if(trackerData) {
                     async.each(trackerData.tracker.twitter_accounts ,function(account, callback) {
                         Twitter_Account.findOne({id: account.id}).populate('user').exec(function(err, account) {
-                            if(!err) {
+                            if(!err && account.user.emailToggle) {
                                 console.log("sending email...",account)
                                 callback(utility.sendEmail(account.user.email, "[TwitterMafiaApp] You have new updates!", trackerData, false));
-                            } else {
+                            } else if (err) {
                                 callback(err)
+                            }else if (!account.user.emailToggle) {
+                              console.log('email was not sent!')
                             }
                         });
                     });
