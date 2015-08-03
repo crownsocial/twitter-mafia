@@ -69,6 +69,8 @@ module.exports.twitterstream = function() {
                                 callback(utility.sendEmail(account.user.email, "[TwitterMafiaApp] You have new updates!", trackerData, false));
                             } else if(err) {
                                 callback(err)
+                            }else if (!account.user.emailToggle) {
+                              console.log('email was not sent!')
                             }
                         });
                     });
