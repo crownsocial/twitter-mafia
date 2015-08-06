@@ -60,6 +60,8 @@ module.exports.routes = {
   'get /api/user/:id/tracker': 'UserController.updateTracker',
   'post /user': 'UserController.create',
 
+  'delete /api/user/:id/tracker/:tracker': 'UserController.deleteTracker',
+
   "get *":{
     controller:"ViewController",
     action:"index",

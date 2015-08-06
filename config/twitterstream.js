@@ -41,6 +41,7 @@ module.exports.twitterstream = function() {
             var track = {};
 
             trackers.forEach(function(t) {
+              if(t.twitter_accounts.length > 0) {
                 if(t.type == "influencer") {
                     if(track.follow) {
                       track.follow += ',' + t.twitter_id;
@@ -54,7 +55,12 @@ module.exports.twitterstream = function() {
                       track.track = t.name;
                     }
                 }
+              }
             });
+
+            if(Object.keys(track).length === 0) {
+              track.track ='inclusivedesign';
+            }
 
             client.stream('statuses/filter', track, function(stream) {
               stream.on('data', function(tweet) {
@@ -64,7 +70,7 @@ module.exports.twitterstream = function() {
                 if(trackerData) {
                     async.each(trackerData.tracker.twitter_accounts ,function(account, callback) {
                         Twitter_Account.findOne({id: account.id}).populate('user').exec(function(err, account) {
-                            if(!err && account.user.emailToggle) {
+                            if(!err && account && account.user && account.user.emailToggle) {
                                 console.log("sending email...",account)
                                 callback(utility.sendEmail(account.user.email, "[TwitterMafiaApp] You have new updates!", trackerData, false));
                             } else if(err) {

@@ -169,7 +169,16 @@
             </div>
             <div ng-repeat="i in user.influencer.addLength track by $index" class="trend-module-add" ng-if="user.influencer.addable">
               <div class="trend-submodule-center">
-                <a class="text-center" href="#"> click here to add another influencer </a>
+                <a class="text-center form-link" ng-click="showForm = !showForm" ng-hide="showForm"> click here to add another influencer </a>
+              </div>
+              <div class="trend-submodule-center" ng-show="showForm">
+                <form role="form" ng-submit="createTracker(newTracker, 'influencer')">
+                  <div class="form-group">
+                    <label for="newTracker">new influencer</label>
+                    <input type="text" class="form-control" id="newTracker[{{$index}}]" placeholder="e.g. @someperson" ng-model="newTracker">
+                  </div>
+                  <button type="submit" class="btn btn-primary">Submit</button><button class="btn btn-danger" ng-click="showForm = !showForm">Cancel</button>
+                </form>
               </div>
             </div>
         </div>
@@ -189,15 +198,15 @@
             </div>
             <div ng-repeat="i in user.hashtag.addLength track by $index" class="trend-module-add" ng-if="user.hashtag.addable">
               <div class="trend-submodule-center">
-                <a class="text-center" ng-click="showForm = true"> click here to add another hashtag </a>
+                <a class="text-center form-link" ng-click="showForm = !showForm" ng-hide="showForm"> click here to add another hashtag </a>
               </div>
-              <div class="trend-submodule-center" ng-if="showForm">
-                <form role="form" ng-submit="createHashtag(newHashtag)">
+              <div class="trend-submodule-center" ng-show="showForm">
+                <form role="form" ng-submit="createTracker(newTracker, 'hashtag')">
                   <div class="form-group">
-                    <label for="newHashtag">new hashtag</label>
-                    <input type="text" class="form-control" id="newHashtag[{{$index}}]" placeholder="e.g. #awesome" ng-model="newHashtag">
+                    <label for="newTracker">new hashtag</label>
+                    <input type="text" class="form-control" id="newTracker[{{$index}}]" placeholder="e.g. #awesome" ng-model="newTracker">
                   </div>
-                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <button type="submit" class="btn btn-primary">Submit</button><button class="btn btn-danger" ng-click="showForm = !showForm">Cancel</button>
                 </form>
               </div>
             </div>
@@ -220,11 +229,11 @@
         <div class="module">
           <h5>Email Alert Settings</h5>
             <div ng-show="$root.currentUser">
-              <input type="email" ng-model="email" placeholder="Enter your email to recieve notifications">
-              <button class="btn btn-primary" ng-click="updateEmail()">{{email ? 'Change' : 'Save'}} Email</button>
-              <div ng-show="$root.currentUser.email">
-                <label for="email-toggle">Email notifications are turned {{emailToggle ? 'on' : 'off'}}</label>
-                <input type="checkbox" ng-model="emailToggle" name="emailToggle" id="emailToggle" ng-change="updateNotify()">
+              <input type="email" ng-model="settings.email" placeholder="Enter your email to recieve notifications">
+              <button class="btn btn-primary" ng-click="updateEmail()">{{settings.email ? 'Change' : 'Save'}} Email</button>
+              <div ng-show="settings.email">
+                <label for="email-toggle">Email notifications are turned {{settings.emailToggle ? 'on' : 'off'}}</label>
+                <input type="checkbox" ng-model="settings.emailToggle" name="emailToggle" id="emailToggle" ng-change="updateNotify()">
               </div>
             </div>
         </div>

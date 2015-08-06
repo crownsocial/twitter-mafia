@@ -76,8 +76,8 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
     console.log('get user ran')
     $http.get('/api/user/' + $rootScope.currentUser.id + '/update/').success(function(user){
       console.log('get user success', user)
-      $scope.user = user;
-      $scope.loaded = true;
+      // $scope.user = user;
+      // $scope.loaded = true;
     })
   }
 
@@ -87,16 +87,20 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
     console.log('get user ran')
     $http.get('/api/user/' + $rootScope.currentUser.id).success(function(user){
       console.log('get user success', user)
-      $scope.user = user.twitterAccount;
+      $scope.user = user;
       $scope.loaded = true;
+      $scope.settings.email = user.user.email || '';
+      $scope.settings.emailToggle = user.user.emailToggle || false;
 
       var separateTrackers = function(type){
         type.forEach(function(trackerType){
-          console.log(trackerType)
-          $scope.user[trackerType] = $scope.user.trackers.filter(function(tracker){
-            return (tracker.type == trackerType.toString())
-          })
-        })
+          console.log("Tracker type:",trackerType)
+          if($scope.user.trackers) {
+            $scope.user[trackerType] = $scope.user.trackers.filter(function(tracker){
+              return (tracker.type == trackerType.toString())
+            });
+          }
+        });
       }
       separateTrackers(['influencer', 'hashtag', 'mention']);
 
@@ -113,9 +117,11 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
     });
   }
 
-  $scope.saveInfluencers = function() {
-    console.log($scope.influencers);
-    $http.post('/api/user/' + $rootScope.currentUser.id + '/influencer', {influencers: $scope.influencers}).success(function(influencers) {
+  $scope.saveInfluencers = function(influencer) {
+    if(influencer) {
+
+    }
+    $http.post('/api/user/' + $rootScope.currentUser.id + '/influencer', {influencer: influencer}).success(function(influencers) {
       console.log('user influencers updated', influencers)
       $scope.influencers = influencers
       $scope.influencerInitialised = true;
@@ -123,13 +129,29 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
     })
   }
 
-  $scope.createHashtag = function(hashtag){
-    console.log(hashtag)
-    $http.post('/api/user/' + $rootScope.currentUser.id + '/hashtag', {hashtag: hashtag}).success(function(hashtags) {
-      console.log('user hashtags updated', hashtags)
-      // $scope.hashtags = hashtags
-      $scope.retrieveUser();
-    })
+  $scope.createTracker = function(tracker, type){
+    if(tracker) {
+      console.log(tracker)
+      $http.post('/api/user/' + $rootScope.currentUser.id + '/' + type, {tracker: tracker}).success(function(trackers) {
+        console.log('user trackers updated', trackers)
+        // $scope.hashtags = hashtags
+        if(type == 'influencer') {
+          $scope.influencers = trackers;
+          $scope.influencerInitialised = true;
+        } else {
+          $scope.hashtags = trackers;
+        }
+        $scope.retrieveUser();
+      })
+    }
+  }
+
+  $scope.removeTracker = function(tracker) {
+    if(tracker) {
+      $http.delete('/api/user/' + $rootScope.currentUser.id + '/tracker/' + tracker).success(function(trackers) {
+        $scope.user.trackers = trackers;
+      });
+    }
   }
 
   // if (!$scope.user || !$scope.user.influencers) {
@@ -141,19 +163,17 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
   // }
 
   if($rootScope.currentUser){
-    $scope.emailToggle = $rootScope.currentUser.emailToggle || false;
-    $scope.email = $rootScope.currentUser.email || '';
-    $scope.updateUser();
-    // $scope.retrieveUser();
+    $scope.settings = {emailToggle: $rootScope.currentUser.emailToggle || false, email: $rootScope.currentUser.email || ''}
+    // $scope.updateUser();
+    $scope.retrieveUser();
   } else {
-    $scope.emailToggle = false;
-    $scope.email = '';
+    $scope.settings = {emailToggle: false, email: ''}
   }
   console.log($scope.email)
 
   $scope.updateNotify = function() {
-    console.log('toggle change',$scope.emailToggle);
-    $http.post('/api/user/email/notify', {emailToggle: $scope.emailToggle}).success(function(value) {
+    console.log('toggle change',$scope.settings.emailToggle);
+    $http.post('/api/user/email/notify', {emailToggle: $scope.settings.emailToggle}).success(function(value) {
       if(!value) {
         console.log('could not update email notification settings.');
         // $scope.emailToggle = oldVal;
@@ -162,11 +182,11 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
   }
 
   $scope.updateEmail = function() {
-    if($scope.email !== '') {
-      $http.post('/api/user/email/update', {email: $scope.email}).success(function(response) {
+    if($scope.settings.email !== '') {
+      $http.post('/api/user/email/update', {email: $scope.settings.email}).success(function(response) {
         if(!response) {
           console.log('Could not udpate your email address.');
-          $scope.email = response || '';
+          $scope.settings.email = response || '';
         }
       })
     }

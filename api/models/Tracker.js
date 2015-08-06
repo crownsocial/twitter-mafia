@@ -30,7 +30,7 @@ module.exports = {
     }
   },
   beforeCreate: function(values, callback) {
-    values.name = values.name.toLowerCase();
+    values.name = values.name.toLowerCase().replace(/[#@]/g,'');
     callback();
   }
 };

@@ -184,3 +184,7 @@ td {
     margin: 5px 5px 0 0;
     overflow: hidden;
 }
+
+.form-link {
+  cursor: pointer;
+}

@@ -13,9 +13,8 @@ var User = {
       collection: 'Passport',
       via: 'user'
     },
-    twitter_accounts: {
-      collection: 'Twitter_Account',
-      via: 'user'
+    twitterAccounts: {
+      model: 'Twitter_Account'
     }
   }
 };

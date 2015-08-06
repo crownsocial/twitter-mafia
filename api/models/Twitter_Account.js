@@ -44,6 +44,10 @@ module.exports = {
       collection: 'TweetCollection',
       via: 'twitter_account'
     },
+    tweets: {
+      collection: 'Tweet',
+      via: 'twitter_account'
+    },
     // followers: {
     //   collection: 'Follower',
     //   via: 'twitter_account'

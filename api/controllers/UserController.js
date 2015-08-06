@@ -4,6 +4,13 @@ var CronJob = require('cron').CronJob;
 var update = require('../helpers/updateData');
 // var async = require('async')
 var _ = require('lodash')
+var twitter = require('twitter');
+var client = new twitter({
+  consumer_key: process.env.TWITTER_CONSUMER_KEY,
+  consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+  access_token_key: process.env.TWITTER_ACCESS_TOKEN,
+  access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
+});
 
 
 module.exports = {
@@ -25,24 +32,41 @@ module.exports = {
     var trackerType = req.params.tracker;
 
     if(trackerType == 'influencer') {
-      var influencers = req.body.influencers;
-      console.log('sent influencers:', influencers)
+      var influencer = req.body.tracker;
+      console.log('sent influencers:', influencer)
       console.log('user id:', req.session.user.id)
       Twitter_Account.findOne({user: req.session.user.id}).populate('trackers').exec(function(err, twitterAcc){
         console.log('found twitter account:', twitterAcc)
-        Tracker.findOrCreate({name: influencer.screen_name}, {name: influencer.screen_name, type: 'influencer', twitter_accounts: twitterAcc.id}).exec(function(err, addedInfluencer){
-          console.log('added influencer:', addedInfluencer)
-          if (!Array.isArray(twitterAcc.trackers)) {
-            twitterAcc.trackers = [];
+        Tracker.findOrCreate({name: influencer}, {name: influencer, type: 'influencer', twitter_accounts: twitterAcc.id}).exec(function(err, addedInfluencer){
+          if(!("twitter_id" in addedInfluencer) || !addedInfluencer.twitter_id) {
+            console.log("\n\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\nGet influencer's twitter id")
+            client.get("users/lookup", {screen_name: addedInfluencer.name}, function(err, data, response) {
+              addedInfluencer.twitter_id = data[0].id_str;
+              console.log("Found twitter id:",data[0].id_str);
+              addedInfluencer.save();
+              console.log('added influencer:', addedInfluencer);
+              console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n");
+              if (!Array.isArray(twitterAcc.trackers)) {
+                twitterAcc.trackers = [];
+              }
+              twitterAcc.trackers.push(addedInfluencer);
+              twitterAcc.save();
+              res.send({addedInfluencer: addedInfluencer, trackers: twitterAcc.trackers})
+            });
+          } else {
+            console.log('added influencer:', addedInfluencer)
+            if (!Array.isArray(twitterAcc.trackers)) {
+              twitterAcc.trackers = [];
+            }
+            twitterAcc.trackers.push(addedInfluencer);
+            twitterAcc.save();
+            res.send({addedInfluencer: addedInfluencer, trackers: twitterAcc.trackers})
           }
-          twitterAcc.trackers.push(addedInfluencer);
-          twitterAcc.save();
-          res.send({addedInfluencer: addedInfluencer, trackers: twitterAcc.trackers})
         })
       })
     }
     else if (trackerType == 'hashtag') {
-      var hashtag = req.body.hashtag;
+      var hashtag = req.body.tracker;
       console.log('sent hashtag:', hashtag)
       console.log('user id:', req.session.user.id)
       Twitter_Account.findOne({user: req.session.user.id}).populate('trackers').exec(function(err, twitterAcc){
@@ -58,6 +82,20 @@ module.exports = {
         })
       })
     }
+  },
+
+  deleteTracker: function(req, res) {
+    var tracker = req.params.tracker;
+    Twitter_Account.findOne({user: req.session.user.id}).populate('trackers').exec(function(err, account) {
+      for(var i = 0; i < account.trackers.length; i++) {
+        if(account.trackers[i].name === req.params.tracker) {
+          account.trackers.splice(i,1);
+          account.save();
+          break;
+        }
+      }
+    });
+    res.send(account.trackers);
   },
 
   emailToggle: function(req, res) {
@@ -91,98 +129,18 @@ module.exports = {
 
   retrieve: function(req, res) {
     console.log('inside of user retrieve function', req.session.user)
-    async.auto({
-      twitterAccount: function(callback){
-        Twitter_Account.find({user: req.session.user.id}).populate('tweetCollections').populateAll().exec(function(err, user){
-          console.log('first cb:',user)
-          callback(null, user[0])
-        });
-      },
-      collectionTweets: ['twitterAccount', function(callback, twitterAccount){
-        console.log('second cb:',twitterAccount)
-        async.map(twitterAccount.twitterAccount.tweetCollections, function(tweetCollection, innercb){
-          TweetCollection.find({id: tweetCollection.id}).populate('tweets').exec(function(err, data){
-            console.log('inner cb:', data)
-            innercb(null, data[0]);
-          });
-        }, function(err, results){
-          callback(null, results)
-        })
-      }],
-    }, function(err, result) {
-      // console.log('err is:', err)
-      // console.log('results: ', result)
-      res.send(result)
-    })
-    // Twitter_Account.findOne({user: req.session.user.id}).populate('tweetCollections')
-    // .then(function(twitterAcc) {
-    //   var tweets = TweetCollection.find({
-    //     tweets: _.pluck(twitterAcc.tweetCollections, 'tweets')
-    //   })
-    //   .then(function(tweets){
-    //     console.log('retrieved tweets:', tweets)
-    //     return tweets;
-    //   });
-    //   console.log('retrieved tweets (after promise) :', tweets)
-    //   return [twitterAcc, tweets]
-    // })
-    // .spread(function(twitterAcc, tweets) {
-    //   var tweets = _.indexBy(tweets, 'tweet_id');
-    //   twitterAcc.tweetCollections = _.map(twitterAcc.tweetCollections, function(collection){
-    //     collection.tweets = tweets[twitterAcc.tweetCollections];
-    //     return collection;
-    //   })
-    //   res.json(twitterAcc)
-    // })
-    // .catch(function(err){
-    //   if (err) {
-    //     return res.send(err)
-    //   }
-    // })
+    Twitter_Account.findOne({user: req.session.user.id}).populateAll().exec(function(err, user){
+      console.log('User found:',user)
+      res.send(user);
+    });
   },
 
   update: function(req, res) {
-
-
-    // var formatDates = function(entities) {
-    //   if (!Array.isArray(entities)) {
-    //     entities = [entities];
-    //   }
-
-    //   entities.forEach(function(entity) {
-
-    //     // check http://momentjs.com/docs/#/displaying/
-    //     entity.created_at = moment(Date.parse(entity.created_at)).format("D, M, YY, HHH, ddd");
-    //     console.log(entity.created_at)
-    //   });
-    // }
-
-
-    /*******************************************************************************
-    * Testing methods for cron jobs
-    * Delete at any time
-    *******************************************************************************/
-    // const TIMEZONE = 'America/Los_Angeles';
-    // // logs a message every five seconds
-    // new CronJob('*/5 * * * * *', function() {
-    //   console.log(new Date(), 'You will see this message every 5 seconds.');
-    // }, null, true, TIMEZONE);
-
-    // // logs a message every minute
-    // new CronJob('00 * * * * *', function() {
-    //   console.log(new Date(), 'You will see this message every minute.');
-    // }, null, true, TIMEZONE);
-
-    // every ten seconds, this will make an API call and then email the result
-
-    /*******************************************************************************
-    * Alex comment
-    *******************************************************************************/
-
     User.findOne({id: req.params.id}).then(function(user){
       console.log('user retrieve function', user)
       Passport.find({user: user.id}).then(function(passport){
-        update.getMyUser({}, user.username, req, res)
+        // update.getMyUser({}, user.username, req, res)
+        console.log("Passport found")
       })
     })
 

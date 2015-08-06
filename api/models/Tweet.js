@@ -32,6 +32,9 @@ module.exports = {
     },
     tweetCollection: {
       model: 'TweetCollection'
+    },
+    twitter_account: {
+      model: 'Twitter_Account'
     }
   }
 };

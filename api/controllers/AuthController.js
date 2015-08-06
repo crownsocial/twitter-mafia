@@ -1,3 +1,12 @@
+var twitter = require('twitter');
+
+var client = new twitter({
+  consumer_key: process.env.TWITTER_CONSUMER_KEY,
+  consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+  access_token_key: process.env.TWITTER_ACCESS_TOKEN,
+  access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
+});
+
 /**
  * Authentication Controller
  *
@@ -169,25 +178,62 @@ var AuthController = {
         // Mark the session as authenticated to work with default Sails sessionAuth.js policy
         req.session.authenticated = true
 
-        // Upon successful login, send the user to the homepage were req.user
+        // Upon successful login, send the user to the homepage where req.user
         // will be available.
-         if(req.user.email === null){
-            console.log('send user to hompage')
-          Passport.findOne({user: req.user.id})
-          .then(function(data){
-            console.log(data)
-            res.redirect('/')
-          })
-        }else{
+        //  if(req.user.email === null){
+        //     console.log('send user to hompage')
+        //   Passport.findOne({user: req.user.id})
+        //   .then(function(data){
+        //     console.log(data)
+        //     res.redirect('/')
+        //   })
+        // }else{
           console.log('send success object')
           Passport.findOne({user: req.user.id}).then(function(user){
-            User.findOne({id: req.user.id}).then(function(current){
-              req.session.user = current;
-              req.session.passport = user;
-              res.redirect('/')
+            User.findOne({id: req.user.id}).populateAll().then(function(current){
+              if(!current.twitterAccount) {
+                client.get("users/show", {screen_name: current.username}, function(err, data, response) {
+                  if(!err) {
+                    var defaults = {
+                      twitter_id: data.id_str,
+                      name: data.name,
+                      screen_name: data.screen_name,
+                      description: data.description,
+                      followers_count: data.followers_count,
+                      friends_count: data.friends_count,
+                      verified: data.verified,
+                      profile_image: data.profile_image_url,
+                      latest_status: data.status,
+                      url: data.url,
+                      user: current.id,
+                      trackers: []
+                    }
+                    Twitter_Account.findOrCreate({twitter_id: data.id_str},defaults).exec(function(err, account) {
+                      if(err) {
+                        console.log("Twitter Account creation error:",err);
+                        res.redirect('/');
+                      } else {
+                        current.twitterAccount = account;
+                        current.save();
+                        req.session.user = current;
+                        req.session.passport = user;
+                        res.redirect('/');
+                      }
+                    });
+                  } else {
+                    console.log("Twitter user lookup error:",err);
+                    res.redirect('/');
+                  }
+                });
+              } else {
+                console.log("User already created");
+                req.session.user = current;
+                req.session.passport = user;
+                res.redirect('/');
+              }
             })
           })
-        }
+        // }
       });
     });
   },
