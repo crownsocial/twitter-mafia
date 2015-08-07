@@ -16,9 +16,17 @@ module.exports = function() {
           callback(err);
         } else {
           data.forEach(function(tweet) {
-            Tweet.findOrCreate({tweet_id: tweet.id}, {tweet_id: tweet.id, date: tweet.date, text: tweet.text, retweet_count: tweet.retweet_count, favorite_count: tweet.favorite_count, entities: tweet.entities, twitter_account: account.id}).exec(function(err, addedTweet) {
-              account.tweets.push(addedTweet);
-            });
+            Tweet.find({tweet_id: tweet.id}).exec(function(err, foundTweet) {
+              if(foundTweet) {
+                foundTweet.retweet_count = tweet.retweet_count;
+                foundTweet.favorite_count = tweet.favorite_count;
+                foundTweet.save();
+              } else {
+                Tweet.create({tweet_id: tweet.id, date: tweet.date, text: tweet.text, retweet_count: tweet.retweet_count, favorite_count: tweet.favorite_count, entities: tweet.entities, twitter_account: account.id}).exec(function(err, addedTweet) {
+                  account.tweets.add(addedTweet);
+                });
+              }
+            })
           });
           client.get("users/show", {user_id: account.twitter_id}, function(err, data, response) {
             account.followers_count = data.followers_count;
