@@ -188,3 +188,8 @@ td {
 .form-link {
   cursor: pointer;
 }
+
+.delete-link {
+  color: red;
+  cursor: pointer;
+}

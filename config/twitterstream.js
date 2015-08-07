@@ -85,8 +85,8 @@ module.exports.twitterstream = function() {
               });
 
               stream.on('error', function(error) {
-                console.log("ERROR!!",error)
-                throw error;
+                console.log("ERROR!!",error);
+                twitterstream();
               });
             });
         }

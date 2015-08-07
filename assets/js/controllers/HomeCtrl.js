@@ -147,9 +147,11 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
   }
 
   $scope.removeTracker = function(tracker) {
+    console.log("Removing ",tracker,"from your trackers.");
     if(tracker) {
       $http.delete('/api/user/' + $rootScope.currentUser.id + '/tracker/' + tracker).success(function(trackers) {
         $scope.user.trackers = trackers;
+        console.log("Tracker removed");
       });
     }
   }

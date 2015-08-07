@@ -49,7 +49,7 @@ module.exports = {
               if (!Array.isArray(twitterAcc.trackers)) {
                 twitterAcc.trackers = [];
               }
-              twitterAcc.trackers.push(addedInfluencer);
+              twitterAcc.trackers.add(addedInfluencer);
               twitterAcc.save();
               res.send({addedInfluencer: addedInfluencer, trackers: twitterAcc.trackers})
             });
@@ -58,7 +58,7 @@ module.exports = {
             if (!Array.isArray(twitterAcc.trackers)) {
               twitterAcc.trackers = [];
             }
-            twitterAcc.trackers.push(addedInfluencer);
+            twitterAcc.trackers.add(addedInfluencer);
             twitterAcc.save();
             res.send({addedInfluencer: addedInfluencer, trackers: twitterAcc.trackers})
           }
@@ -76,7 +76,7 @@ module.exports = {
           if (!Array.isArray(twitterAcc.trackers)) {
             twitterAcc.trackers = [];
           }
-          twitterAcc.trackers.push(addedHashtag);
+          twitterAcc.trackers.add(addedHashtag);
           twitterAcc.save();
           res.send({addedHashtag: addedHashtag, trackers: twitterAcc.trackers})
         })
@@ -87,15 +87,20 @@ module.exports = {
   deleteTracker: function(req, res) {
     var tracker = req.params.tracker;
     Twitter_Account.findOne({user: req.session.user.id}).populate('trackers').exec(function(err, account) {
-      for(var i = 0; i < account.trackers.length; i++) {
-        if(account.trackers[i].name === req.params.tracker) {
-          account.trackers.splice(i,1);
-          account.save();
-          break;
+      if(!err) {
+        for(var i = 0; i < account.trackers.length; i++) {
+          if(account.trackers[i].name === req.params.tracker) {
+            account.trackers.remove(account.trackers[i].id);
+            account.save();
+            break;
+          }
         }
+        res.send(account.trackers);
+      } else {
+        console.log("ERROR:",err);
+        res.send(err);
       }
     });
-    res.send(account.trackers);
   },
 
   emailToggle: function(req, res) {

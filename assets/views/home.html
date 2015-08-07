@@ -161,7 +161,7 @@
             <div class="trend-module" ng-repeat="influencer in user.influencer">
               <img ng-src="{{influencer.data.data[0].user.profile_image_url.replace('_normal.', '.')}}" alt="">
               <div class="trend-submodule-left">
-                <a href="http://twitter.com/{{influencer.name}}">@{{influencer.name}}</a>
+                <a href="http://twitter.com/{{influencer.name}}">@{{influencer.name}}</a> <a class="delete-link" ng-click="removeTracker(influencer.name)">X</a>
               </div>
               <div class="trend-submodule-right">
                   <a href="#">{{influencer.data.data[0].text}}</a>
@@ -177,7 +177,7 @@
                     <label for="newTracker">new influencer</label>
                     <input type="text" class="form-control" id="newTracker[{{$index}}]" placeholder="e.g. @someperson" ng-model="newTracker">
                   </div>
-                  <button type="submit" class="btn btn-primary">Submit</button><button class="btn btn-danger" ng-click="showForm = !showForm">Cancel</button>
+                  <button type="submit" class="btn btn-primary" ng-click="showForm = !showForm">Submit</button><button class="btn btn-danger" ng-click="showForm = !showForm">Cancel</button>
                 </form>
               </div>
             </div>
@@ -190,7 +190,7 @@
             <div class="trend-module" ng-repeat="hashtag in user.hashtag">
               <img ng-src="{{hashtag.data.data[0].user.profile_image_url.replace('_normal.', '.')}}" alt="">
               <div class="trend-submodule-left">
-                <a href="http://twitter.com/{{hashtag.name}}">#{{hashtag.name}}</a>
+                <a href="http://twitter.com/{{hashtag.name}}">#{{hashtag.name}}</a> <a class="delete-link" ng-click="removeTracker(hashtag.name)">X</a>
               </div>
               <div class="trend-submodule-right">
                   <a href="#">{{hashtag.data.data[0].text}}</a>
@@ -206,7 +206,7 @@
                     <label for="newTracker">new hashtag</label>
                     <input type="text" class="form-control" id="newTracker[{{$index}}]" placeholder="e.g. #awesome" ng-model="newTracker">
                   </div>
-                  <button type="submit" class="btn btn-primary">Submit</button><button class="btn btn-danger" ng-click="showForm = !showForm">Cancel</button>
+                  <button type="submit" class="btn btn-primary" ng-click="showForm = !showForm">Submit</button><button class="btn btn-danger" ng-click="showForm = !showForm">Cancel</button>
                 </form>
               </div>
             </div>
