@@ -14,6 +14,8 @@ var checkDataType = function(tweet, trackers) {
   var mentions = tweet.entities.user_mentions;
   var hashtags = tweet.entities.hashtags;
 
+  // console.log(mentions)
+
   for(var i = 0; i < trackers.length; i++) {
     if(trackers[i].type === "influencer" && tweet.user.screen_name.toLowerCase() === trackers[i].name && tweet.text.trim()[0] !== '@') {
         return {tweet: tweet, tracker: trackers[i]}

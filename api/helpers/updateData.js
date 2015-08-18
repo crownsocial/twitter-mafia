@@ -16,8 +16,9 @@ module.exports = function() {
           callback(err);
         } else {
           data.forEach(function(tweet) {
-            Tweet.find({tweet_id: tweet.id}).exec(function(err, foundTweet) {
+            Tweet.findOne({tweet_id: tweet.id}).exec(function(err, foundTweet) {
               if(foundTweet) {
+                console.log(foundTweet)
                 foundTweet.retweet_count = tweet.retweet_count;
                 foundTweet.favorite_count = tweet.favorite_count;
                 foundTweet.save();
