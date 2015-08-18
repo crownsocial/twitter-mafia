@@ -81,6 +81,17 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
     })
   }
 
+  var separateTrackers = function(type){
+    type.forEach(function(trackerType){
+      console.log("Tracker type:",trackerType)
+      if($scope.user.trackers) {
+        $scope.user[trackerType] = $scope.user.trackers.filter(function(tracker){
+          return (tracker.type == trackerType.toString())
+        });
+      }
+    });
+  }
+
   // function that hits a route to retrieve locally stored User info.
   $scope.retrieveUser = function() {
     // $scope.twitterPassports = [];
@@ -92,24 +103,16 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
       $scope.settings.email = user.user.email || '';
       $scope.settings.emailToggle = user.user.emailToggle || false;
 
-      var separateTrackers = function(type){
-        type.forEach(function(trackerType){
-          console.log("Tracker type:",trackerType)
-          if($scope.user.trackers) {
-            $scope.user[trackerType] = $scope.user.trackers.filter(function(tracker){
-              return (tracker.type == trackerType.toString())
-            });
-          }
-        });
-      }
       separateTrackers(['influencer', 'hashtag', 'mention']);
 
       var enableAddTrackers = function(type) {
         type.forEach(function(trackerType){
-          if ($scope.user[trackerType].length < 3){
-            $scope.user[trackerType].addable = true;
-            $scope.user[trackerType].addLength = new Array(3-$scope.user[trackerType].length);
-          }
+          // if ($scope.user[trackerType].length < 3){
+          //   $scope.user[trackerType].addable = true;
+          //   $scope.user[trackerType].addLength = new Array(3-$scope.user[trackerType].length);
+          // }
+          $scope.user[trackerType].addable = true;
+          $scope.user[trackerType].addLength = new Array(1)// + $scope.user[trackerType].length;
         })
       }
 
@@ -136,12 +139,14 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
         console.log('user trackers updated', trackers)
         // $scope.hashtags = hashtags
         if(type == 'influencer') {
-          $scope.influencers = trackers;
+          $scope.user.influencer.push(trackers.addedInfluencer);
           $scope.influencerInitialised = true;
-        } else {
-          $scope.hashtags = trackers;
+        } else if(type == 'hashtag') {
+          $scope.user.hashtag.push(trackers.addedHastag);
+        } else if(type == 'mention') {
+          $scope.user.mention.push(trackers.addedMention);
         }
-        $scope.retrieveUser();
+        // $scope.retrieveUser();
       })
     }
   }
@@ -150,7 +155,8 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
     console.log("Removing ",tracker,"from your trackers.");
     if(tracker) {
       $http.delete('/api/user/' + $rootScope.currentUser.id + '/tracker/' + tracker).success(function(trackers) {
-        $scope.user.trackers = trackers;
+        // $scope.user.trackers = trackers;
+        separateTrackers(['influencer', 'hashtag', 'mention'])
         console.log("Tracker removed");
       });
     }
@@ -194,10 +200,10 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
     }
   }
 
-  L.mapbox.accessToken = 'pk.eyJ1IjoiYmVubmV0dHNsaW4iLCJhIjoiYzU0V200YyJ9._G57JU3841MTuFULQD9pVg';
-  var map = L.mapbox.map('map', 'bennettslin.lnp05233')
-            .setView([47.6244, -122.3317], 11);
-  map.scrollWheelZoom.disable();
+  // L.mapbox.accessToken = 'pk.eyJ1IjoiYmVubmV0dHNsaW4iLCJhIjoiYzU0V200YyJ9._G57JU3841MTuFULQD9pVg';
+  // var map = L.mapbox.map('map', 'bennettslin.lnp05233')
+  //           .setView([47.6244, -122.3317], 11);
+  // map.scrollWheelZoom.disable();
 
   $scope.login = function(provider, email, password){
     console.log('trying twitter auth')

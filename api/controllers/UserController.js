@@ -37,7 +37,7 @@ module.exports = {
       console.log('user id:', req.session.user.id)
       Twitter_Account.findOne({user: req.session.user.id}).populate('trackers').exec(function(err, twitterAcc){
         console.log('found twitter account:', twitterAcc)
-        Tracker.findOrCreate({name: influencer}, {name: influencer, type: 'influencer', twitter_accounts: twitterAcc.id}).exec(function(err, addedInfluencer){
+        Tracker.findOrCreate({name: influencer, type:'influencer'}, {name: influencer, type: 'influencer', twitter_accounts: twitterAcc.id}).exec(function(err, addedInfluencer){
           if(!("twitter_id" in addedInfluencer) || !addedInfluencer.twitter_id) {
             console.log("\n\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\nGet influencer's twitter id")
             client.get("users/lookup", {screen_name: addedInfluencer.name}, function(err, data, response) {
@@ -70,8 +70,8 @@ module.exports = {
       console.log('sent hashtag:', hashtag)
       console.log('user id:', req.session.user.id)
       Twitter_Account.findOne({user: req.session.user.id}).populate('trackers').exec(function(err, twitterAcc){
-        console.log('found twitter account:', twitterAcc)
-        Tracker.findOrCreate({name: hashtag}, {name: hashtag, type: 'hashtag', twitter_accounts: twitterAcc.id}).exec(function(err, addedHashtag){
+        // console.log('found twitter account:', twitterAcc)
+        Tracker.findOrCreate({name: hashtag, type:'hashtag'}, {name: hashtag, type: 'hashtag', twitter_accounts: twitterAcc.id}).exec(function(err, addedHashtag){
           console.log('added hashtag:', addedHashtag)
           if (!Array.isArray(twitterAcc.trackers)) {
             twitterAcc.trackers = [];
@@ -79,6 +79,24 @@ module.exports = {
           twitterAcc.trackers.add(addedHashtag);
           twitterAcc.save();
           res.send({addedHashtag: addedHashtag, trackers: twitterAcc.trackers})
+        })
+      })
+    } else if (trackerType == 'mention') {
+      var mention = req.body.tracker;
+      console.log('sent mention:',mention);
+      console.log('user id:',req.session.user.id)
+      Twitter_Account.findOne({user: req.session.user.id}).populate('trackers').exec(function(err, twitterAcc) {
+        // console.log('found twitter account:',twitterAcc)
+        Tracker.findOrCreate({name: mention, type:'mention'}, {name: mention, type: 'mention', twitter_accounts: twitterAcc.id}).exec(function(err, addedMention) {
+            console.log("\n\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
+          console.log('added mention:', addedMention);
+            console.log("\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n");
+          if(!Array.isArray(twitterAcc.trackers)) {
+            twitterAcc.trackers = [];
+          }
+          twitterAcc.trackers.add(addedMention);
+          twitterAcc.save();
+          res.send({addedMention:addedMention, trackers: twitterAcc.trackers})
         })
       })
     }
@@ -89,7 +107,7 @@ module.exports = {
     Twitter_Account.findOne({user: req.session.user.id}).populate('trackers').exec(function(err, account) {
       if(!err) {
         for(var i = 0; i < account.trackers.length; i++) {
-          if(account.trackers[i].name === req.params.tracker) {
+          if(account.trackers[i].id === req.params.tracker) {
             account.trackers.remove(account.trackers[i].id);
             account.save();
             break;
