@@ -2,7 +2,7 @@
 
 var CronJob = require('cron').CronJob;
 var update = require('../helpers/updateData');
-// var async = require('async')
+var utility = require('../helpers/utilities');
 var _ = require('lodash')
 var twitter = require('twitter');
 var client = new twitter({
@@ -11,7 +11,6 @@ var client = new twitter({
   access_token_key: process.env.TWITTER_ACCESS_TOKEN,
   access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
 });
-
 
 module.exports = {
 
@@ -153,6 +152,21 @@ module.exports = {
   retrieve: function(req, res) {
     console.log('inside of user retrieve function', req.session.user)
     Twitter_Account.findOne({user: req.session.user.id}).populateAll().exec(function(err, user){
+      var tweets_data = user.tweets.reduce(function(obj, tweet) {
+        if(tweet.date === null) {
+          return obj;
+        } else {
+          var tweetDate = tweet.date.toDateString();
+          if(tweetDate in obj) {
+            obj[tweetDate].push(tweet.retweet_count + tweet.favorite_count);
+          } else {
+            obj[tweetDate] = [tweet.retweet_count + tweet.favorite_count];
+          }
+
+          return obj;
+        }
+      }, {})
+      user.graphData = utility.parseGraphData(tweets_data, user.follower_count, user.createdAt);
       console.log('User found:',user)
       res.send(user);
     });

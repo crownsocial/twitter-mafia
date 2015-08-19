@@ -13,25 +13,34 @@ module.exports = function() {
     async.eachSeries(accounts, function(account, callback) {
       client.get("statuses/user_timeline", {user_id: account.twitter_id, include_rts: false}, function(err, data, response) {
         if(err) {
+          console.log("Statuses/user_timeline ERROR:",err)
           callback(err);
         } else {
           data.forEach(function(tweet) {
             Tweet.findOne({tweet_id: tweet.id}).exec(function(err, foundTweet) {
               if(foundTweet) {
-                console.log(foundTweet)
+                console.log('foundTweet')
                 foundTweet.retweet_count = tweet.retweet_count;
                 foundTweet.favorite_count = tweet.favorite_count;
                 foundTweet.save();
               } else {
                 Tweet.create({tweet_id: tweet.id, date: tweet.date, text: tweet.text, retweet_count: tweet.retweet_count, favorite_count: tweet.favorite_count, entities: tweet.entities, twitter_account: account.id}).exec(function(err, addedTweet) {
                   account.tweets.add(addedTweet);
+                  account.save();
                 });
               }
             })
           });
           client.get("users/show", {user_id: account.twitter_id}, function(err, data, response) {
-            account.followers_count = data.followers_count;
-            account.friends_count = data.friends_count;
+            var currentDate = (new Date()).toDateString();
+            if(typeof account.followers_count !== 'object') {
+              account.followers_count = {}
+            }
+            account.followers_count[currentDate] = data.followers_count;
+            if(typeof account.friends_count !== 'object') {
+              account.friends_count = {}
+            }
+            account.friends_count[currentDate] = data.friends_count;
             account.verified = data.verified;
             // account.favorites_count = data.favorite_count;
             account.save();

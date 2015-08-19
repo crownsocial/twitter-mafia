@@ -25,10 +25,10 @@ module.exports = {
     },
     // total count of each category. friends = people this account follows, statuses refer to all tweets.
     followers_count: {
-      type: 'integer'
+      type: 'json'
     },
     friends_count: {
-      type: 'integer'
+      type: 'json'
     },
     listed_count: {
       type: 'integer'

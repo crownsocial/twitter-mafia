@@ -7,38 +7,76 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
   // data for graph
   $scope.polygons = []
 
-  var graphData = {dataSet: [], max:null,min:null}
 
-  for(var j = 0; j < 30; j++) {
-    // console.log(graphData.dataSet);
-    var x = Math.ceil(Math.random() * 200);
-    var z = Math.ceil(Math.random() * 40);
-    if(j > 0) {
-      z += graphData.dataSet[j-1].z;
-    }
 
-    if(graphData.min === null || x < graphData.min) {
-      graphData.min = x;
-    }
-    if(z < graphData.min) {
-      graphData.min = z;
-    }
-    if(graphData.max === null || x > graphData.max) {
-      graphData.max = x;
-    }
-    if(z > graphData.max) {
-      graphData.max = z;
-    }
-    graphData.dataSet.push({x:x,z:z});
-  }
+  // console.log("graphData:",graphData)
 
-  console.log("graphData:",graphData)
 
-  var dataLength = graphData.dataSet.length;
-  var scale = 150/(graphData.max - graphData.min);
 
-  for(var i = dataLength - 1; i >= 0; i--) {
-    $scope.polygons.push(calcPolygon(graphData.dataSet[i], i, dataLength, scale))
+  function generateGraph(data) {
+    var dataSet = [];
+    var max = null;
+    var min = null;
+    if(!data) {
+      for(var j = 0; j < 30; j++) {
+        // console.log(graphData.dataSet);
+        var x = Math.ceil(Math.random() * 200);
+        var z = Math.ceil(Math.random() * 40);
+        if(j > 0) {
+          z += dataSet[j-1].z;
+        }
+
+        if(min === null || x < min) {
+          min = x;
+        }
+        if(z < min) {
+          min = z;
+        }
+        if(max === null || x > max) {
+          max = x;
+        }
+        if(z > max) {
+          max = z;
+        }
+        dataSet.push({x:x,z:z});
+      }
+    } else {
+      var combineFactor = Math.ceil(data.length / 30);
+      var counter = -1;
+
+      for(var i = 0; i < data.length; i++) {
+        if(i % combineFactor === 0) {
+          counter++;
+        }
+        if(counter < dataSet.length) {
+          dataSet[counter].x += data[i].followers;
+          dataSet[counter].z += data[i].engagements;
+        } else {
+          dataSet.push({x: data[i].followers, z:data[i].engagements});
+        }
+
+        if(min === null || dataSet[counter].x < min) {
+          min = dataSet[counter].x;
+        }
+        if(dataSet[counter].z < min) {
+          min = dataSet[counter].z;
+        }
+        if(max === null || dataSet[counter].x > max) {
+          max = dataSet[counter].x;
+        }
+        if(dataSet[counter].z > max) {
+          max = dataSet[counter].z;
+        }
+      }
+    }
+    var dataLength = dataSet.length;
+    var scale = 150/(max - min);
+    var polygons = [];
+
+    for(var i = dataLength - 1; i >= 0; i--) {
+      polygons.push(calcPolygon(dataSet[i], i, dataLength, scale))
+    }
+    return polygons;
   }
 
   function calcPolygon(data, i, len, scale) {
@@ -153,6 +191,7 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
     $http.get('/api/user/' + $rootScope.currentUser.id).success(function(user){
       console.log('get user success', user)
       $scope.user = user;
+      $scope.polygons = generateGraph(user.graphData);
       $scope.loaded = true;
       $scope.settings.email = user.user.email || '';
       $scope.settings.emailToggle = user.user.emailToggle || false;

@@ -22,6 +22,39 @@ var parseDataForEmail = function(obj) {
 }
 
 module.exports = {
+
+
+  parseGraphData: function(tweets, followers, firstDate) {
+    if(Object.keys(tweets).length === 0) {
+      return false;
+    }
+    var graphData = {}
+
+    for(var date in tweets) {
+      if(date in graphData) {
+        graphData[date].engagements += tweets[date];
+      } else {
+        graphData[date].engagements = 0;
+      }
+    }
+
+    for(var date in graphData) {
+      var fDate = date;
+      var notAdded = true;
+      do {
+        if(fDate in followers) {
+          notAdded = false;
+          graphData[date].followers = followers[fDate]
+        } else if(fDate < firstDate) {
+          graphData[date].followers = 0;
+        } else {
+          fDate = new Date(fDate - (24*60*60*1000))
+        }
+      } while(notAdded)
+    }
+
+    return graphData;
+  },
   /*******************************************************************************
   * helper method for marking top tweet(s) with highest retweet + favourite count
   * with a top_tweet: true property
