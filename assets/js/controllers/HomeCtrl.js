@@ -7,29 +7,42 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
   // data for graph
   $scope.polygons = []
 
-  var dataSet = [
-    {x:10, z:10},
-    {x:20, z:20},
-    {x:20, z:30},
-    {x:40, z:40},
-    {x:20, z:50},
-    {x:60, z:70},
-    {x:50, z:100},
-    {x:70, z:110},
-    {x:80, z:120},
-    {x:100, z:140}
-  ]
+  var graphData = {dataSet: [], max:null,min:null}
 
-  var prevMid = {x:0,y:0}
-  for(var i = dataSet.length - 1; i >= 0; i--) {
-    var block = calcPolygon(dataSet[i], i, dataSet.length, prevMid);
-    prevMid = block.midpoint
-    $scope.polygons.push(block);
+  for(var j = 0; j < 30; j++) {
+    // console.log(graphData.dataSet);
+    var x = Math.ceil(Math.random() * 200);
+    var z = Math.ceil(Math.random() * 40);
+    if(j > 0) {
+      z += graphData.dataSet[j-1].z;
+    }
+
+    if(graphData.min === null || x < graphData.min) {
+      graphData.min = x;
+    }
+    if(z < graphData.min) {
+      graphData.min = z;
+    }
+    if(graphData.max === null || x > graphData.max) {
+      graphData.max = x;
+    }
+    if(z > graphData.max) {
+      graphData.max = z;
+    }
+    graphData.dataSet.push({x:x,z:z});
   }
-  // $scope.polygons = dataSet.map(calcPolygon)
 
-  function calcPolygon(data, i, len, prevMid) {
-    var x = data.x, y = 10, z = data.z;
+  console.log("graphData:",graphData)
+
+  var dataLength = graphData.dataSet.length;
+  var scale = 150/(graphData.max - graphData.min);
+
+  for(var i = dataLength - 1; i >= 0; i--) {
+    $scope.polygons.push(calcPolygon(graphData.dataSet[i], i, dataLength, scale))
+  }
+
+  function calcPolygon(data, i, len, scale) {
+    var x = data.x * scale, y = 10, z = data.z * scale;
     var origin, a, b, c, p;
 
     const THETA = 60*Math.PI/180;
@@ -45,24 +58,9 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
         front: [point(a), point(a,z), point(p), point(c)],
         top: [point(a,z), point(origin,z), point(b,z), point(p)],
         side: [point(p), point(b,z), point(b), point(c)],
-        midpoint: {x: a.x/2, y: a.y/2}
+        midpoint: {x: a.x/2, y: a.y/2},
+        offset: {x: (350 - (len * 10)) + ((len - i) * 10), y: (350 - (len * 5)) + ((len - i) * 5)}
     };
-
-    var xOffset = (Math.abs((prevMid.x)*2) - Math.abs(polygons.midpoint.x))/2
-    if(prevMid.x< polygons.midpoint.x) {
-        xOffset = -Math.abs(xOffset);
-    } else {
-        xOffset = Math.abs(xOffset);
-    }
-
-    // x = 0
-
-    var adjustedOffset = {
-        x: xOffset + 100,
-        y: Math.abs(prevMid.y - polygons.midpoint.y) + ((len - i) * 10) + 100
-    }
-
-    polygons.offset = adjustedOffset;
 
     return polygons
   }

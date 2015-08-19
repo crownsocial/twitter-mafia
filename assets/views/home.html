@@ -5,6 +5,7 @@
 <section id="content" ng-show="$root.currentUser">
 <h2>Content</h2>
   <div id="graph-container">
+    <div class="placeholder-text">DEMO</div>
     <svg id="graph">
       <g ng-repeat="polygonSet in polygons">
         <polygon class="polygon-front" ng-attr-points="{{parsePoints(polygonSet.front, polygonSet.offset)}}" ng-cloak></polygon>

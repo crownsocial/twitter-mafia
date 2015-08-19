@@ -36,10 +36,13 @@ module.exports = function() {
             // account.favorites_count = data.favorite_count;
             account.save();
             console.log("\nvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
-            console.log("Updating:",account.username);
+            console.log("Updating:",account.screen_name);
             console.log(account);
             console.log("***************************************************\n");
-            callback();
+            setTimeout(function() {
+              console.log("Paused")
+              callback();
+            }, 60000)
           });
         }
       });
