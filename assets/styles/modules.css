@@ -15,6 +15,36 @@
   border-radius: 4px;
 }
 
+#footer {
+  position: fixed;
+  bottom: 0;
+  text-align: center;
+  width: 100vw;
+}
+
+#graph-container {
+  width: 400px;
+  height: 400px;
+  margin: 0 auto;
+  border: 1px solid black;
+  position: relative;
+}
+
+#graph {
+  width: 100%;
+  height: 100%;
+}
+
+.placeholder-text {
+  position: absolute;
+  text-align: center;
+  top: 125px;
+  width: 100%;
+  font-size: 100px;
+  z-index: 100;
+  color: rgba(0,0,0,0.5);
+}
+
 .module-wrapper + .module-wrapper {
   border-left: 4px dotted rgb(186, 186, 186);
 }
@@ -192,4 +222,22 @@ td {
 .delete-link {
   color: red;
   cursor: pointer;
+}
+
+.polygon-front {
+  fill: #7AA5B3;
+  stroke: black;
+  stroke-width: 1;
+}
+
+.polygon-top {
+  fill: #ADD8E6;
+  stroke: black;
+  stroke-width: 1;
+}
+
+.polygon-side {
+  fill: #94BFCD;
+  stroke: black;
+  stroke-width: 1;
 }

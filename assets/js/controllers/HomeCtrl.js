@@ -4,27 +4,81 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
 
   $scope.loaded = false;
 
-  // data for line graph
+  // data for graph
+  $scope.polygons = []
 
-  $scope.lineLabels = ['July'];
-  $scope.lineSeries = ['total followers', 'engagements per post'];
-  $scope.lineOptions = [{
-    fillColor: "rgba(128, 128, 128, 0.4)",
-    strokeColor: "rgba(128, 128, 128, 0.8)",
-    highlightFill: "rgba(228, 135, 27, 0.75)",
-    highlightStroke: "rgba(228, 135, 27, 1)"
-  }]
-  $scope.lineData = [[212],[61]]; // user followers counts and engagements count
+  var graphData = {dataSet: [], max:null,min:null}
 
-  // data for bar graph
+  for(var j = 0; j < 30; j++) {
+    // console.log(graphData.dataSet);
+    var x = Math.ceil(Math.random() * 200);
+    var z = Math.ceil(Math.random() * 40);
+    if(j > 0) {
+      z += graphData.dataSet[j-1].z;
+    }
 
-  $scope.barLabels = ['July'];
-  $scope.barSeries = ['total tweets'];
-  $scope.barData = [[524]];
+    if(graphData.min === null || x < graphData.min) {
+      graphData.min = x;
+    }
+    if(z < graphData.min) {
+      graphData.min = z;
+    }
+    if(graphData.max === null || x > graphData.max) {
+      graphData.max = x;
+    }
+    if(z > graphData.max) {
+      graphData.max = z;
+    }
+    graphData.dataSet.push({x:x,z:z});
+  }
 
-  // data for donut chart
-  $scope.donutLabels = ['replies', 'retweets', 'links', 'hashtags']
-  $scope.donutData = [125, 100, 50, 75]
+  console.log("graphData:",graphData)
+
+  var dataLength = graphData.dataSet.length;
+  var scale = 150/(graphData.max - graphData.min);
+
+  for(var i = dataLength - 1; i >= 0; i--) {
+    $scope.polygons.push(calcPolygon(graphData.dataSet[i], i, dataLength, scale))
+  }
+
+  function calcPolygon(data, i, len, scale) {
+    var x = data.x * scale, y = 10, z = data.z * scale;
+    var origin, a, b, c, p;
+
+    const THETA = 60*Math.PI/180;
+    const PHI = 30*Math.PI/180;
+
+    origin = {x: 0, y:0};
+    a = {x: -x*Math.cos(THETA), y: -x*Math.sin(THETA)};
+    b = {x: y*Math.cos(PHI), y: -y*Math.sin(PHI)};
+    c = {x: a.x + b.x, y: (a.y + b.y)};
+    p = {x: c.x, y:c.y + z};
+
+    var polygons = {
+        front: [point(a), point(a,z), point(p), point(c)],
+        top: [point(a,z), point(origin,z), point(b,z), point(p)],
+        side: [point(p), point(b,z), point(b), point(c)],
+        midpoint: {x: a.x/2, y: a.y/2},
+        offset: {x: (350 - (len * 10)) + ((len - i) * 10), y: (350 - (len * 5)) + ((len - i) * 5)}
+    };
+
+    return polygons
+  }
+
+  function point(point, y) {
+    y = y || 0;
+    return {x: point.x, y: point.y + y}
+  }
+
+  $scope.parsePoints = function(points, offset) {
+    if(Array.isArray(points)) {
+        return points.map(function(point) {
+            return (point.x + offset.x) + ',' + (-point.y + offset.y);
+        }).join(' ');
+    } else {
+        return (points.x + offset.x) + ',' + (-points.y + offset.y)
+    }
+  }
 
   $scope.onClick = function (points, evt) {
     console.log(points, evt);
