@@ -2,12 +2,21 @@
 <section id="header">
 
 <!-- Content Section -->
-<section id="content">
+<section id="content" ng-show="$root.currentUser">
 <h2>Content</h2>
+  <div id="graph-container">
+    <svg id="graph">
+      <g ng-repeat="polygonSet in polygons">
+        <polygon class="polygon-front" ng-attr-points="{{parsePoints(polygonSet.front, polygonSet.offset)}}" ng-cloak></polygon>
+        <polygon class="polygon-top" ng-attr-points="{{parsePoints(polygonSet.top, polygonSet.offset)}}" ng-cloak></polygon>
+        <polygon class="polygon-side" ng-attr-points="{{parsePoints(polygonSet.side, polygonSet.offset)}}" ng-cloak></polygon>
+      </g>
+    </svg>
+  </div>
 </section>
 
 <!-- Trends Section -->
-<section id="trends">
+<section id="trends" ng-show="$root.currentUser">
   <div class="container section-container">
     <div class="row">
       <div class="col-lg-10 col-lg-offset-1 section-header-container">
@@ -107,7 +116,7 @@
 </section>
 
 <!-- CTA Section -->
-<section id="cta">
+<section id="cta" ng-show="$root.currentUser">
   <div class="container section-container">
     <div class="row">
       <div class="col-lg-10 col-lg-offset-1 section-header-container">
@@ -131,4 +140,9 @@
     </div>
   </div>
 </section>
+
+<div ng-hide="$root.currentUser">
+  <h1 class="text-center">Please Login to view site</h1>
+</div>
+
 </section>

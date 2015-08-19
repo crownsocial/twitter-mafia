@@ -4,27 +4,83 @@ TwitterMafia.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$mdToast'
 
   $scope.loaded = false;
 
-  // data for line graph
+  // data for graph
+  $scope.polygons = []
 
-  $scope.lineLabels = ['July'];
-  $scope.lineSeries = ['total followers', 'engagements per post'];
-  $scope.lineOptions = [{
-    fillColor: "rgba(128, 128, 128, 0.4)",
-    strokeColor: "rgba(128, 128, 128, 0.8)",
-    highlightFill: "rgba(228, 135, 27, 0.75)",
-    highlightStroke: "rgba(228, 135, 27, 1)"
-  }]
-  $scope.lineData = [[212],[61]]; // user followers counts and engagements count
+  var dataSet = [
+    {x:10, z:10},
+    {x:20, z:20},
+    {x:20, z:30},
+    {x:40, z:40},
+    {x:20, z:50},
+    {x:60, z:70},
+    {x:50, z:100},
+    {x:70, z:110},
+    {x:80, z:120},
+    {x:100, z:140}
+  ]
 
-  // data for bar graph
+  var prevMid = {x:0,y:0}
+  for(var i = dataSet.length - 1; i >= 0; i--) {
+    var block = calcPolygon(dataSet[i], i, dataSet.length, prevMid);
+    prevMid = block.midpoint
+    $scope.polygons.push(block);
+  }
+  // $scope.polygons = dataSet.map(calcPolygon)
 
-  $scope.barLabels = ['July'];
-  $scope.barSeries = ['total tweets'];
-  $scope.barData = [[524]];
+  function calcPolygon(data, i, len, prevMid) {
+    var x = data.x, y = 10, z = data.z;
+    var origin, a, b, c, p;
 
-  // data for donut chart
-  $scope.donutLabels = ['replies', 'retweets', 'links', 'hashtags']
-  $scope.donutData = [125, 100, 50, 75]
+    const THETA = 60*Math.PI/180;
+    const PHI = 30*Math.PI/180;
+
+    origin = {x: 0, y:0};
+    a = {x: -x*Math.cos(THETA), y: -x*Math.sin(THETA)};
+    b = {x: y*Math.cos(PHI), y: -y*Math.sin(PHI)};
+    c = {x: a.x + b.x, y: (a.y + b.y)};
+    p = {x: c.x, y:c.y + z};
+
+    var polygons = {
+        front: [point(a), point(a,z), point(p), point(c)],
+        top: [point(a,z), point(origin,z), point(b,z), point(p)],
+        side: [point(p), point(b,z), point(b), point(c)],
+        midpoint: {x: a.x/2, y: a.y/2}
+    };
+
+    var xOffset = (Math.abs((prevMid.x)*2) - Math.abs(polygons.midpoint.x))/2
+    if(prevMid.x< polygons.midpoint.x) {
+        xOffset = -Math.abs(xOffset);
+    } else {
+        xOffset = Math.abs(xOffset);
+    }
+
+    // x = 0
+
+    var adjustedOffset = {
+        x: xOffset + 100,
+        y: Math.abs(prevMid.y - polygons.midpoint.y) + ((len - i) * 10) + 100
+    }
+
+    polygons.offset = adjustedOffset;
+
+    return polygons
+  }
+
+  function point(point, y) {
+    y = y || 0;
+    return {x: point.x, y: point.y + y}
+  }
+
+  $scope.parsePoints = function(points, offset) {
+    if(Array.isArray(points)) {
+        return points.map(function(point) {
+            return (point.x + offset.x) + ',' + (-point.y + offset.y);
+        }).join(' ');
+    } else {
+        return (points.x + offset.x) + ',' + (-points.y + offset.y)
+    }
+  }
 
   $scope.onClick = function (points, evt) {
     console.log(points, evt);
