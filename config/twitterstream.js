@@ -44,13 +44,13 @@ var runTwitterstream = function() {
 
             trackers.forEach(function(t) {
               if(t.twitter_accounts.length > 0) {
-                if(t.type == "influencer") {
+                if(t.type == "influencer" && t.twitter_id) {
                     if(track.follow) {
                       track.follow += ',' + t.twitter_id;
                     } else {
                       track.follow = t.twitter_id.toString();
                     }
-                } else {
+                } else if(type == 'mention' || type == 'hashtag') {
                     if(track.track) {
                       track.track += ',' + t.name;
                     } else {
