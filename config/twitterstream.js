@@ -37,7 +37,7 @@ var checkDataType = function(tweet, trackers) {
   return false;
 }
 
-module.exports.twitterstream = function() {
+var runTwitterstream = function() {
     Tracker.find().populateAll().exec(function(err, trackers) {
         if(!err) {
             var track = {};
@@ -88,9 +88,13 @@ module.exports.twitterstream = function() {
 
               stream.on('error', function(error) {
                 console.log("ERROR!!",error);
-                twitterstream();
+                runTwitterstream();
               });
             });
         }
     });
+}
+
+module.exports.twitterstream = function() {
+  runTwitterstream();
 }
