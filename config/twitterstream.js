@@ -88,7 +88,7 @@ var runTwitterstream = function() {
 
               stream.on('error', function(error) {
                 console.log("ERROR!!",error);
-                runTwitterstream();
+                setTimeout(runTwitterstream, 3000);
               });
             });
         }
