@@ -50,7 +50,7 @@ var runTwitterstream = function() {
                     } else {
                       track.follow = t.twitter_id.toString();
                     }
-                } else if(type == 'mention' || type == 'hashtag') {
+                } else if(t.type == 'mention' || t.type == 'hashtag') {
                     if(track.track) {
                       track.track += ',' + t.name;
                     } else {
